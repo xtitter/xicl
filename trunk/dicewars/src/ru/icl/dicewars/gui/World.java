@@ -39,6 +39,8 @@ public class World extends JPanel {
 	private static Font diceFont;
 	private static Font idFont;
 	
+	private int defendingPlayer = 0;
+	
 	public World() {
 		diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));
 		idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
@@ -52,6 +54,7 @@ public class World extends JPanel {
 	}
 	
 	public void update(FullLand land) {
+		defendingPlayer = 0;
 		width = getWidth();
 		height = getHeight();
 		FullLand l2 = null;
@@ -104,7 +107,8 @@ public class World extends JPanel {
 		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
 			int x = 0;
 			int y = 0;
-			g2d.setColor(getColorByFlag(land.getFlag()));
+			g2d.setColor(getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer ? 80 : 0));
+			
 			for (Point p : land.getPoints()) {
 				rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 				int _x = X_OFFSET + p.getX()*19 + rowOffset;
@@ -201,25 +205,25 @@ public class World extends JPanel {
 		g2d.setColor(color);
 	}
 	
-	private Color getColorByFlag(Flag f) {
+	private Color getColorByFlag(Flag f, int colorOffset) {
 		//return new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
 		switch (f) {
 		case WHITE:
 			return Color.white;
 		case YELLOW:
-			return new Color(255, 255, 0, 150);
+			return new Color(255, 255, 0, 150 - colorOffset);
 		case BLUE:
-			return new Color(0, 0, 255, 150);
+			return new Color(0, 0, 255, 150- colorOffset);
 		case CYAN:
 			return Color.cyan;
 		case GREEN:
-			return new Color(0, 255, 0, 150);
+			return new Color(0, 255, 0, 150 - colorOffset);
 		case MAGENTA:
 			return Color.magenta;
 		case ORANGE:
-			return new Color(255, 127, 0, 150);
+			return new Color(255, 127, 0, 150 - colorOffset);
 		case RED:
-			return new Color(255, 0, 0, 150);
+			return new Color(255, 0, 0, 150 - colorOffset);
 
 		}
 		return Color.black;
@@ -239,5 +243,10 @@ public class World extends JPanel {
 	
 	public FullWorld getRecentWorld() {
 		return world;
+	}
+	
+	public void setDefendingPlayer(int defendingPlayer) {
+		this.defendingPlayer = defendingPlayer;
+		repaint();
 	}
 }
