@@ -15,7 +15,10 @@ import ru.icl.dicewars.client.Land;
 import ru.icl.dicewars.client.Lead;
 import ru.icl.dicewars.client.Player;
 import ru.icl.dicewars.client.World;
+import ru.icl.dicewars.core.activity.SimpleDiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.SimpleFlagDistributedActivity;
+import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
+import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
 import ru.icl.dicewars.core.exception.InvalidPlayerClassInstatiationException;
 import ru.icl.dicewars.core.roll.LandRoll;
@@ -118,12 +121,12 @@ public class GamePlay {
 			if (land instanceof FullLand){
 				FullLand fullLand = (FullLand) land;
 				fullLand.incDiceCount();
-				//activityQueue.add(new SimpleLandUpdatedActivity(fullLand));
+				activityQueue.add(new SimpleLandUpdatedActivity(fullLand));
 			}else{
 				throw new IllegalStateException();
 			}
 			world.decDiceCountInReserve(playerFlag);
-			//activityQueue.add(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));
+			activityQueue.add(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
 	}
@@ -133,6 +136,14 @@ public class GamePlay {
 			return land.getFlag();
 		}
 		throw new IllegalStateException();
+	}
+	
+	private Map<Flag, String> getFlagToNameMap(Map<Player, Flag> playerFlagMap) {
+		Map<Flag, String> flagToNameMap = new HashMap<Flag, String>();
+		for (Player player : playerFlagMap.keySet()){
+			flagToNameMap.put(playerFlagMap.get(player), player.getName());
+		}
+		return flagToNameMap;
 	}
 
 	public void play() {
@@ -156,7 +167,7 @@ public class GamePlay {
 		}
 		
 		
-		//activityQueue.add(new SimpleFlagDistributedActivity(getFlagToNameMap(playerFlagMap)));
+		activityQueue.add(new SimpleFlagDistributedActivity(getFlagToNameMap(playerFlagMap)));
 		
 		activityQueue.add(new SimpleWorldCreatedActivityImpl(new FullWorldImpl(world)));
 		
@@ -182,14 +193,11 @@ public class GamePlay {
 						}
 						);
 						lands.addAll(world.getLands());
-						for (Land land : lands){
-							System.out.print("("+ land.getFlag() + "," + flagPlayerMap.get(land.getFlag()).getName() + ", " + land.getDiceCount() + ")");
-						}
-						System.out.println();
+
 						//*TODO should be run in another thread 
 						Lead lead = players[i].attack(immutableWorld);
-						//if (lead != null)
-							//activityQueue.add(new SimplePlayerAttackActivity(playerFlag, lead));
+						if (lead != null)
+							activityQueue.add(new SimplePlayerAttackActivity(playerFlag, lead));
 						if (lead == null) {
 							canLead = false; 
 						}else{
@@ -206,7 +214,7 @@ public class GamePlay {
 												Flag neighbouringLandFlag = neighbouringLand.getFlag();
 												neighbouringLand.setFlag(playerFlag);
 												
-												//activityQueue.add(new SimpleLandUpdatedActivity(neighbouringLand));
+												activityQueue.add(new SimpleLandUpdatedActivity(neighbouringLand));
 												
 												if (!world.isExistsLandByFlag(neighbouringLandFlag)){
 													world.getFlags().remove(neighbouringLandFlag);
@@ -214,11 +222,11 @@ public class GamePlay {
 												
 												land.setDiceCount(DiceStack.ONE);
 												
-												//activityQueue.add(new SimpleLandUpdatedActivity(land));
+												activityQueue.add(new SimpleLandUpdatedActivity(land));
 											}else{
 												land.setDiceCount(DiceStack.ONE);
 												
-												//activityQueue.add(new SimpleLandUpdatedActivity(land));
+												activityQueue.add(new SimpleLandUpdatedActivity(land));
 											}
 											successAttacked = true;
 										}
