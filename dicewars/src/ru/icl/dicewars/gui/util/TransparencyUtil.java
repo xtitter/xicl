@@ -1,4 +1,4 @@
-package ru.icl.dicewars.util;
+package ru.icl.dicewars.gui.util;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -11,7 +11,7 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 
-public class Transparency {
+public class TransparencyUtil {
     public static Image makeColorTransparent(Image im, final Color color) {
         ImageFilter filter = new RGBImageFilter() {
             // the color we are looking for... Alpha bits are set to opaque
