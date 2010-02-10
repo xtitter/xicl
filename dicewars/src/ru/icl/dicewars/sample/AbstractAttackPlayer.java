@@ -2,6 +2,7 @@ package ru.icl.dicewars.sample;
 
 import java.util.Set;
 
+import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 import ru.icl.dicewars.client.Lead;
 import ru.icl.dicewars.client.Player;
@@ -10,6 +11,10 @@ import ru.icl.dicewars.client.World;
 public abstract class AbstractAttackPlayer implements Player{
 	@Override
 	public void init(){
+	}
+	
+	@Override
+	public void apponentAttack(Flag apponentFlag, Lead lead, World world) {
 	}
 
 	@Override

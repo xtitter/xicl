@@ -1,11 +1,12 @@
 package ru.icl.dicewars.client;
 
+import java.util.List;
 import java.util.Set;
 
 public interface World {
 	public Set<Land> getLands();
 	
-	public Set<Flag> getFlags();
+	public List<Flag> getFlags();
 	
 	public Flag getMyFlag();
 

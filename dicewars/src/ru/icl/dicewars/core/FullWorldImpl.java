@@ -1,10 +1,12 @@
 package ru.icl.dicewars.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -17,7 +19,7 @@ public class FullWorldImpl implements FullWorld, Serializable {
 
 	private Flag myFlag;
 	private int availableLeadCount;
-	private Set<Flag> flags = new HashSet<Flag>();
+	private List<Flag> flags = new ArrayList<Flag>();
 	private Set<FullLand> fullLands = new HashSet<FullLand>();
 	private Map<Flag, Integer> diceReserve = new HashMap<Flag, Integer>();
 
@@ -28,7 +30,7 @@ public class FullWorldImpl implements FullWorld, Serializable {
 		
 		this.availableLeadCount = fullWorld.getAvailableLeadCount();
 		this.myFlag = fullWorld.getMyFlag();
-		this.flags = new HashSet<Flag>(fullWorld.getFlags());
+		this.flags = new ArrayList<Flag>(fullWorld.getFlags());
 		
 		Map<Flag, Integer> diceReserveMap = new HashMap<Flag, Integer>();
 		
@@ -77,7 +79,7 @@ public class FullWorldImpl implements FullWorld, Serializable {
 	}
 	
 	public FullWorldImpl(int availableLeadCount, Set<FullLand> fullLands,
-			Set<Flag> flags, Map<Flag, Integer> diceReserve) {
+			List<Flag> flags, Map<Flag, Integer> diceReserve) {
 		if (availableLeadCount < 0)
 			throw new IllegalArgumentException();
 		if (fullLands == null)
@@ -101,7 +103,7 @@ public class FullWorldImpl implements FullWorld, Serializable {
 	}
 
 	@Override
-	public Set<Flag> getFlags() {
+	public List<Flag> getFlags() {
 		return flags;
 	}
 
@@ -134,7 +136,7 @@ public class FullWorldImpl implements FullWorld, Serializable {
 	}
 
 	@Override
-	public void setFlags(Set<Flag> flags) {
+	public void setFlags(List<Flag> flags) {
 		if (flags == null)
 			throw new IllegalArgumentException();
 		this.flags = flags;

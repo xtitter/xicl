@@ -130,7 +130,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 		this.playersCount = playersCount;
 	}
 
-    private Collection<Flag> createPlayerStack(Set<Flag> playerFlags) {
+    private Collection<Flag> createPlayerStack(Collection<Flag> playerFlags) {
         Integer maxLandCount = Math.min(Math.round(1.0F * WORLD_X_SIZE * WORLD_Y_SIZE / MAX_LAND_SIZE), MAX_LAND_COUNT);
         Integer landCount = MIN_LAND_COUNT + random(maxLandCount - MIN_LAND_COUNT);
         Collection<Flag> result = new ArrayList<Flag>();
@@ -419,7 +419,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         }
     }
 
-    private Set<FullLand> createLands(Set<Flag> playerFlags) {
+    private Set<FullLand> createLands(Collection<Flag> playerFlags) {
         // init
         init();
         // set of all lands
@@ -479,9 +479,9 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         }
     }
 
-    private Set<Flag> createPlayerFlags() {
+    private List<Flag> createPlayerFlags() {
         Flag[] flags = Flag.values();
-        Set<Flag> playerFlags = new HashSet<Flag>();
+        List<Flag> playerFlags = new ArrayList<Flag>();
         playerFlags.addAll(Arrays.asList(flags).subList(0, playersCount));
         return playerFlags;
     }
@@ -536,7 +536,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return count;
     }
 
-    private void processDices(Set<FullLand> lands, Set<Flag> players) {
+    private void processDices(Set<FullLand> lands, Collection<Flag> players) {
         for (Flag player : players) {
             Integer left = countLands(player, lands);
             Integer dices = left * DICE_PER_LAND;
@@ -565,7 +565,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 	@Override
     public FullWorld generate() {
         // all players
-        Set<Flag> playerFlags = createPlayerFlags();
+        List<Flag> playerFlags = createPlayerFlags();
         // all lands
         Set<FullLand> lands = createLands(playerFlags);
         // all neighbours
