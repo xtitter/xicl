@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -109,7 +110,8 @@ public class World extends JPanel {
 		//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
 		
 		int rowOffset = 0;
-		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
+		Set<FullLand> landsTmp = new HashSet<FullLand>(world.getFullLands());
+		for (FullLand land : landsTmp) {
 			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
 			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 170);
 			g2d.setColor(color);
@@ -138,7 +140,7 @@ public class World extends JPanel {
 			}
 		}
 		
-		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
+		for (FullLand land : landsTmp) {
 			int x = 0;
 			int y = 0;
 			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
@@ -160,7 +162,8 @@ public class World extends JPanel {
 			if (size > 0) {
 				x /= size;
 				y /= size;
-				g2d.drawImage(ImageManager.getDice(land.getDiceCount()), x, y, this);
+				int offset = 0;
+				g2d.drawImage(ImageManager.getDice(land.getDiceCount()), x + offset, y + offset, this);
 
 				/*
 				count = String.valueOf(land.getDiceCount());
