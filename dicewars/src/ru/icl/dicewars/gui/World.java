@@ -39,9 +39,12 @@ public class World extends JPanel {
 	private static final int MAX_Y = 70;
 	
 	private static Font diceFont;
-	private static Font idFont;
+	//private static Font idFont;
 	
-	private static Color darkColor = new Color(50,50,50,100);
+	//private static Color darkColor = new Color(50,50,50,100);
+
+	//Bug with concurrent modification fix. This is slowest method. World object should be wrapped.
+	private Object flag = new Object(); 
 	
 	private int attackingPlayer = 0;
 
@@ -49,7 +52,7 @@ public class World extends JPanel {
 	
 	public World() {
 		diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));
-		idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
+		//idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
 	}
 	
 	public void update(FullWorld world) {
@@ -64,7 +67,13 @@ public class World extends JPanel {
 		width = getWidth();
 		height = getHeight();
 		FullLand l2 = null;
-		for (FullLand l : world.getFullLands()) {
+		
+		Set<FullLand> landsTmp;
+		synchronized (flag) {
+			landsTmp = new HashSet<FullLand>(world.getFullLands());	
+		}
+		
+		for (FullLand l : landsTmp) {
 			if (l.getLandId() == land.getLandId()) {
 				l2 = l;
 				break;
@@ -72,8 +81,10 @@ public class World extends JPanel {
 		}
 		if (l2 != null) {
 			//System.out.println("update:id-" + l2.getLandId() + ":now-" + land.getDiceCount() + ":was-" + l2.getDiceCount());
-			world.getFullLands().remove(l2);
-			world.getFullLands().add(land);
+			synchronized (flag) {
+				world.getFullLands().remove(l2);
+				world.getFullLands().add(land);
+			}
 		}
 		repaint();
 	}
@@ -110,7 +121,12 @@ public class World extends JPanel {
 		//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
 		
 		int rowOffset = 0;
-		Set<FullLand> landsTmp = new HashSet<FullLand>(world.getFullLands());
+		
+		Set<FullLand> landsTmp;
+		synchronized (flag) {
+			landsTmp = new HashSet<FullLand>(world.getFullLands());	
+		}
+		
 		for (FullLand land : landsTmp) {
 			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
 			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 170);
