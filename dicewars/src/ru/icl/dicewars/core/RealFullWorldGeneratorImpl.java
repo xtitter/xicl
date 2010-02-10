@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core;
 
+import java.awt.Color;
 import java.util.*;
 
 import ru.icl.dicewars.client.Flag;
@@ -12,8 +13,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     private final static Integer WORLD_X_SIZE = 68;
     private final static Integer MIN_LAND_SIZE = 55;
     private final static Integer MAX_LAND_SIZE = 68;
-    private final static Integer MIN_LAND_COUNT = 50;
-    private final static Integer MAX_LAND_COUNT = 50;
+    private final static Integer MIN_LAND_COUNT = 28;
+    private final static Integer MAX_LAND_COUNT = 32;
     private final static Integer DICE_PER_LAND = 3;
     private final static Integer MIN_DICE_PER_LAND = 1;
     private final static Integer MAX_DICE_PER_LAND = 8;
@@ -485,6 +486,35 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return playerFlags;
     }
 
+    //Mkamalov: Client interface should be clear to end user.
+	private char getChar(Flag f) {
+		switch (f) {
+		case WHITE:
+			return 'W';
+		case BLUE:
+			return 'B';
+		case CYAN:
+			return 'C';
+		case GREEN:
+			return 'G';
+		case MAGENTA:
+			return 'M';
+		case ORANGE:
+			return 'O';
+		case RED:
+			return 'R';
+		case BROWN:
+			return 'B';
+		case CHARTREUSE:
+			return 'T';
+		case GRAY:
+			return 'A';
+		case YELLOW:
+			return 'Y';
+		}
+		throw new IllegalStateException();
+	}
+    
     private void output(Set<FullLand> lands) {
         Set<Hex> border = new HashSet<Hex>();
         for (FullLand land : lands) { border.addAll(getBorder(hexes(land.getPoints()))); }
@@ -492,7 +522,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
             for (int column=0; column<WORLD_Y_SIZE; column++) {
                 Hex current = new Hex(column, row);
                 FullLand owner = getOwnerLand(current, lands);
-                System.out.print(null != owner ? owner.getFlag().getCharValue() : (contains(current, border) ? '.' : ' '));
+                System.out.print(null != owner ? getChar(owner.getFlag()) : (contains(current, border) ? '.' : ' '));
             }
             System.out.println();
         }
