@@ -8,7 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -129,7 +128,7 @@ public class World extends JPanel {
 		
 		for (FullLand land : landsTmp) {
 			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
-			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 170);
+			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 150);
 			g2d.setColor(color);
 			
 			for (Point p : land.getPoints()) {
@@ -179,7 +178,7 @@ public class World extends JPanel {
 				x /= size;
 				y /= size;
 				int offset = 0;
-				g2d.drawImage(ImageManager.getDice(land.getDiceCount()), x + offset, y + offset, this);
+				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getColorByFlag(land.getFlag(), 255)), x + offset, y + offset, this);
 
 				/*
 				count = String.valueOf(land.getDiceCount());
