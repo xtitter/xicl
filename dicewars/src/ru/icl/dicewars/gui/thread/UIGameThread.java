@@ -42,7 +42,7 @@ public class UIGameThread implements Runnable {
 				WindowManager.getManager().getWorld().setAttackingPlayer(pa.getFromLandId());
 				sleep(700);
 				WindowManager.getManager().getWorld().setDefendingPlayer(pa.getToLandId());
-				Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.WITH_ARROWHEAD);
+				Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
 				WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
 				WindowManager.getManager().getJLayeredPane().repaint();
 				sleep(1000);

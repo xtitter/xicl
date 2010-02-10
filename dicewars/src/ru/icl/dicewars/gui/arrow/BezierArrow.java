@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import ru.icl.dicewars.gui.manager.WindowManager;
+
 public class BezierArrow extends LineArrowWithArrowHead {
 
 	final static float arrowSize = 5.0f;
@@ -17,8 +19,9 @@ public class BezierArrow extends LineArrowWithArrowHead {
 	@Override
 	protected void paintComponent(Graphics g) {
 
-		BufferedImage doubleBuffer = new BufferedImage(1024, 768,
-                BufferedImage.TYPE_INT_ARGB);
+		int w = WindowManager.getManager().getScreenWidth();
+		int h = WindowManager.getManager().getScreenHeight();
+		BufferedImage doubleBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2D = (Graphics2D) doubleBuffer.getGraphics();
         g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.setColor(super.color);
@@ -61,6 +64,9 @@ public class BezierArrow extends LineArrowWithArrowHead {
 		points.updateFirst(x1+4, y1);
 		points.createFinal();
 		points.draw(g2D);
+		points.updateFirst(x1+5, y1);
+		points.createFinal();
+		points.draw(g2D);
 		points.updateFirst(x1-1, y1);
 		points.createFinal();
 		points.draw(g2D);
@@ -73,9 +79,11 @@ public class BezierArrow extends LineArrowWithArrowHead {
 		points.updateFirst(x1-4, y1);
 		points.createFinal();
 		points.draw(g2D);
+		points.updateFirst(x1-5, y1);
+		points.createFinal();
+		points.draw(g2D);
 		
-		
-		g.drawImage(doubleBuffer, 0, 0, 1024, 768, this);
+		g.drawImage(doubleBuffer, 0, 0, w, h, this);
 	}
 
 	class Point {
