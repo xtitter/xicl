@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 import ru.icl.dicewars.client.World;
 
-public class ImmutableWorldImpl implements World {
+public class ImmutableWorldImpl implements World, Serializable {
 	private Flag myFlag;
 	private Integer availableLeadCount;
 	private Set<Flag> flags = new HashSet<Flag>();

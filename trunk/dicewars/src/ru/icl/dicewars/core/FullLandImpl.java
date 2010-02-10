@@ -1,12 +1,13 @@
 package ru.icl.dicewars.core;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
-public class FullLandImpl implements FullLand {
+public class FullLandImpl implements FullLand, Serializable {
 	private int landId;
 	private DiceStack diceStack;
 	private Flag flag;

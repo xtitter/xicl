@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +12,7 @@ import java.util.Set;
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
-public class FullWorldImpl implements FullWorld {
+public class FullWorldImpl implements FullWorld, Serializable {
 	private Flag myFlag;
 	private int availableLeadCount;
 	private Set<Flag> flags = new HashSet<Flag>();
