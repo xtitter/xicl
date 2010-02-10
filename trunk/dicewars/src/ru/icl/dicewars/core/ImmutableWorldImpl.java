@@ -13,6 +13,8 @@ import ru.icl.dicewars.client.Land;
 import ru.icl.dicewars.client.World;
 
 public class ImmutableWorldImpl implements World, Serializable {
+	private static final long serialVersionUID = -2029686366926012131L;
+
 	private Flag myFlag;
 	private Integer availableLeadCount;
 	private Set<Flag> flags = new HashSet<Flag>();

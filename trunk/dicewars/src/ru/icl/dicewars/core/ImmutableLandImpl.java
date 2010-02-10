@@ -8,6 +8,8 @@ import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
 public class ImmutableLandImpl implements Land, Serializable {
+	private static final long serialVersionUID = 8933704040265501733L;
+
 	private int landId;
 	private DiceStack diceStack;
 	private Flag flag;

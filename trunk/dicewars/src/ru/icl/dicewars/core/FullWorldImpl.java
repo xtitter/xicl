@@ -13,6 +13,8 @@ import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
 public class FullWorldImpl implements FullWorld, Serializable {
+	private static final long serialVersionUID = -7073748047091860751L;
+
 	private Flag myFlag;
 	private int availableLeadCount;
 	private Set<Flag> flags = new HashSet<Flag>();
