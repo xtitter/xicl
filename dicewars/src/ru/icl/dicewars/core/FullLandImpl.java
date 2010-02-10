@@ -8,6 +8,8 @@ import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
 public class FullLandImpl implements FullLand, Serializable {
+	private static final long serialVersionUID = 5476695166843009151L;
+
 	private int landId;
 	private DiceStack diceStack;
 	private Flag flag;

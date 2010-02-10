@@ -3,6 +3,8 @@ package ru.icl.dicewars.core;
 import java.io.Serializable;
 
 public class Point implements Serializable{
+	private static final long serialVersionUID = 3865882537035904530L;
+
 	private Integer x;
 	private Integer y;
 	
