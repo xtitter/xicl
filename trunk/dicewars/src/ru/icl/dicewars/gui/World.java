@@ -128,7 +128,7 @@ public class World extends JPanel {
 		
 		for (FullLand land : landsTmp) {
 			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
-			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 150);
+			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 75 : 165);
 			g2d.setColor(color);
 			
 			for (Point p : land.getPoints()) {
@@ -269,17 +269,17 @@ public class World extends JPanel {
 		case YELLOW:
 			return new Color(255, 255, 0, alpha);
 		case BLUE:
-			return new Color(0, 0, 255, alpha);
+			return new Color(0, 70, 200, alpha);
 		case CYAN:
 			return Color.cyan;
 		case GREEN:
-			return new Color(0, 255, 0, alpha);
+			return new Color(0, 200, 0, alpha);
 		case MAGENTA:
 			return Color.magenta;
 		case ORANGE:
 			return new Color(255, 127, 0, alpha);
 		case RED:
-			return new Color(255, 0, 0, alpha);
+			return new Color(255, 30, 30, alpha);
 
 		}
 		return Color.black;
