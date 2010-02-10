@@ -247,7 +247,10 @@ public class GamePlay {
 								for (int j = 0; j < playerCount; j++) {
 									Flag f = playerFlagMap.get(players[j]);
 									if (!f.equals(playerFlag) && world.isExistsLandByFlag(f)){
-										players[j].apponentAttack(f, lead, immutableWorld);
+										try{
+											players[j].apponentAttack(f, lead, immutableWorld);
+										}catch (Exception e) {
+										}
 									}
 								}
 							}
