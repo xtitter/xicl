@@ -39,6 +39,8 @@ public class World extends JPanel {
 	private static Font diceFont;
 	private static Font idFont;
 	
+	private static Color darkColor = new Color(50,50,50,100);
+	
 	private int attackingPlayer = 0;
 
 	private int defendingPlayer = 0;
@@ -109,16 +111,30 @@ public class World extends JPanel {
 		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
 			int x = 0;
 			int y = 0;
-			g2d.setColor(getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 255 : 150));
+			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
+			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 170);
+			g2d.setColor(color);
 			
 			for (Point p : land.getPoints()) {
 				rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 				int _x = X_OFFSET + p.getX()*19 + rowOffset;
 				int _y = Y_OFFSET + p.getY()*(20 - correction);
+				
+				if (battle) {
+					_x -= 5;
+					_y -= 5;
+				}
+				
 				Polygon pol = getHexagon(_x, _y, 10);
 				//g2d.drawPolygon(pol);
 				empty.getPoints().remove(p);
+				
 				g2d.fillPolygon(pol);
+				/*if (battle) {
+					g2d.setColor(World.darkColor);
+					g2d.fillPolygon(pol);
+					g2d.setColor(color);
+				}*/
 				drawBorder(g2d, land, p, pol);
 				x += _x;
 				y += _y;
