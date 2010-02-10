@@ -18,6 +18,7 @@ import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullLandImpl;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.Point;
+import ru.icl.dicewars.gui.manager.ImageManager;
 
 public class World extends JPanel {
 
@@ -144,12 +145,17 @@ public class World extends JPanel {
 			if (size > 0) {
 				x /= size;
 				y /= size;
-				count = String.valueOf(land.getDiceCount());
-				g2d.setColor(Color.black);
-				g2d.drawString(count, (int)x+2, (int)y+2);
-				g2d.setColor(Color.white);
-				g2d.drawString(count, (int)x, (int)y);
-				g2d.setColor(Color.black);
+				
+				if (land.getDiceCount() == 1) {
+					g2d.drawImage(ImageManager.getDice1(), x, y, this);
+				} else {
+					count = String.valueOf(land.getDiceCount());
+					g2d.setColor(Color.black);
+					g2d.drawString(count, (int)x+2, (int)y+2);
+					g2d.setColor(Color.white);
+					g2d.drawString(count, (int)x, (int)y);
+					g2d.setColor(Color.black);
+				}
 				
 				/* Displaying land ids
 				g2d.setFont(World.idFont);

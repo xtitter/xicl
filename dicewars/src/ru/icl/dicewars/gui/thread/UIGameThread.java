@@ -32,14 +32,15 @@ public class UIGameThread implements Runnable {
 		while (true) {
 			DiceWarsActivity activity = activityQueue.poll();
 			if (activity instanceof WorldCreatedActivity) {
-				FullWorld world = ((WorldCreatedActivity)activity).getFullWorld();
+				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
 				WindowManager.getManager().getWorld().update(world);
 			} else if (activity instanceof LandUpdatedActivity) {
-				FullLand land = ((LandUpdatedActivity)activity).getFullLand();
+				FullLand land = ((LandUpdatedActivity) activity).getFullLand();
 				WindowManager.getManager().getWorld().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
-				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity)activity);
+				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
 				WindowManager.getManager().getWorld().setAttackingPlayer(pa.getFromLandId());
+				sleep(700);
 				WindowManager.getManager().getWorld().setDefendingPlayer(pa.getToLandId());
 				Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.WITH_ARROWHEAD);
 				WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
@@ -49,7 +50,7 @@ public class UIGameThread implements Runnable {
 				WindowManager.getManager().getWorld().setAttackingPlayer(0);
 				WindowManager.getManager().getWorld().setDefendingPlayer(0);
 				WindowManager.getManager().getJLayeredPane().repaint();
-				sleep(700);
+				sleep(300);
 			}
 			
 			sleep(10);
