@@ -116,6 +116,7 @@ public class World extends JPanel {
 			drawBorder(g2d, empty, p, pol);
 		}
 				
+        g.clearRect(0, 0, width, height);
 		g.drawImage(doubleBuffer, 0, 0, width, height, this);
 		g2d.dispose();
 	    g.dispose();
@@ -174,17 +175,25 @@ public class World extends JPanel {
 	
 	private Color getColorByFlag(Flag f) {
 		//return new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
-		
 		switch (f) {
-			case WHITE: return Color.white;
-			case BLUE: return Color.blue;
-			case CYAN: return Color.cyan;
-			case GREEN: return Color.green;
-			case MAGENTA: return Color.magenta;
-			case ORANGE: return Color.orange;
-			case RED: return Color.red;
+		case WHITE:
+			return Color.white;
+		case YELLOW:
+			return new Color(255, 255, 0, 150);
+		case BLUE:
+			return new Color(0, 0, 255, 150);
+		case CYAN:
+			return Color.cyan;
+		case GREEN:
+			return new Color(0, 255, 0, 150);
+		case MAGENTA:
+			return Color.magenta;
+		case ORANGE:
+			return new Color(255, 127, 0, 150);
+		case RED:
+			return new Color(255, 0, 0, 150);
+
 		}
-		
 		return Color.black;
 	}
 
