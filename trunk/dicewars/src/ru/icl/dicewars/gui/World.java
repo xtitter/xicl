@@ -110,8 +110,6 @@ public class World extends JPanel {
 		
 		int rowOffset = 0;
 		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
-			int x = 0;
-			int y = 0;
 			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
 			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 170);
 			g2d.setColor(color);
@@ -137,25 +135,41 @@ public class World extends JPanel {
 					g2d.setColor(color);
 				}*/
 				drawBorder(g2d, land, p, pol);
+			}
+		}
+		
+		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
+			int x = 0;
+			int y = 0;
+			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
+			
+			for (Point p : land.getPoints()) {
+				rowOffset = p.getY() % 2 == 0 ? 9 : 0;
+				int _x = X_OFFSET + p.getX()*19 + rowOffset;
+				int _y = Y_OFFSET + p.getY()*(20 - correction);
+				
+				if (battle) {
+					_x -= 2;
+					_y -= 5;
+				}
 				x += _x;
 				y += _y;
 			}
 			int size = land.getPoints().size();
-			String count = "";
+			//String count = "";
 			if (size > 0) {
 				x /= size;
 				y /= size;
-				
-				if (land.getDiceCount() == 1) {
-					g2d.drawImage(ImageManager.getDice1(), x, y, this);
-				} else {
-					count = String.valueOf(land.getDiceCount());
-					g2d.setColor(Color.black);
-					g2d.drawString(count, (int)x+2, (int)y+2);
-					g2d.setColor(Color.white);
-					g2d.drawString(count, (int)x, (int)y);
-					g2d.setColor(Color.black);
-				}
+				g2d.drawImage(ImageManager.getDice(land.getDiceCount()), x, y, this);
+
+				/*
+				count = String.valueOf(land.getDiceCount());
+				g2d.setColor(Color.black);
+				g2d.drawString(count, (int)x+2, (int)y+2);
+				g2d.setColor(Color.white);
+				g2d.drawString(count, (int)x, (int)y);
+				g2d.setColor(Color.black);
+				*/
 				
 				/* Displaying land ids
 				g2d.setFont(World.idFont);

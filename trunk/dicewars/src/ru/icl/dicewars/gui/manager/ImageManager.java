@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -132,13 +133,19 @@ public class ImageManager {
         return resized;
     }
     
-    public static Image getDice1() {
-    	if (dice1 == null) {
-    		dice1 = getImageFromResource("/resources/dice/g1.png");
+    public static Image getDice(int num) {
+    	if (dices == null) {
+    		dices = new HashMap<Integer, Image>();
     	}
-    	return dice1;
+    	Integer index = Integer.valueOf(num);
+    	if (!dices.containsKey(index)) {
+    		String path = "/resources/dice/g" + index + ".png";
+    		Image image = getImageFromResource(path);
+    		dices.put(index, image);
+    	}
+    	return dices.get(Integer.valueOf(num));
     }
     
-    private static Image dice1;
+    private static HashMap<Integer, Image> dices;
 
 }
