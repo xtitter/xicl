@@ -36,9 +36,11 @@ public class World extends JPanel {
 	private static final int MAX_Y = 70;
 	
 	private static Font diceFont;
+	private static Font idFont;
 	
 	public World() {
-		diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));   
+		diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));
+		idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
 	}
 	
 	public void update(FullWorld world) {
@@ -47,15 +49,34 @@ public class World extends JPanel {
 		height = getHeight();
 		repaint();
 	}
+	
+	public void update(FullLand land) {
+		width = getWidth();
+		height = getHeight();
+		FullLand l2 = null;
+		for (FullLand l : world.getFullLands()) {
+			if (l.getLandId() == land.getLandId()) {
+				l2 = l;
+				break;
+			}
+		}
+		if (l2 != null) {
+			//System.out.println("update:id-" + l2.getLandId() + ":now-" + land.getDiceCount() + ":was-" + l2.getDiceCount());
+			world.getFullLands().remove(l2);
+			world.getFullLands().add(land);
+		}
+		repaint();
+	}
 
 	@Override
 	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		if (world == null)
 			return;
 
 		BufferedImage doubleBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = (Graphics2D) doubleBuffer.getGraphics();
-
+	
 		g2d.setStroke(stroke);
 		
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -79,9 +100,9 @@ public class World extends JPanel {
 		//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
 		
 		int rowOffset = 0;
-		double x = 0;
-		double y = 0;
-		for (FullLand land : world.getFullLands()) {
+		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
+			int x = 0;
+			int y = 0;
 			g2d.setColor(getColorByFlag(land.getFlag()));
 			for (Point p : land.getPoints()) {
 				rowOffset = p.getY() % 2 == 0 ? 9 : 0;
@@ -105,6 +126,13 @@ public class World extends JPanel {
 				g2d.drawString(count, (int)x+2, (int)y+2);
 				g2d.setColor(Color.white);
 				g2d.drawString(count, (int)x, (int)y);
+				g2d.setColor(Color.black);
+				
+				/* Displaying land ids
+				g2d.setFont(World.idFont);
+				g2d.drawString(land.getLandId()+"", (int)x+10, (int)y+10);
+				g2d.setFont(World.diceFont);
+				*/
 			}
 		}
 		
@@ -113,11 +141,10 @@ public class World extends JPanel {
              rowOffset = p.getY() % 2 == 0 ? 9 : 0;
              Polygon pol = getHexagon(X_OFFSET + p.getX()*19 + rowOffset, Y_OFFSET + p.getY()*(20 - correction), 10);
              g2d.fillPolygon(pol);
-			drawBorder(g2d, empty, p, pol);
+			 drawBorder(g2d, empty, p, pol);
 		}
-				
-        g.clearRect(0, 0, width, height);
-		g.drawImage(doubleBuffer, 0, 0, width, height, this);
+
+        g.drawImage(doubleBuffer, 0, 0, width, height, this);
 		g2d.dispose();
 	    g.dispose();
 	}
