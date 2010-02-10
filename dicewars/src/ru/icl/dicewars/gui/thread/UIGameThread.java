@@ -1,5 +1,7 @@
 package ru.icl.dicewars.gui.thread;
 
+import javax.swing.JLayeredPane;
+
 import ru.icl.dicewars.core.ActivityQueue;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
@@ -9,6 +11,7 @@ import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
+import ru.icl.dicewars.gui.arrow.Arrow;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class UIGameThread implements Runnable {
@@ -34,15 +37,22 @@ public class UIGameThread implements Runnable {
 				FullLand land = ((LandUpdatedActivity)activity).getFullLand();
 				WindowManager.getManager().getWorld().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
-				SimplePlayerAttackActivity pl = ((SimplePlayerAttackActivity)activity);
-				//System.out.println(pl.getFromLandId() + ":" + pl.getToLandId());
+				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity)activity);
+				Arrow arrow = WindowManager.getManager().getArrow(pa);
+				WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
+				sleep(1500);
+				WindowManager.getManager().getJLayeredPane().remove(arrow);
 			}
 			
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException ie) {
-				ie.printStackTrace();
-			}
+			sleep(100);
+		}
+	}
+	
+	private void sleep(long time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
 		}
 	}
 

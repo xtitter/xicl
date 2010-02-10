@@ -22,12 +22,13 @@ import ru.icl.dicewars.core.Point;
 public class World extends JPanel {
 
 	private FullWorld world;
+
 	private int width;
 	private int height;
 	private static final long serialVersionUID = -3234906592754761865L;
 
-	private static final int X_OFFSET = 50;
-	private static final int Y_OFFSET = 20;
+	public static final int X_OFFSET = 50;
+	public static final int Y_OFFSET = 20;
 	final static BasicStroke stroke = new BasicStroke(2.0f);
 	
 	private static final int MIN_X = -1;
@@ -234,5 +235,9 @@ public class World extends JPanel {
 		}
 		hexagon.ypoints[3] = 2*y - hexagon.ypoints[0];
 		return hexagon;
+	}
+	
+	public FullWorld getRecentWorld() {
+		return world;
 	}
 }

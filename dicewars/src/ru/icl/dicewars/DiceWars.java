@@ -38,6 +38,8 @@ public class DiceWars extends JFrame {
         screenWidth = scrnRect.width;
         screenHeight = scrnRect.height;
         setSize(screenWidth, screenHeight);
+        WindowManager.getManager().setScreenWidth(screenWidth);
+        WindowManager.getManager().setScreenHeight(screenHeight);
         
         /*GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice device = environment.getDefaultScreenDevice();
@@ -49,6 +51,7 @@ public class DiceWars extends JFrame {
         
         jLayeredPane = new JLayeredPane();
         setLayeredPane(jLayeredPane);
+        WindowManager.getManager().setJLayeredPane(jLayeredPane);
         contentPane = new JPanel(new BorderLayout());
         setContentPane(contentPane);
         
