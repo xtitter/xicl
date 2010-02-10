@@ -20,6 +20,7 @@ import ru.icl.dicewars.core.activity.SimpleFlagDistributedActivity;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
+import ru.icl.dicewars.core.activity.SimpleWorldGrantedActivityImpl;
 import ru.icl.dicewars.core.exception.InvalidPlayerClassInstatiationException;
 import ru.icl.dicewars.core.roll.LandRoll;
 import ru.icl.dicewars.core.roll.LandRollResult;
@@ -112,6 +113,8 @@ public class GamePlay {
 			j--;
 		}
 		
+		Set<FullLand> grantedLands = new HashSet<FullLand>();
+		
 		Land land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		while (land != null && world.hasInReserve(playerFlag)){
 			if (land.getDiceCount() > 7) throw new IllegalStateException();
@@ -121,14 +124,17 @@ public class GamePlay {
 			if (land instanceof FullLand){
 				FullLand fullLand = (FullLand) land;
 				fullLand.incDiceCount();
+				grantedLands.add(fullLand);
 				activityQueue.add(new SimpleLandUpdatedActivity(fullLand));
 			}else{
 				throw new IllegalStateException();
 			}
 			world.decDiceCountInReserve(playerFlag);
-			activityQueue.add(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
+		
+		activityQueue.add(new SimpleWorldGrantedActivityImpl(grantedLands));
+		activityQueue.add(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));
 	}
 	
 	private Flag getWinner(World world){
@@ -161,6 +167,7 @@ public class GamePlay {
 		
 		int v = 0;
 		for (Flag flag : world.getFlags()){
+			System.out.println(flag.toString() + ": " + players[v].getName());
 			playerFlagMap.put(players[v], flag);
 			flagPlayerMap.put(flag, players[v]);
 			v++;
