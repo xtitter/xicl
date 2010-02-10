@@ -39,6 +39,8 @@ public class World extends JPanel {
 	private static Font diceFont;
 	private static Font idFont;
 	
+	private int attackingPlayer = 0;
+
 	private int defendingPlayer = 0;
 	
 	public World() {
@@ -107,7 +109,7 @@ public class World extends JPanel {
 		for (FullLand land : new HashSet<FullLand>(world.getFullLands())) {
 			int x = 0;
 			int y = 0;
-			g2d.setColor(getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer ? 80 : 0));
+			g2d.setColor(getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 255 : 150));
 			
 			for (Point p : land.getPoints()) {
 				rowOffset = p.getY() % 2 == 0 ? 9 : 0;
@@ -205,25 +207,25 @@ public class World extends JPanel {
 		g2d.setColor(color);
 	}
 	
-	private Color getColorByFlag(Flag f, int colorOffset) {
+	private Color getColorByFlag(Flag f, int alpha) {
 		//return new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
 		switch (f) {
 		case WHITE:
 			return Color.white;
 		case YELLOW:
-			return new Color(255, 255, 0, 150 - colorOffset);
+			return new Color(255, 255, 0, alpha);
 		case BLUE:
-			return new Color(0, 0, 255, 150- colorOffset);
+			return new Color(0, 0, 255, alpha);
 		case CYAN:
 			return Color.cyan;
 		case GREEN:
-			return new Color(0, 255, 0, 150 - colorOffset);
+			return new Color(0, 255, 0, alpha);
 		case MAGENTA:
 			return Color.magenta;
 		case ORANGE:
-			return new Color(255, 127, 0, 150 - colorOffset);
+			return new Color(255, 127, 0, alpha);
 		case RED:
-			return new Color(255, 0, 0, 150 - colorOffset);
+			return new Color(255, 0, 0, alpha);
 
 		}
 		return Color.black;
@@ -247,6 +249,10 @@ public class World extends JPanel {
 	
 	public void setDefendingPlayer(int defendingPlayer) {
 		this.defendingPlayer = defendingPlayer;
-		repaint();
 	}
+	
+	public void setAttackingPlayer(int attackingPlayer) {
+		this.attackingPlayer = attackingPlayer;
+	}
+
 }
