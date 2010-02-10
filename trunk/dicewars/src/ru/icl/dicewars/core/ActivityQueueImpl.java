@@ -24,9 +24,9 @@ public class ActivityQueueImpl implements ActivityQueue{
      
      @Override
      public synchronized void add(DiceWarsActivity e) {
-          /*if (e instanceof WorldCreatedActivity && !isFlagDistributed){
+          if (e instanceof WorldCreatedActivity && !isFlagDistributed){
                throw new IllegalStateException();
-          }*/
+          }
           
           if (e instanceof LandUpdatedActivity && (!isFlagDistributed || !isWorldCreated)){
                throw new IllegalStateException();
