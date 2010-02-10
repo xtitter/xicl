@@ -2,9 +2,11 @@ package ru.icl.dicewars.core;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +19,7 @@ public class ImmutableWorldImpl implements World, Serializable {
 
 	private Flag myFlag;
 	private Integer availableLeadCount;
-	private Set<Flag> flags = new HashSet<Flag>();
+	private List<Flag> flags = new ArrayList<Flag>();
 	private Set<Land> lands = new HashSet<Land>();
 	private Map<Flag, Integer> diceReserve = new HashMap<Flag, Integer>();
 
@@ -31,7 +33,7 @@ public class ImmutableWorldImpl implements World, Serializable {
 		if (world.getMyFlag() == null)
 			throw new IllegalArgumentException();
 		this.availableLeadCount = world.getAvailableLeadCount();
-		this.flags = Collections.unmodifiableSet(new HashSet<Flag>(world.getFlags()));
+		this.flags = Collections.unmodifiableList(new ArrayList<Flag>(world.getFlags()));
 		this.myFlag = world.getMyFlag();
 		
 		Map<Flag, Integer> diceReserveMap = new HashMap<Flag, Integer>();
@@ -96,7 +98,7 @@ public class ImmutableWorldImpl implements World, Serializable {
 	}
 
 	@Override
-	public Set<Flag> getFlags() {
+	public List<Flag> getFlags() {
 		return flags;
 	}
 

@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ public interface FullWorld extends World {
 
 	public void setAvailableLeadCount(int availableLeadCount);
 
-	public void setFlags(Set<Flag> flags);
+	public void setFlags(List<Flag> flags);
 
 	public Set<FullLand> getFullLands();
 	

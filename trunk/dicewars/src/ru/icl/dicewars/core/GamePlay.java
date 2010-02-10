@@ -167,7 +167,7 @@ public class GamePlay {
 		
 		int v = 0;
 		for (Flag flag : world.getFlags()){
-			System.out.println(flag.toString() + ": " + players[v].getName());
+			//System.out.println(flag.toString() + ": " + players[v].getName());
 			playerFlagMap.put(players[v], flag);
 			flagPlayerMap.put(flag, players[v]);
 			v++;
@@ -203,6 +203,7 @@ public class GamePlay {
 
 						//*TODO should be run in another thread 
 						Lead lead = players[i].attack(immutableWorld);
+						
 						if (lead != null)
 							activityQueue.add(new SimplePlayerAttackActivity(playerFlag, lead));
 						if (lead == null) {
@@ -240,8 +241,16 @@ public class GamePlay {
 									}
 								}
 							}
-							if (!successAttacked) 	
+							if (!successAttacked){ 	
 								throw new Exception();
+							}else{
+								for (int j = 0; j < playerCount; j++) {
+									Flag f = playerFlagMap.get(players[j]);
+									if (!f.equals(playerFlag) && world.isExistsLandByFlag(f)){
+										players[j].apponentAttack(f, lead, immutableWorld);
+									}
+								}
+							}
 						}
 					}catch (Exception e) {
 						canLead = false;
