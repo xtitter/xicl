@@ -12,6 +12,7 @@ import ru.icl.dicewars.core.activity.LandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
 import ru.icl.dicewars.gui.arrow.Arrow;
+import ru.icl.dicewars.gui.arrow.ArrowFactory.ArrowType;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class UIGameThread implements Runnable {
@@ -38,13 +39,14 @@ public class UIGameThread implements Runnable {
 				WindowManager.getManager().getWorld().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity)activity);
-				Arrow arrow = WindowManager.getManager().getArrow(pa);
+				Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
 				WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
-				sleep(1500);
+				WindowManager.getManager().getJLayeredPane().repaint();
+				sleep(1000);
 				WindowManager.getManager().getJLayeredPane().remove(arrow);
 			}
 			
-			sleep(100);
+			sleep(10);
 		}
 	}
 	

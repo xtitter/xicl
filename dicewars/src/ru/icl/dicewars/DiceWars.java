@@ -73,6 +73,8 @@ public class DiceWars extends JFrame {
 			public void componentResized(ComponentEvent e) {
 				screenWidth = ((DiceWars)e.getSource()).getSize().width;
 				screenHeight = ((DiceWars)e.getSource()).getSize().height;
+				WindowManager.getManager().setScreenWidth(screenWidth);
+		        WindowManager.getManager().setScreenHeight(screenHeight);
 		        // Implement resizing here if needed
 			}
         };

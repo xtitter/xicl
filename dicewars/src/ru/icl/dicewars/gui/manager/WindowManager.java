@@ -33,8 +33,8 @@ public class WindowManager {
 		return world;
 	}
 	
-	public Arrow getArrow(SimplePlayerAttackActivity pa) {
-		Arrow arrow = ArrowFactory.getArrow(0, ArrowFactory.ArrowType.BEZIER);
+	public Arrow getArrow(SimplePlayerAttackActivity pa, ArrowFactory.ArrowType type) {
+		Arrow arrow = ArrowFactory.getArrow(0, type);
 		arrow.setVisible(true);
 		arrow.setOpaque(false);
 		arrow.setBounds(0, 0, this.screenWidth, this.screenHeight);
