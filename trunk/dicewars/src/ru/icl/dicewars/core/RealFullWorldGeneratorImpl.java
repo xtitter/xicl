@@ -437,7 +437,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         // fill holes
         eliminateHoles(lands, worldBorder);
         // output
-        output(lands);
+        //output(lands);
         // return!
         return lands;
     }
