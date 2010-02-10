@@ -39,7 +39,7 @@ public class UIGameThread implements Runnable {
 				WindowManager.getManager().getWorld().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity)activity);
-				Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
+				Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.WITH_ARROWHEAD);
 				WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
 				WindowManager.getManager().getJLayeredPane().repaint();
 				sleep(1000);

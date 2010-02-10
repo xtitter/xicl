@@ -8,9 +8,10 @@ import java.awt.RenderingHints;
 
 public class LineArrow extends Arrow {
 
-	final static float dash[] = { 10.0f };
-	final static BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+	final static float dash[] = { 12.0f };
+	final static BasicStroke dashed = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
 	final static Color defaultColor = Color.red;
+	protected final static Color shadowColor = new Color(0,0,0,150);
 	
 	public Color color;
 	
@@ -24,6 +25,8 @@ public class LineArrow extends Arrow {
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.setStroke(dashed);
+		g2D.setColor(shadowColor);
+		g2D.drawLine(x1+1, y1+2, x2+1, y2+2);
 		g2D.setColor(color);
 		g2D.drawLine(x1, y1, x2, y2);
 	}
