@@ -112,7 +112,7 @@ public class World extends JPanel {
 			int x = 0;
 			int y = 0;
 			boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
-			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 255 : 150);
+			Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 50 : 170);
 			g2d.setColor(color);
 			
 			for (Point p : land.getPoints()) {
