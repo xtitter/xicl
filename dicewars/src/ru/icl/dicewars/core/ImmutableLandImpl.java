@@ -1,12 +1,13 @@
 package ru.icl.dicewars.core;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
-public class ImmutableLandImpl implements Land {
+public class ImmutableLandImpl implements Land, Serializable {
 	private int landId;
 	private DiceStack diceStack;
 	private Flag flag;
