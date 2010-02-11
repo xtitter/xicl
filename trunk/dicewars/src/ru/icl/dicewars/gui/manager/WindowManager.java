@@ -4,10 +4,12 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import ru.icl.dicewars.DiceWars;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.Point;
@@ -155,5 +157,15 @@ public class WindowManager {
 		}
 	}
 	
+	public void setMainFrame(DiceWars mainFrame) {
+		this.mainFrame = mainFrame;
+	}
+	
+	public DiceWars getMainFrame() {
+		return mainFrame;
+	}
+	
 	private JLayeredPane jLayeredPane;
+	
+	private DiceWars mainFrame;
 }

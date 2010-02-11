@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import ru.icl.dicewars.client.Flag;
@@ -24,8 +23,7 @@ public class PlugFullWorldGeneratorImpl implements FullWorldGenerator {
 		for (int i = 0; i < playersCount; i++) {
 			playerFlags.add(flags[i]);
 		}
-		
-		Random rnd = new Random(System.currentTimeMillis());
+
 		Set<FullLand> lands = new HashSet<FullLand>();
 		for (int i = 0; i < 5; i++) {
 			for (int j = 1; j <= 5; j++) {
