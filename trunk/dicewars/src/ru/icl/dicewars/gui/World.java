@@ -188,7 +188,7 @@ public class World extends JPanel {
 				y /= size;
 				int xoffset = -50;
 				int yoffset = -80;
-				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getColorByFlag(land.getFlag(), 100)), x + xoffset, y + yoffset, this);
+				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag())), x + xoffset, y + yoffset, this);
 
 				/*BufferedImage doubleBuffer2 = new BufferedImage(82, 100, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D gd = (Graphics2D) doubleBuffer2.getGraphics();
@@ -289,6 +289,29 @@ public class World extends JPanel {
 			return new Color(255, 127, 0, alpha);
 		case RED:
 			return new Color(255, 30, 30, alpha);
+
+		}
+		return Color.black;
+	}
+	
+	private Color getDiceColorByFlag(Flag f){
+		switch (f) {
+		case WHITE:
+			return Color.white;
+		case YELLOW:
+			return new Color(175, 175, 0, 255);
+		case BLUE:
+			return new Color(0, 0, 255, 255);
+		case CYAN:
+			return Color.cyan;
+		case GREEN:
+			return new Color(15, 70, 15, 255);
+		case MAGENTA:
+			return Color.magenta;
+		case ORANGE:
+			return new Color(203, 90, 0, 255);
+		case RED:
+			return new Color(255, 0, 0, 255);
 
 		}
 		return Color.black;
