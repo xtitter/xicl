@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import ru.icl.dicewars.client.Flag;
+import ru.icl.dicewars.core.DiceStack;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullLandImpl;
 import ru.icl.dicewars.core.FullWorld;
@@ -88,9 +89,11 @@ public class World extends JPanel {
 			//System.out.println("update:id-" + l2.getLandId() + ":now-" + land.getDiceCount() + ":was-" + l2.getDiceCount());
 			synchronized (flag) {
 				world.getFullLands().remove(l2);
+				//Always should be a another object than in world! This method takes a new object every time.  
 				world.getFullLands().add(land);
 			}
 		}
+		
 		synchronized (flag2) {
 			this.doubleBuffer = null;	
 		}
@@ -103,12 +106,16 @@ public class World extends JPanel {
 		if (world == null)
 			return;
 		Set<FullLand> landsTmp;
-		synchronized (flag) {
-			landsTmp = new HashSet<FullLand>(world.getFullLands());	
-		}
 
 		synchronized (flag2) {
 			if (this.doubleBuffer == null){
+				final int defendingLandId = defendingPlayer;
+				final int attackingLandId = attackingPlayer;
+
+				synchronized (flag) {
+					landsTmp = new HashSet<FullLand>(world.getFullLands());	
+				}
+				
 				this.doubleBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2d = (Graphics2D) doubleBuffer.getGraphics();
 			
@@ -137,8 +144,8 @@ public class World extends JPanel {
 				int rowOffset = 0;
 				
 				for (FullLand land : landsTmp) {
-					boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
-					Color color = getColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 75 : 165);
+					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
+					Color color = getColorByFlag(land.getFlag(), battle ? 75 : 165);
 					g2d.setColor(color);
 					
 					for (Point p : land.getPoints()) {
@@ -174,9 +181,10 @@ public class World extends JPanel {
 				}
 				
 				for (FullLand land : landsTmp) {
+					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
+					
 					int x = 0;
 					int y = 0;
-					boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
 					
 					for (Point p : land.getPoints()) {
 						rowOffset = p.getY() % 2 == 0 ? 9 : 0;
@@ -197,7 +205,7 @@ public class World extends JPanel {
 						y /= size;
 						int xoffset = -30;
 						int yoffset = -70;
-						g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag(), land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer ? 130 : 255 )), x + xoffset, y + yoffset, this);
+						g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag(), battle ? 130 : 255 )), x + xoffset, y + yoffset, this);
 		
 						/*BufferedImage doubleBuffer2 = new BufferedImage(82, 100, BufferedImage.TYPE_INT_ARGB);
 						Graphics2D gd = (Graphics2D) doubleBuffer2.getGraphics();
