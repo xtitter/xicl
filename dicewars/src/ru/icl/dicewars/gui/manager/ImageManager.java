@@ -153,6 +153,7 @@ public class ImageManager {
     		Image image = ImageUtil.getImage(path);
     		Image coloredImage = ImageUtil.createColouredImage(image, color);
     		d.put(color, coloredImage);
+    		//d.put(color, image);
     	}
     	
     	return d.get(color);
