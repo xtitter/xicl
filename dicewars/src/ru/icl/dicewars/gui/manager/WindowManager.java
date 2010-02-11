@@ -1,7 +1,12 @@
 package ru.icl.dicewars.gui.manager;
 
+import java.awt.Color;
+
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
@@ -31,6 +36,19 @@ public class WindowManager {
 			world.setBorder(BorderFactory.createEtchedBorder());
 		}
 		return world;
+	}
+	
+	public JScrollPane getScrollPane(JComponent component) {
+		JScrollPane scrollPane = new JScrollPane(component);
+
+		scrollPane.setOpaque(false);
+		scrollPane.getViewport().setOpaque(false);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+		scrollPane.setBorder(BorderFactory.createLineBorder(new Color(0, 100, 0, 0)));
+
+		return scrollPane;
 	}
 	
 	public Arrow getArrow(SimplePlayerAttackActivity pa, ArrowFactory.ArrowType type) {
