@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
@@ -13,11 +14,10 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import ru.icl.dicewars.gui.util.ImageUtil;
-import ru.icl.dicewars.gui.util.TransparencyUtil;
 
 public class ImageManager {
 
-	/*protected static Image getImageFromResource(String path) {
+	protected static Image getImageFromResource(String path) {
         URL imageURL = ImageManager.class.getResource(path);
         BufferedImage image = null;
 
@@ -88,7 +88,7 @@ public class ImageManager {
             if (rec == null)
                 return image;
 
-            resized = image.getScaledInstance(rec.width, rec.height, java.awt.Image.SCALE_SMOOTH);
+            resized = image.getScaledInstance(rec.width, rec.height, java.awt.Image.SCALE_AREA_AVERAGING);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +96,7 @@ public class ImageManager {
         return resized;
     }
 
-    protected static Image getImageFromResourceTransparent(String path, Color mask) {
+   /* protected static Image getImageFromResourceTransparent(String path, Color mask) {
         BufferedImage image = null;
         Image imageCardTransparent = null;
 
@@ -149,8 +149,8 @@ public class ImageManager {
     	
     	if (!d.containsKey(color)) {
     		String path = "/resources/dice/g" + index + ".png";
-    		//Image image = getImageFromResource(path);
-    		Image image = ImageUtil.getImage(path);
+    		Image image = getImageFromResource(path, new Rectangle(0,0,62,75));
+    		//Image image = ImageUtil.getImage(path);
     		Image coloredImage = ImageUtil.createColouredImage(image, color);
     		d.put(color, coloredImage);
     		//d.put(color, image);
