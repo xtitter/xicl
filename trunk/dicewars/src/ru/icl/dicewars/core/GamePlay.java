@@ -133,7 +133,7 @@ public class GamePlay {
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
 		
-		activityQueue.add(new SimpleWorldGrantedActivityImpl(grantedLands));
+		//activityQueue.add(new SimpleWorldGrantedActivityImpl(grantedLands));
 		activityQueue.add(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));
 	}
 	
