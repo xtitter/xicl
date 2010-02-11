@@ -1,6 +1,5 @@
 package ru.icl.dicewars.gui;
 
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -39,7 +38,7 @@ public class World extends JPanel {
 	private static final int MAX_Y = 70;
 	
 	private static Font diceFont;
-	//private static Font idFont;
+	private static Font idFont;
 	
 	//private static Color darkColor = new Color(50,50,50,100);
 
@@ -52,7 +51,7 @@ public class World extends JPanel {
 	
 	public World() {
 		diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));
-		//idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
+		idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
 	}
 	
 	public void update(FullWorld world) {
@@ -182,12 +181,12 @@ public class World extends JPanel {
 				y += _y;
 			}
 			int size = land.getPoints().size();
-			//String count = "";
+			String count = "";
 			if (size > 0) {
 				x /= size;
 				y /= size;
-				int xoffset = -50;
-				int yoffset = -80;
+				int xoffset = -30;
+				int yoffset = -70;
 				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag())), x + xoffset, y + yoffset, this);
 
 				/*BufferedImage doubleBuffer2 = new BufferedImage(82, 100, BufferedImage.TYPE_INT_ARGB);
@@ -197,8 +196,8 @@ public class World extends JPanel {
 				g2d.drawImage(doubleBuffer2, x + xoffset, y + yoffset, this);
 				*/
 
-				/*
-				count = String.valueOf(land.getDiceCount());
+				
+				/*count = String.valueOf(land.getDiceCount());
 				g2d.setColor(Color.black);
 				g2d.drawString(count, (int)x+2, (int)y+2);
 				g2d.setColor(Color.white);
@@ -206,11 +205,12 @@ public class World extends JPanel {
 				g2d.setColor(Color.black);
 				*/
 				
-				/* Displaying land ids
+				// Displaying land ids
+				g2d.setColor(Color.black);
 				g2d.setFont(World.idFont);
 				g2d.drawString(land.getLandId()+"", (int)x+10, (int)y+10);
 				g2d.setFont(World.diceFont);
-				*/
+				
 			}
 		}
 		
