@@ -38,8 +38,8 @@ public class World extends JPanel {
 	private static final int MAX_X = 70;
 	private static final int MAX_Y = 70;
 	
-	private static Font diceFont;
-	private static Font idFont;
+	private static Font diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));;
+	private static Font idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
 	
 	private BufferedImage doubleBuffer = null;
 	
@@ -55,8 +55,6 @@ public class World extends JPanel {
 	private int defendingPlayer = 0;
 	
 	public World() {
-		diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));
-		idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
 	}
 	
 	public void update(FullWorld world) {
@@ -229,9 +227,8 @@ public class World extends JPanel {
 		        //g.drawImage(doubleBuffer, 0, 0, width, height, this);
 				g2d.dispose();
 			}
+			g.drawImage(this.doubleBuffer, 0, 0, width, height, this);
 		}
-		g.drawImage(this.doubleBuffer, 0, 0, width, height, this);
-		//this.doubleBuffer = null;
 	    g.dispose();
 	}
 	
