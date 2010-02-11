@@ -2,6 +2,7 @@ package ru.icl.dicewars;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -11,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenuBar;
@@ -26,6 +28,7 @@ import ru.icl.dicewars.gui.TopMenu;
 import ru.icl.dicewars.gui.World;
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.thread.UIGameThread;
+import ru.icl.dicewars.gui.util.ImageUtil;
 
 public class DiceWars extends JFrame {
 
@@ -42,6 +45,8 @@ public class DiceWars extends JFrame {
     ComponentAdapter resizeListener;
     
     UIGameThread uiGameThread;
+    
+    Image diceIconImage = null;
     
 	WindowListener windowListener = new WindowAdapter() {
 		public void windowClosing(WindowEvent w) {
@@ -75,6 +80,14 @@ public class DiceWars extends JFrame {
 		startGame();
 	}
     
+	private Image getDiceIconImage(){
+		if (diceIconImage == null){
+			String path = "/resources/icon/dice.png";
+			diceIconImage = ImageUtil.getImage(path);
+		}
+		return diceIconImage;
+	}
+	
 	public DiceWars() {
 		PropertyConfigurator.configure("log4j.properties");
 		
@@ -92,6 +105,9 @@ public class DiceWars extends JFrame {
         device.setFullScreenWindow(this);*/
         
         setTitle("DiceWars (Version 0.0.1)");
+        
+        this.setIconImage(getDiceIconImage());
+        
         setResizable(true);
         
         jLayeredPane = new JLayeredPane();

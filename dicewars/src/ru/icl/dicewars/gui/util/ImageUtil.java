@@ -18,7 +18,11 @@ public class ImageUtil {
 	 */
 	public static Image getImage(String filename) {
 		URL url = ImageUtil.class.getResource(filename);
-
+		
+		if (url == null){
+			return null;
+		}
+			
 		try {
 			final BufferedImage result = ImageIO.read(url);
 
