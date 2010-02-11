@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
@@ -103,6 +104,11 @@ public class World extends JPanel {
 		super.paintComponent(g);
 		if (world == null)
 			return;
+		Set<FullLand> landsTmp;
+		synchronized (flag) {
+			landsTmp = new HashSet<FullLand>(world.getFullLands());	
+		}
+
 		synchronized (flag2) {
 			if (this.doubleBuffer == null){
 				this.doubleBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -131,11 +137,6 @@ public class World extends JPanel {
 				//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
 				
 				int rowOffset = 0;
-				
-				Set<FullLand> landsTmp;
-				synchronized (flag) {
-					landsTmp = new HashSet<FullLand>(world.getFullLands());	
-				}
 				
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingPlayer || land.getLandId() == attackingPlayer;
