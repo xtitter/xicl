@@ -31,6 +31,9 @@ public class UIGameThread implements Runnable {
 		
 		while (true) {
 			DiceWarsActivity activity = activityQueue.poll();
+			
+			
+			
 			if (activity instanceof WorldCreatedActivity) {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
 				WindowManager.getManager().getWorld().update(world);
@@ -40,21 +43,31 @@ public class UIGameThread implements Runnable {
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
 				WindowManager.getManager().getWorld().updateAttackingPlayer(pa.getFromLandId());
-				sleep(700);
+				if (!alreadyFrozen()) sleep(700);
 				WindowManager.getManager().getWorld().updateDefendingPlayer(pa.getToLandId());
-				Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
-				WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
+				//Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
+				//WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
 				WindowManager.getManager().getJLayeredPane().repaint();
-				sleep(1000);
-				WindowManager.getManager().getJLayeredPane().remove(arrow);
+				if (!alreadyFrozen()) sleep(1000);
+				//WindowManager.getManager().getJLayeredPane().remove(arrow);
 				WindowManager.getManager().getWorld().updateAttackingPlayer(0);
 				WindowManager.getManager().getWorld().updateDefendingPlayer(0);
 				WindowManager.getManager().getJLayeredPane().repaint();
-				sleep(300);
+				if (!alreadyFrozen()) sleep(300);
 			}
 			
 			sleep(10);
 		}
+	}
+	
+	private boolean alreadyFrozen() {
+		boolean frozen = false;
+		while (WindowManager.getManager().isFrozen()) {
+			frozen = true;
+			WindowManager.getManager().fire();
+			sleep(1000);
+		}
+		return frozen;
 	}
 	
 	private void sleep(long time) {

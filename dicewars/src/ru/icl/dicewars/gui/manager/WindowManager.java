@@ -22,6 +22,8 @@ public class WindowManager {
 	private int screenWidth;
     private int screenHeight;
 	private World world;
+	private Object sync = new Object();
+	private boolean frozen = false;
 	
 	public static WindowManager getManager() {
 		if (windowManager == null) {
@@ -133,6 +135,24 @@ public class WindowManager {
 
 	public void setScreenHeight(int screenHeight) {
 		this.screenHeight = screenHeight;
+	}
+	
+	public void freeze() {
+		synchronized (sync) {
+			this.frozen = true;
+		}
+	}
+	
+	public void fire() {
+		synchronized (sync) {
+			this.frozen = false;
+		}
+	}
+	
+	public boolean isFrozen() {
+		synchronized (sync) {
+			return this.frozen;
+		}
 	}
 	
 	private JLayeredPane jLayeredPane;
