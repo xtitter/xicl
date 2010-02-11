@@ -49,16 +49,30 @@ public class DiceWars extends JFrame {
 		}
 	};
 	
-	public void close(){
-		while (uiGameThread.isAlive()){
+	private void stopGame(){
+		while (uiGameThread != null && uiGameThread.isAlive()){
 			uiGameThread.kill();
 			try{
 				Thread.sleep(10);
 			}catch (InterruptedException e) {
 			}
 		}
+	}
+	
+	public void close(){
+		stopGame();
 		this.setVisible(false);
 		this.dispose();
+	}
+	
+	private void startGame(){
+		uiGameThread = new UIGameThread(); 
+		uiGameThread.start();
+	}
+	
+	public void startNewGame(){
+		stopGame();
+		startGame();
 	}
     
 	public DiceWars() {
@@ -137,9 +151,6 @@ public class DiceWars extends JFrame {
 		
 		this.addWindowListener(windowListener);
 		
-		uiGameThread = new UIGameThread(); 
-		
-		uiGameThread.start();
 	}
 	
 	private static void createAndShowGUI() {
