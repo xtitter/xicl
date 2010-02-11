@@ -1,6 +1,7 @@
 package ru.icl.dicewars;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -8,6 +9,7 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -68,6 +70,14 @@ public class DiceWars extends JFrame {
         } catch (Exception e) {
         }
         
+        World world = WindowManager.getManager().getWorld();
+        world.setPreferredSize(new Dimension(1500,1200));
+        //world.setBounds(20, 10, screenWidth - 40, screenHeight - 150);
+        final JScrollPane scroll = WindowManager.getManager().getScrollPane(world);
+        scroll.setBounds(20, 10, screenWidth - 40, screenHeight - 150);
+        jLayeredPane.add(scroll, 0);
+        //jLayeredPane.add(world, 0);
+        
         resizeListener = new ComponentAdapter(){
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -76,13 +86,11 @@ public class DiceWars extends JFrame {
 				WindowManager.getManager().setScreenWidth(screenWidth);
 		        WindowManager.getManager().setScreenHeight(screenHeight);
 		        // Implement resizing here if needed
+		        scroll.setBounds(20, 10, screenWidth - 40, screenHeight - 150);
+		        scroll.revalidate();
 			}
         };
         addComponentListener(resizeListener);
-        
-        World world = WindowManager.getManager().getWorld();
-        world.setBounds(20, 10, screenWidth - 40, screenHeight - 150);
-        jLayeredPane.add(world, 0);
         
         new Thread(new UIGameThread()).start();
 	}
