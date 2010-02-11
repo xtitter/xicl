@@ -1,10 +1,8 @@
 package ru.icl.dicewars.gui;
 
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -17,6 +15,7 @@ import ru.icl.dicewars.gui.util.ImageUtil;
 
 public class TopMenu extends JMenuBar {
 	JMenu fileMenu = new JMenu("File");
+	JMenu settingsMenu = new JMenu("Settings");
 
 	ActionListener exitActionListener = new ActionListener() {
 		@Override
@@ -34,6 +33,7 @@ public class TopMenu extends JMenuBar {
 
 	Icon startNewGameIcon = null;
 	Icon exitIcon = null;
+	Icon playersIcon = null;
 	
 	public Icon getStartNewGameIcon() {
 		if (startNewGameIcon == null){
@@ -56,6 +56,16 @@ public class TopMenu extends JMenuBar {
 		return exitIcon;
 	}
 	
+	public Icon getPlayersIcon() {
+		if (playersIcon == null){
+			String path = "/resources/icon/players.png";
+			Image image = ImageUtil.getImage(path);
+			if (image != null)
+				playersIcon = new ImageIcon(image);
+		}
+		return playersIcon;
+	}
+	
 	public TopMenu() {
 		JMenuItem startNewGameItem = new JMenuItem("Start new game...");
 		startNewGameItem.addActionListener(startNewGameActionListener);
@@ -72,5 +82,11 @@ public class TopMenu extends JMenuBar {
 		fileMenu.add(exitMenuItem);
 
 		this.add(fileMenu);
+		
+		JMenuItem playersManuItem = new JMenuItem("Players");
+		playersManuItem.setIcon(getPlayersIcon());
+		settingsMenu.add(playersManuItem);
+		
+		this.add(settingsMenu);
 	}
 }
