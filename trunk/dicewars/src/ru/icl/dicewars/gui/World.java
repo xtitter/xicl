@@ -155,6 +155,14 @@ public class World extends JPanel {
 			}
 		}
 		
+		g2d.setColor(new Color(240,240,240,150));
+        for (Point p : empty.getPoints()) {
+             rowOffset = p.getY() % 2 == 0 ? 9 : 0;
+             Polygon pol = getHexagon(X_OFFSET + p.getX()*19 + rowOffset, Y_OFFSET + p.getY()*(20 - correction), 10);
+             g2d.fillPolygon(pol);
+			 drawBorder(g2d, empty, p, pol);
+		}
+		
 		for (FullLand land : landsTmp) {
 			int x = 0;
 			int y = 0;
@@ -177,8 +185,10 @@ public class World extends JPanel {
 			if (size > 0) {
 				x /= size;
 				y /= size;
-				int offset = 0;
-				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getColorByFlag(land.getFlag(), 255)), x + offset, y + offset, this);
+				int xoffset = -50;
+				int yoffset = -80;
+				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getColorByFlag(land.getFlag(), 255)), x + xoffset, y + yoffset, this);
+
 
 				/*
 				count = String.valueOf(land.getDiceCount());
@@ -197,14 +207,6 @@ public class World extends JPanel {
 			}
 		}
 		
-		g2d.setColor(new Color(240,240,240,150));
-        for (Point p : empty.getPoints()) {
-             rowOffset = p.getY() % 2 == 0 ? 9 : 0;
-             Polygon pol = getHexagon(X_OFFSET + p.getX()*19 + rowOffset, Y_OFFSET + p.getY()*(20 - correction), 10);
-             g2d.fillPolygon(pol);
-			 drawBorder(g2d, empty, p, pol);
-		}
-
         g.drawImage(doubleBuffer, 0, 0, width, height, this);
 		g2d.dispose();
 	    g.dispose();
