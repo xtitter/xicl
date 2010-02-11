@@ -3,6 +3,8 @@ package ru.icl.dicewars;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -91,6 +93,14 @@ public class DiceWars extends JFrame {
 			}
         };
         addComponentListener(resizeListener);
+        
+        AdjustmentListener scrollListener = new AdjustmentListener() {
+			public void adjustmentValueChanged(AdjustmentEvent e) {
+				WindowManager.getManager().freeze();
+			}
+		};
+		scroll.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
+		scroll.getVerticalScrollBar().addAdjustmentListener(scrollListener);
         
         new Thread(new UIGameThread()).start();
 	}
