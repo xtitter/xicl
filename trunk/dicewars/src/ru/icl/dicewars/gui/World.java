@@ -1,5 +1,6 @@
 package ru.icl.dicewars.gui;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -187,8 +188,14 @@ public class World extends JPanel {
 				y /= size;
 				int xoffset = -50;
 				int yoffset = -80;
-				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getColorByFlag(land.getFlag(), 255)), x + xoffset, y + yoffset, this);
+				g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getColorByFlag(land.getFlag(), 100)), x + xoffset, y + yoffset, this);
 
+				/*BufferedImage doubleBuffer2 = new BufferedImage(82, 100, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D gd = (Graphics2D) doubleBuffer2.getGraphics();
+				gd.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
+				gd.drawImage(ImageManager.getDice(land.getDiceCount(), getColorByFlag(land.getFlag(), 255)), 0, 0, this);
+				g2d.drawImage(doubleBuffer2, x + xoffset, y + yoffset, this);
+				*/
 
 				/*
 				count = String.valueOf(land.getDiceCount());
@@ -275,7 +282,7 @@ public class World extends JPanel {
 		case CYAN:
 			return Color.cyan;
 		case GREEN:
-			return new Color(0, 200, 0, alpha);
+			return new Color(0, 150, 0, alpha);
 		case MAGENTA:
 			return Color.magenta;
 		case ORANGE:
