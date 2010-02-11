@@ -18,11 +18,25 @@ public class TopMenu extends JMenuBar {
 			WindowManager.getManager().getMainFrame().close();
 		}
 	};
+	
+	ActionListener startNewGameActionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			WindowManager.getManager().getMainFrame().startNewGame();
+		}
+	};
 
 	public TopMenu() {
+		JMenuItem startNewGameItem = new JMenuItem("Start new game...");
+		startNewGameItem.addActionListener(startNewGameActionListener);
+		fileMenu.add(startNewGameItem);
+		
+		fileMenu.addSeparator();
+
 		JMenuItem exitMenuItem = new JMenuItem("Exit");
 		exitMenuItem.addActionListener(exitActionListener);
 		fileMenu.add(exitMenuItem);
+		
 		this.add(fileMenu);
 	}
 }
