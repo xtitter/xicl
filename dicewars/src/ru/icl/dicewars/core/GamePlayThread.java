@@ -20,19 +20,25 @@ import ru.icl.dicewars.core.activity.SimpleFlagDistributedActivity;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
-import ru.icl.dicewars.core.activity.SimpleWorldGrantedActivityImpl;
 import ru.icl.dicewars.core.exception.InvalidPlayerClassInstatiationException;
 import ru.icl.dicewars.core.roll.LandRoll;
 import ru.icl.dicewars.core.roll.LandRollResult;
 import ru.icl.dicewars.core.util.RandomUtil;
 import ru.icl.dicewars.util.ClassUtil;
 
-public class GamePlay {
+public class GamePlayThread extends Thread{
+
 	private Configuration configuration;
 	
 	private ActivityQueue activityQueue = new ActivityQueueImpl();
 	
 	private Player winnerPlayer;
+	
+	private boolean t = true;
+	
+	public void kill(){
+		t = false;
+	}
 	
 	public Player getWinnerPlayer() {
 		return winnerPlayer;
@@ -42,7 +48,7 @@ public class GamePlay {
 		return activityQueue;
 	}
 	
-	public GamePlay(Configuration configuration) {
+	public GamePlayThread(Configuration configuration) {
 		this.configuration = configuration;
 	}
 	
@@ -152,7 +158,8 @@ public class GamePlay {
 		return flagToNameMap;
 	}
 
-	public void play() {
+	@Override
+	public void run() {
 		activityQueue.clear();
 		
 		Player[] players = getPlayers();
@@ -180,7 +187,7 @@ public class GamePlay {
 		
 		/* Start the game*/
 		int leadNumber = 1;
-		while (!hasWinner(world)) {
+		while (!hasWinner(world) && t) {
 			for (int i = 0; i < playerCount; i++) {
 				Flag playerFlag = playerFlagMap.get(players[i]);
 				world.setMyFlag(playerFlag);
@@ -188,7 +195,7 @@ public class GamePlay {
 				if (!world.getFlags().contains(playerFlag)) continue;
 				boolean canLead = true;
 				int stepNumber = 1;
-				while (canLead){
+				while (canLead && t){
 					world.setAvailableLeadCount(leadNumber-stepNumber+1);
 					final World immutableWorld = new ImmutableWorldImpl(world);
 					try{
