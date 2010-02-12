@@ -22,8 +22,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import ru.icl.dicewars.gui.TopMenu;
 import ru.icl.dicewars.gui.World;
 import ru.icl.dicewars.gui.manager.WindowManager;
@@ -89,8 +87,6 @@ public class DiceWars extends JFrame {
 	}
 	
 	public DiceWars() {
-		PropertyConfigurator.configure("log4j.properties");
-		
 		Rectangle scrnRect = getGraphicsConfiguration().getBounds();
         screenWidth = scrnRect.width;
         screenHeight = scrnRect.height;
