@@ -23,7 +23,7 @@ public class TopMenu extends JMenuBar {
 			WindowManager.getManager().getMainFrame().close();
 		}
 	};
-	
+
 	ActionListener startNewGameActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -31,23 +31,31 @@ public class TopMenu extends JMenuBar {
 		}
 	};
 
+	ActionListener stopGameActionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			WindowManager.getManager().getMainFrame().stopGame();
+		}
+	};
+
 	Icon startNewGameIcon = null;
 	Icon exitIcon = null;
 	Icon playersIcon = null;
-	
+	Icon stopGameIcon = null;
+
 	public Icon getStartNewGameIcon() {
-		if (startNewGameIcon == null){
+		if (startNewGameIcon == null) {
 			String path = "/resources/icon/start.png";
 			Image image = ImageUtil.getImage(path);
-			if (image != null){
+			if (image != null) {
 				startNewGameIcon = new ImageIcon(image);
 			}
 		}
 		return startNewGameIcon;
 	}
-	
+
 	public Icon getExitIcon() {
-		if (exitIcon == null){
+		if (exitIcon == null) {
 			String path = "/resources/icon/exit.png";
 			Image image = ImageUtil.getImage(path);
 			if (image != null)
@@ -55,9 +63,9 @@ public class TopMenu extends JMenuBar {
 		}
 		return exitIcon;
 	}
-	
+
 	public Icon getPlayersIcon() {
-		if (playersIcon == null){
+		if (playersIcon == null) {
 			String path = "/resources/icon/players.png";
 			Image image = ImageUtil.getImage(path);
 			if (image != null)
@@ -65,14 +73,28 @@ public class TopMenu extends JMenuBar {
 		}
 		return playersIcon;
 	}
-	
+
+	public Icon getStopGameIcon() {
+		if (stopGameIcon == null) {
+			String path = "/resources/icon/stop.png";
+			Image image = ImageUtil.getImage(path);
+			if (image != null)
+				stopGameIcon = new ImageIcon(image);
+		}
+		return stopGameIcon;
+	}
+
 	public TopMenu() {
 		JMenuItem startNewGameItem = new JMenuItem("Start new game...");
 		startNewGameItem.addActionListener(startNewGameActionListener);
 		startNewGameItem.setIcon(getStartNewGameIcon());
-
 		fileMenu.add(startNewGameItem);
 		
+		JMenuItem stopGameItem = new JMenuItem("Stop game");
+		stopGameItem.addActionListener(stopGameActionListener);
+		stopGameItem.setIcon(getStopGameIcon());
+		fileMenu.add(stopGameItem);
+
 		fileMenu.addSeparator();
 
 		JMenuItem exitMenuItem = new JMenuItem("Exit");
@@ -82,11 +104,11 @@ public class TopMenu extends JMenuBar {
 		fileMenu.add(exitMenuItem);
 
 		this.add(fileMenu);
-		
+
 		JMenuItem playersManuItem = new JMenuItem("Players");
 		playersManuItem.setIcon(getPlayersIcon());
 		settingsMenu.add(playersManuItem);
-		
+
 		this.add(settingsMenu);
 	}
 }
