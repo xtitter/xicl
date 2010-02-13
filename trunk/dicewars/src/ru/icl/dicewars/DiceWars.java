@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import ru.icl.dicewars.gui.TopMenu;
+import ru.icl.dicewars.gui.TopMenuMenuBar;
 import ru.icl.dicewars.gui.World;
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.thread.UIGameThread;
@@ -109,7 +109,7 @@ public class DiceWars extends JFrame {
         setLayeredPane(jLayeredPane);
         WindowManager.getManager().setJLayeredPane(jLayeredPane);
         
-        jMenuBar = new TopMenu();
+        jMenuBar = new TopMenuMenuBar();
         setJMenuBar(jMenuBar);
         
         contentPane = new JPanel(new BorderLayout());
