@@ -25,7 +25,7 @@
     <target name="jar" depends="compile">
         <mkdir dir="${jar.dir}"/>
         <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}" excludes="**/client/**">
-        	<fileset dir="${src.dir}" includes="resources/**"/>
+        	<fileset dir="${src.dir}" includes="resources/**,/*.properties"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
             </manifest>
@@ -37,6 +37,7 @@
 		<mkdir dir="${build.dir}/${ant.project.name}"/>
 		<copy todir="${build.dir}/${ant.project.name}">
 			<fileset dir="${jar.dir}"/>
+			<fileset dir="./" includes="/*.properties"/>
 			<fileset dir="${tools.dir}"/>
 			<fileset dir="${lib.dir}"/>
 		</copy>
