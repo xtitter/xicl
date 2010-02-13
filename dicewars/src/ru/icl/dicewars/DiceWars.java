@@ -12,7 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenuBar;
@@ -52,7 +51,7 @@ public class DiceWars extends JFrame {
 		}
 	};
 	
-	private void stopGame(){
+	public void stopGame(){
 		while (uiGameThread != null && uiGameThread.isAlive()){
 			uiGameThread.kill();
 			try{
