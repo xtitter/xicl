@@ -13,7 +13,7 @@ import javax.swing.JMenuItem;
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.util.ImageUtil;
 
-public class TopMenu extends JMenuBar {
+public class TopMenuMenuBar extends JMenuBar {
 	JMenu fileMenu = new JMenu("File");
 	JMenu settingsMenu = new JMenu("Settings");
 
@@ -84,7 +84,7 @@ public class TopMenu extends JMenuBar {
 		return stopGameIcon;
 	}
 
-	public TopMenu() {
+	public TopMenuMenuBar() {
 		JMenuItem startNewGameItem = new JMenuItem("Start new game...");
 		startNewGameItem.addActionListener(startNewGameActionListener);
 		startNewGameItem.setIcon(getStartNewGameIcon());
