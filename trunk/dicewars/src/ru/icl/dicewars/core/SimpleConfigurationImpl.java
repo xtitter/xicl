@@ -84,19 +84,23 @@ public class SimpleConfigurationImpl implements Configuration {
 						queue.add(f);
 					}		
 				}else{
-					try{
-						ClassReader cr = new ClassReader(new FileInputStream(file));
-						Boolean f = false;
-						if (cr.getInterfaces().length > 0){
-							for (String s : cr.getInterfaces()){
-								if (s.replaceAll("/", ".").equals(Player.class.getName())){
-									f = true;
+					String filename = file.getName();
+					String ext = filename.substring(filename.lastIndexOf('.')+1, filename.length());
+					if ("class".equals(ext)){
+						try{
+							ClassReader cr = new ClassReader(new FileInputStream(file));
+							Boolean f = false;
+							if (cr.getInterfaces().length > 0){
+								for (String s : cr.getInterfaces()){
+									if (s.replaceAll("/", ".").equals(Player.class.getName())){
+										f = true;
+									}
 								}
 							}
+							if (f)
+								classNames.add(cr.getClassName().replaceAll("/", "."));
+						}catch (IOException e) {
 						}
-						if (f)
-							classNames.add(cr.getClassName().replaceAll("/", "."));
-					}catch (IOException e) {
 					}
 				}
 			}
