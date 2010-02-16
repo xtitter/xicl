@@ -130,11 +130,13 @@ public class DiceWars extends JFrame {
         
         World world = WindowManager.getManager().getWorld();
         world.setPreferredSize(new Dimension(1500,1200));
-        //world.setBounds(20, 10, screenWidth - 40, screenHeight - 150);
         final JScrollPane scroll = WindowManager.getManager().getScrollPane(world);
-        scroll.setBounds(20, 30, screenWidth - 40, screenHeight - 150);
+        scroll.setBounds(20, 30, screenWidth - 240, screenHeight - 120);
         jLayeredPane.add(scroll, 0);
-        //jLayeredPane.add(world, 0);
+        
+        final JPanel infoPanel = WindowManager.getManager().getInfoPanel();
+        infoPanel.setBounds(screenWidth - 210, 30, 190, screenHeight - 120);
+        jLayeredPane.add(infoPanel, 0);
         
         resizeListener = new ComponentAdapter(){
 			@Override
@@ -144,8 +146,10 @@ public class DiceWars extends JFrame {
 				WindowManager.getManager().setScreenWidth(screenWidth);
 		        WindowManager.getManager().setScreenHeight(screenHeight);
 		        // Implement resizing here if needed
-		        scroll.setBounds(20, 30, screenWidth - 40, screenHeight - 150);
+		        scroll.setBounds(20, 30, screenWidth - 240, screenHeight - 120);
 		        scroll.revalidate();
+		        infoPanel.setBounds(screenWidth - 210, 30, 190, screenHeight - 120);
+		        infoPanel.revalidate();
 			}
         };
         addComponentListener(resizeListener);
@@ -158,6 +162,7 @@ public class DiceWars extends JFrame {
 		scroll.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
 		scroll.getVerticalScrollBar().addAdjustmentListener(scrollListener);
         
+		//FIXME: why is it here?
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		this.addWindowListener(windowListener);

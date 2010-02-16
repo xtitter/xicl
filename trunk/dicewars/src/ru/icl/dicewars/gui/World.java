@@ -7,20 +7,22 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JPanel;
 
 import ru.icl.dicewars.client.Flag;
-import ru.icl.dicewars.core.DiceStack;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullLandImpl;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.Point;
 import ru.icl.dicewars.gui.manager.ImageManager;
+import ru.icl.dicewars.gui.manager.WindowManager;
+import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
 public class World extends JPanel {
 
@@ -47,13 +49,13 @@ public class World extends JPanel {
 	//private static Color darkColor = new Color(50,50,50,100);
 
 	//Bug with concurrent modification fix. This is slowest method. World object should be wrapped.
-	private Object flag = new Object();
-	
+	private Object flag = new Object();	
 	private Object flag2 = new Object(); 
 	
 	private int attackingPlayer = 0;
-
 	private int defendingPlayer = 0;
+	
+	private Map<Flag, Integer> diceOverallCount = new HashMap<Flag, Integer>();
 	
 	public World() {
 	}
@@ -145,7 +147,7 @@ public class World extends JPanel {
 				
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
-					Color color = getColorByFlag(land.getFlag(), battle ? 75 : 165);
+					Color color = FlagToColorUtil.getColorByFlag(land.getFlag(), battle ? 75 : 165);
 					g2d.setColor(color);
 					
 					for (Point p : land.getPoints()) {
@@ -180,6 +182,7 @@ public class World extends JPanel {
 					 drawBorder(g2d, empty, p, pol);
 				}
 				
+				diceOverallCount.clear();
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					
@@ -199,7 +202,7 @@ public class World extends JPanel {
 						y += _y;
 					}
 					int size = land.getPoints().size();
-					String count = "";
+					//String count = "";
 					if (size > 0) {
 						x /= size;
 						y /= size;
@@ -207,6 +210,13 @@ public class World extends JPanel {
 						int yoffset = -70;
 						g2d.drawImage(ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag(), battle ? 130 : 255 )), x + xoffset, y + yoffset, this);
 		
+						if (!diceOverallCount.containsKey(land.getFlag())) {
+							diceOverallCount.put(land.getFlag(), land.getDiceCount());
+						} else {
+							Integer i = diceOverallCount.get(land.getFlag());
+							diceOverallCount.put(land.getFlag(), i + Integer.valueOf(land.getDiceCount()));
+						}
+						
 						/*BufferedImage doubleBuffer2 = new BufferedImage(82, 100, BufferedImage.TYPE_INT_ARGB);
 						Graphics2D gd = (Graphics2D) doubleBuffer2.getGraphics();
 						gd.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
@@ -231,6 +241,9 @@ public class World extends JPanel {
 						
 					}
 				}
+				
+				WindowManager.getManager().getInfoPanel().updateDiceCount(diceOverallCount);
+				WindowManager.getManager().getInfoPanel().sortPlayers();
 				
 		        //g.drawImage(doubleBuffer, 0, 0, width, height, this);
 				g2d.dispose();
@@ -289,30 +302,6 @@ public class World extends JPanel {
 			g2d.drawLine(x1, y1, x2, y2);
 		}
 		g2d.setColor(color);
-	}
-	
-	private Color getColorByFlag(Flag f, int alpha) {
-		//return new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
-		switch (f) {
-		case WHITE:
-			return Color.white;
-		case YELLOW:
-			return new Color(255, 255, 0, alpha);
-		case BLUE:
-			return new Color(0, 70, 200, alpha);
-		case CYAN:
-			return Color.cyan;
-		case GREEN:
-			return new Color(0, 150, 0, alpha);
-		case MAGENTA:
-			return Color.magenta;
-		case ORANGE:
-			return new Color(255, 127, 0, alpha);
-		case RED:
-			return new Color(255, 30, 30, alpha);
-
-		}
-		return Color.black;
 	}
 	
 	private Color getDiceColorByFlag(Flag f, int alfa){
