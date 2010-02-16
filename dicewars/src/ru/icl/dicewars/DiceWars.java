@@ -21,7 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 
 import ru.icl.dicewars.gui.TopMenuMenuBar;
