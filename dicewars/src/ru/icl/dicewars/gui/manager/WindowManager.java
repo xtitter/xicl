@@ -4,7 +4,6 @@ import java.awt.Color;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -14,6 +13,7 @@ import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.Point;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
+import ru.icl.dicewars.gui.InfoPanel;
 import ru.icl.dicewars.gui.World;
 import ru.icl.dicewars.gui.arrow.Arrow;
 import ru.icl.dicewars.gui.arrow.ArrowFactory;
@@ -23,7 +23,10 @@ public class WindowManager {
 	private static WindowManager windowManager = null;
 	private int screenWidth;
     private int screenHeight;
-	private World world;
+	
+    private World world;
+	private InfoPanel infoPanel;
+	
 	private Object sync = new Object();
 	private boolean frozen = false;
 	
@@ -53,6 +56,14 @@ public class WindowManager {
 		scrollPane.setBorder(BorderFactory.createLineBorder(new Color(0, 100, 0, 0)));
 
 		return scrollPane;
+	}
+	
+	public InfoPanel getInfoPanel() {
+		if (infoPanel == null) {
+			infoPanel = new InfoPanel();
+			//infoPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		}
+		return infoPanel;
 	}
 	
 	public Arrow getArrow(SimplePlayerAttackActivity pa, ArrowFactory.ArrowType type) {
