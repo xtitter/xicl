@@ -1,9 +1,10 @@
 package ru.icl.dicewars.core.activity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ru.icl.dicewars.client.Flag;
 
@@ -19,8 +20,10 @@ public class SimpleFlagDistributedActivity implements FlagDistributedActivity{
 	}
 	
 	@Override
-	public Set<Flag> getFlags(){
-		return Collections.unmodifiableSet(mapFlagToName.keySet());
+	public List<Flag> getFlags(){
+		List<Flag> tmp = new ArrayList<Flag>();
+		tmp.addAll(mapFlagToName.keySet());
+		return Collections.unmodifiableList(tmp);
 	}
 	
 	@Override

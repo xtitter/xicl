@@ -1,11 +1,11 @@
 package ru.icl.dicewars.core.activity;
 
-import java.util.Set;
+import java.util.List;
 
 import ru.icl.dicewars.client.Flag;
 
 public interface FlagDistributedActivity extends DiceWarsActivity {
-	public Set<Flag> getFlags();
+	public List<Flag> getFlags();
 
 	public String getNameByFlag(Flag flag);
 }
