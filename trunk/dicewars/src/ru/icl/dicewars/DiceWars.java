@@ -92,9 +92,9 @@ public class DiceWars extends JFrame {
         screenWidth = scrnRect.width;
         screenHeight = scrnRect.height;
         setSize(screenWidth, screenHeight);
-        WindowManager.getManager().setMainFrame(this);
-        WindowManager.getManager().setScreenWidth(screenWidth);
-        WindowManager.getManager().setScreenHeight(screenHeight);
+        //WindowManager.getManager().setMainFrame(this);
+        //WindowManager.getManager().setScreenWidth(screenWidth);
+        //WindowManager.getManager().setScreenHeight(screenHeight);
         
         /*GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice device = environment.getDefaultScreenDevice();
@@ -107,9 +107,8 @@ public class DiceWars extends JFrame {
         
         setResizable(true);
         
-        jLayeredPane = new JLayeredPane();
+        jLayeredPane = WindowManager.getManager().getJLayeredPane();
         setLayeredPane(jLayeredPane);
-        WindowManager.getManager().setJLayeredPane(jLayeredPane);
         
         jMenuBar = new TopMenuMenuBar();
         setJMenuBar(jMenuBar);
@@ -147,8 +146,8 @@ public class DiceWars extends JFrame {
 			public void componentResized(ComponentEvent e) {
 				screenWidth = ((DiceWars)e.getSource()).getSize().width;
 				screenHeight = ((DiceWars)e.getSource()).getSize().height;
-				WindowManager.getManager().setScreenWidth(screenWidth);
-		        WindowManager.getManager().setScreenHeight(screenHeight);
+				/*WindowManager.getManager().setScreenWidth(screenWidth);
+		        WindowManager.getManager().setScreenHeight(screenHeight);*/
 		        // Implement resizing here if needed
 		        scroll.setBounds(20, 30, screenWidth - 240, screenHeight - 120);
 		        scroll.revalidate();
@@ -166,7 +165,7 @@ public class DiceWars extends JFrame {
 		scroll.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
 		scroll.getVerticalScrollBar().addAdjustmentListener(scrollListener);
         
-		//FIXME: why is it here?
+		//Because windows is closed by event.
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		
 		this.addWindowListener(windowListener);
@@ -174,7 +173,7 @@ public class DiceWars extends JFrame {
 	}
 	
 	private static void createAndShowGUI() {
-		dicewars = new DiceWars();
+		dicewars = WindowManager.getManager().getMainFrame();
 		dicewars.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 	

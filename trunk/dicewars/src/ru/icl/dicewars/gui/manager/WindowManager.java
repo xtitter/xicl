@@ -9,20 +9,14 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import ru.icl.dicewars.DiceWars;
-import ru.icl.dicewars.core.FullLand;
-import ru.icl.dicewars.core.FullWorld;
-import ru.icl.dicewars.core.Point;
-import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.gui.InfoPanel;
 import ru.icl.dicewars.gui.World;
-import ru.icl.dicewars.gui.arrow.Arrow;
-import ru.icl.dicewars.gui.arrow.ArrowFactory;
 
 public class WindowManager {
 	
 	private static WindowManager windowManager = null;
-	private int screenWidth;
-    private int screenHeight;
+	//private int screenWidth;
+    //private int screenHeight;
 	
     private World world;
 	private InfoPanel infoPanel;
@@ -30,17 +24,31 @@ public class WindowManager {
 	private Object sync = new Object();
 	private boolean frozen = false;
 	
+	private Object jLayeredPaneFlag = new Object();
+	private Object worldFlag = new Object();
+	private Object infoPanelFlag = new Object();
+	private Object mainFrameFlag = new Object();
+	private static Object windowManagerFlag = new Object();
+	
 	public static WindowManager getManager() {
 		if (windowManager == null) {
-			windowManager = new WindowManager();
+			synchronized (windowManagerFlag) {
+				if (windowManager == null) {
+					windowManager = new WindowManager();
+				}
+			}
 		}
 		return windowManager;
 	}
 	
 	public World getWorld() {
 		if (world == null) {
-			world = new World();
-			world.setBorder(BorderFactory.createEtchedBorder());
+			synchronized(worldFlag){
+				if (world == null){
+					world = new World();
+					world.setBorder(BorderFactory.createEtchedBorder());
+				}
+			}
 		}
 		return world;
 	}
@@ -60,13 +68,43 @@ public class WindowManager {
 	
 	public InfoPanel getInfoPanel() {
 		if (infoPanel == null) {
-			infoPanel = new InfoPanel();
-			//infoPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+			synchronized (infoPanelFlag) {
+				if (infoPanel == null) {
+					infoPanel = new InfoPanel();
+					//infoPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+				}
+			}
 		}
 		return infoPanel;
 	}
 	
-	public Arrow getArrow(SimplePlayerAttackActivity pa, ArrowFactory.ArrowType type) {
+	public JLayeredPane getJLayeredPane() {
+		if (jLayeredPane == null) {
+			synchronized (jLayeredPaneFlag) {
+				if (jLayeredPane == null) {
+					jLayeredPane = new JLayeredPane();
+				}
+			}
+		}
+		return jLayeredPane;
+	}
+	
+	/*public void setMainFrame(DiceWars mainFrame) {
+		this.mainFrame = mainFrame;
+	}*/
+	
+	public DiceWars getMainFrame() {
+		if (mainFrame == null){
+			synchronized (mainFrameFlag) {
+				if (mainFrame == null){
+					mainFrame = new DiceWars();
+				}
+			}
+		}
+		return mainFrame;
+	}
+	
+	/*public Arrow getArrow(SimplePlayerAttackActivity pa, ArrowFactory.ArrowType type) {
 		Arrow arrow = ArrowFactory.getArrow(0, type);
 		arrow.setVisible(true);
 		arrow.setOpaque(false);
@@ -124,31 +162,25 @@ public class WindowManager {
 			return null;
 		}
 		return arrow;
-	}
-	
-	public JLayeredPane getJLayeredPane() {
-		return jLayeredPane;
-	}
-
-	public void setJLayeredPane(JLayeredPane layeredPane) {
-		jLayeredPane = layeredPane;
-	}
+	}*/
 	
 	public int getScreenWidth() {
-		return screenWidth;
+		//return screenWidth;
+		return getMainFrame().getSize().width;
 	}
 
-	public void setScreenWidth(int screenWidth) {
+	/*public void setScreenWidth(int screenWidth) {
 		this.screenWidth = screenWidth;
-	}
+	}*/
 
 	public int getScreenHeight() {
-		return screenHeight;
+		//return screenHeight;
+		return getMainFrame().getSize().height;
 	}
 
-	public void setScreenHeight(int screenHeight) {
+	/*public void setScreenHeight(int screenHeight) {
 		this.screenHeight = screenHeight;
-	}
+	}*/
 	
 	public void freeze() {
 		synchronized (sync) {
@@ -166,14 +198,6 @@ public class WindowManager {
 		synchronized (sync) {
 			return this.frozen;
 		}
-	}
-	
-	public void setMainFrame(DiceWars mainFrame) {
-		this.mainFrame = mainFrame;
-	}
-	
-	public DiceWars getMainFrame() {
-		return mainFrame;
 	}
 	
 	private JLayeredPane jLayeredPane;
