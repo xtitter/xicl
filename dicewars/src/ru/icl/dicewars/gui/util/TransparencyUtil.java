@@ -12,6 +12,10 @@ import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 
 public class TransparencyUtil {
+	
+	private TransparencyUtil() {
+	}
+	
     public static Image makeColorTransparent(Image im, final Color color) {
         ImageFilter filter = new RGBImageFilter() {
             // the color we are looking for... Alpha bits are set to opaque

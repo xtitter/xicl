@@ -5,6 +5,9 @@ import java.awt.*;
  * Class used for utilizing colors.
  */
 class ColorUtil {
+	private ColorUtil() {
+	}
+	
 	private static final double NEAR_DELTA = .00001;
 
 	/**
