@@ -10,6 +10,9 @@ import java.net.URL;
 
 public class ImageUtil {
 
+	private ImageUtil() {
+	}
+	
 	/**
 	 * Returns an image resource.
 	 *
