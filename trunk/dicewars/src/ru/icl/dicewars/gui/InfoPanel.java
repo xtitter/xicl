@@ -1,5 +1,6 @@
 package ru.icl.dicewars.gui;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
@@ -31,7 +33,7 @@ public class InfoPanel extends JPanel {
 		for (Flag flag : flags) {
 			PlayerPanel player = new PlayerPanel(flag);
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
-			player.setBorder(BorderFactory.createLineBorder(FlagToColorUtil.getColorByFlag(flag, 165)));
+			player.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(player.getFlag(), 100), FlagToColorUtil.getColorByFlag(player.getFlag(), 100)));
 			players.put(flag, player);
 			add(player);
 			yoffset += HEIGHT + 10;
@@ -53,6 +55,22 @@ public class InfoPanel extends JPanel {
 				players.get(flag).repaint();
 			}
 		}
+		
+		Flag toremove = null;
+		for (PlayerPanel player : players.values()) {
+			if (!diceOverallCount.containsKey(player.getFlag())) {
+				toremove = player.getFlag();
+				break;
+			}
+		}
+		if (toremove != null) {
+			PlayerPanel player = players.remove(toremove);
+			player.setBorder(BorderFactory.createEtchedBorder( FlagToColorUtil.getColorByFlag(player.getFlag(), 100), Color.gray));
+			player.setOutOfTheGame(true);
+			player.setDiceOverallCount(0);
+			player.setRank(diceOverallCount.size());
+			player.repaint();
+		}
 	}
 	
 	public void sortPlayers() {
@@ -64,11 +82,11 @@ public class InfoPanel extends JPanel {
 				return Integer.valueOf(arg1.getDiceOverallCount()).compareTo(Integer.valueOf(arg0.getDiceOverallCount()));
 			}
 		});
-		int yoffset = 10;
+		/*int yoffset = 10;
 		for (PlayerPanel player : list) {
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
 			yoffset += HEIGHT + 10;
-		}
+		}*/
 		revalidate();
 	}
 }
