@@ -5,6 +5,9 @@ import java.awt.Color;
 import ru.icl.dicewars.client.Flag;
 
 public class FlagToColorUtil {
+	private FlagToColorUtil() {
+	}
+	
 	public static Color getColorByFlag(Flag f, int alpha) {
 		//return new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
 		switch (f) {
