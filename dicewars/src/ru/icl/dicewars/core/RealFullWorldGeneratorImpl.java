@@ -631,7 +631,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         // validation
         validate(lands);
         // output
-        output(lands);
+        //output(lands);
         // and world!
         return new FullWorldImpl(0, lands, playerFlags, new HashMap<Flag, Integer>());
     }
