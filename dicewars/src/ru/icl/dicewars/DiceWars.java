@@ -1,6 +1,7 @@
 package ru.icl.dicewars;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -20,6 +21,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 
 import ru.icl.dicewars.gui.TopMenuMenuBar;
 import ru.icl.dicewars.gui.World;
@@ -132,10 +135,12 @@ public class DiceWars extends JFrame {
         world.setPreferredSize(new Dimension(1500,1200));
         final JScrollPane scroll = WindowManager.getManager().getScrollPane(world);
         scroll.setBounds(20, 30, screenWidth - 240, screenHeight - 120);
+        scroll.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jLayeredPane.add(scroll, 0);
         
         final JPanel infoPanel = WindowManager.getManager().getInfoPanel();
         infoPanel.setBounds(screenWidth - 210, 30, 190, screenHeight - 120);
+        infoPanel.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jLayeredPane.add(infoPanel, 0);
         
         resizeListener = new ComponentAdapter(){
