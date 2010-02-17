@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -42,7 +43,9 @@ public class GamePlayThread extends Thread{
 	
 	//private Player winnerPlayer;
 	
-	private Boolean started = Boolean.FALSE;
+	private boolean started = false;
+	
+	private Object startedFlag = new Object();
 	
 	private boolean t = true;
 	
@@ -74,8 +77,7 @@ public class GamePlayThread extends Thread{
 	}
 
 	private Player[] getPlayers(){
-		PlayerClassesLoader playerClassesLoader = configuration.getPlayerClassesLoader();
-		Class<Player>[] playerClasses = playerClassesLoader.getPlayers(); 
+		Class<Player>[] playerClasses = configuration.getPlayerClasses(); 
 		final int playerCount = playerClasses.length;
 		Player[] players = new Player[playerCount];
 		for (int i = 0; i < playerCount; i++) {
@@ -205,7 +207,7 @@ public class GamePlayThread extends Thread{
 	
 	@Override
 	public void run() {
-		synchronized (started) {
+		synchronized (startedFlag) {
 			if (started) throw new IllegalStateException("This thread can't be run twice.");
 			started = true;
 		}
