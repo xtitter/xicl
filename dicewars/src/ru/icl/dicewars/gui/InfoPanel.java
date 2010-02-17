@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -20,7 +19,7 @@ public class InfoPanel extends JPanel {
 
 	private static final long serialVersionUID = -222523072240558572L;
 
-	private static final int WIDTH = 170;
+	private static final int WIDTH = 180;
 	private static final int HEIGHT = 80;
 	
 	private Map<Flag, PlayerPanel> players = new HashMap<Flag, PlayerPanel>();

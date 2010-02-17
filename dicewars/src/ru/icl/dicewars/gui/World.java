@@ -32,14 +32,14 @@ public class World extends JPanel {
 	private int height;
 	private static final long serialVersionUID = -3234906592754761865L;
 
-	public static final int X_OFFSET = 50;
-	public static final int Y_OFFSET = 20;
+	public static final int X_OFFSET = 35;
+	public static final int Y_OFFSET = 30;
 	final static BasicStroke stroke = new BasicStroke(2.0f);
 	
 	private static final int MIN_X = -1;
 	private static final int MIN_Y = -1;
-	private static final int MAX_X = 70;
-	private static final int MAX_Y = 70;
+	private static final int MAX_X = 68;
+	private static final int MAX_Y = 55;
 	
 	private static Font diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));;
 	private static Font idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
@@ -272,7 +272,7 @@ public class World extends JPanel {
 			skip.add(3);
 		}
 		p1 = new Point(p.getX() + (p.getY() % 2 != 0 ? 0 : 1),p.getY()+1);
-		if (p.getX() == MAX_X || land.getPoints().contains(p1)) {
+		if (p.getX() == MAX_X || p.getY() == MAX_Y || land.getPoints().contains(p1)) {
 			skip.add(1);
 		}
 		p1 = new Point(p.getX() - (p.getY() % 2 == 0 ? 0 : 1),p.getY()-1);
@@ -280,7 +280,7 @@ public class World extends JPanel {
 			skip.add(4);
 		}
 		p1 = new Point(p.getX() - (p.getY() % 2 == 0 ? 0 : 1),p.getY()+1);
-		if (p.getX() == MIN_X || land.getPoints().contains(p1)) {
+		if (p.getX() == MIN_X || p.getY() == MAX_Y || land.getPoints().contains(p1)) {
 			skip.add(6);
 		}
 		
