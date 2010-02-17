@@ -15,6 +15,7 @@ import ru.icl.dicewars.client.Land;
 import ru.icl.dicewars.client.Lead;
 import ru.icl.dicewars.client.Player;
 import ru.icl.dicewars.client.World;
+import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.SimpleDiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.SimpleFlagDistributedActivity;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
@@ -27,6 +28,8 @@ import ru.icl.dicewars.core.util.RandomUtil;
 import ru.icl.dicewars.util.ClassUtil;
 
 public class GamePlayThread extends Thread{
+	
+	private static final int MAX_ACTIVITY_COUNT_IN_QUEUE = 50;
 
 	private Configuration configuration;
 	
@@ -38,14 +41,21 @@ public class GamePlayThread extends Thread{
 	
 	public void kill(){
 		t = false;
+		synchronized (this) {
+			this.notifyAll();	
+		}
 	}
 	
 	public Player getWinnerPlayer() {
 		return winnerPlayer;
 	}
 	
-	public ActivityQueue getActivityQueue() {
-		return activityQueue;
+	public DiceWarsActivity pollFromActivityQueue() {
+		DiceWarsActivity activity = activityQueue.poll();
+		synchronized (this) {
+			this.notify();	
+		}
+		return activity;
 	}
 	
 	public GamePlayThread(Configuration configuration) {
@@ -108,6 +118,19 @@ public class GamePlayThread extends Thread{
 		return arrayLands[rnd];
 	}
 	
+	private void addToActivityQueue(DiceWarsActivity activity){
+		while (activityQueue.size() > MAX_ACTIVITY_COUNT_IN_QUEUE && t){
+			try{
+				synchronized (this) {
+					this.wait();
+				}
+			}catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		activityQueue.add(activity);
+	}
+	
 	private void grantWorldByFlag(final FullWorld world, final Flag playerFlag) {
 		int j = world.getMaxConnectedLandsByFlag(playerFlag);
 		
@@ -119,7 +142,7 @@ public class GamePlayThread extends Thread{
 			j--;
 		}
 		
-		Set<FullLand> grantedLands = new HashSet<FullLand>();
+		//Set<FullLand> grantedLands = new HashSet<FullLand>();
 		
 		Land land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		while (land != null && world.hasInReserve(playerFlag)){
@@ -130,8 +153,8 @@ public class GamePlayThread extends Thread{
 			if (land instanceof FullLand){
 				FullLand fullLand = (FullLand) land;
 				fullLand.incDiceCount();
-				grantedLands.add(fullLand);
-				activityQueue.add(new SimpleLandUpdatedActivity(fullLand));
+				//grantedLands.add(fullLand);
+				addToActivityQueue(new SimpleLandUpdatedActivity(fullLand));
 			}else{
 				throw new IllegalStateException();
 			}
@@ -139,8 +162,8 @@ public class GamePlayThread extends Thread{
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
 		
-		//activityQueue.add(new SimpleWorldGrantedActivityImpl(grantedLands));
-		activityQueue.add(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));
+		//addToActivityQueue(new SimpleWorldGrantedActivityImpl(grantedLands));
+		addToActivityQueue(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));
 	}
 	
 	private Flag getWinner(World world){
@@ -181,9 +204,9 @@ public class GamePlayThread extends Thread{
 		}
 		
 		
-		activityQueue.add(new SimpleFlagDistributedActivity(getFlagToNameMap(playerFlagMap)));
+		addToActivityQueue(new SimpleFlagDistributedActivity(getFlagToNameMap(playerFlagMap)));
 		
-		activityQueue.add(new SimpleWorldCreatedActivityImpl(new FullWorldImpl(world)));
+		addToActivityQueue(new SimpleWorldCreatedActivityImpl(new FullWorldImpl(world)));
 		
 		/* Start the game*/
 		int leadNumber = 1;
@@ -212,7 +235,7 @@ public class GamePlayThread extends Thread{
 						Lead lead = players[i].attack(immutableWorld);
 						
 						if (lead != null)
-							activityQueue.add(new SimplePlayerAttackActivity(playerFlag, lead));
+							addToActivityQueue(new SimplePlayerAttackActivity(playerFlag, lead));
 						if (lead == null) {
 							canLead = false; 
 						}else{
@@ -229,7 +252,7 @@ public class GamePlayThread extends Thread{
 												Flag neighbouringLandFlag = neighbouringLand.getFlag();
 												neighbouringLand.setFlag(playerFlag);
 												
-												activityQueue.add(new SimpleLandUpdatedActivity(neighbouringLand));
+												addToActivityQueue(new SimpleLandUpdatedActivity(neighbouringLand));
 												
 												if (!world.isExistsLandByFlag(neighbouringLandFlag)){
 													world.getFlags().remove(neighbouringLandFlag);
@@ -237,11 +260,11 @@ public class GamePlayThread extends Thread{
 												
 												land.setDiceCount(DiceStack.ONE);
 												
-												activityQueue.add(new SimpleLandUpdatedActivity(land));
+												addToActivityQueue(new SimpleLandUpdatedActivity(land));
 											}else{
 												land.setDiceCount(DiceStack.ONE);
 												
-												activityQueue.add(new SimpleLandUpdatedActivity(land));
+												addToActivityQueue(new SimpleLandUpdatedActivity(land));
 											}
 											successAttacked = true;
 										}

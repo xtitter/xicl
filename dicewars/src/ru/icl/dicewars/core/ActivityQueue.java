@@ -8,4 +8,6 @@ public interface ActivityQueue {
 	public DiceWarsActivity poll();
 	
 	public void clear();
+	
+	public int size();
 }

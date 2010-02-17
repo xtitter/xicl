@@ -1,8 +1,5 @@
 package ru.icl.dicewars.gui.thread;
 
-import java.util.List;
-
-import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.core.ActivityQueue;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
@@ -12,7 +9,6 @@ import ru.icl.dicewars.core.activity.DiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.FlagDistributedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
-import ru.icl.dicewars.core.activity.SimpleFlagDistributedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
 import ru.icl.dicewars.gui.manager.WindowManager;
@@ -24,12 +20,10 @@ public class UIGameThread extends Thread {
 	@Override
 	public void run() {
 		GamePlayThread gamePlayThread = new GamePlayThread(new SimpleConfigurationImpl());
-		
-		final ActivityQueue activityQueue = gamePlayThread.getActivityQueue();
 		gamePlayThread.start();
 		
 		while (t) {
-			DiceWarsActivity activity = activityQueue.poll();
+			DiceWarsActivity activity = gamePlayThread.pollFromActivityQueue();
 			
 			if (activity instanceof WorldCreatedActivity) {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();

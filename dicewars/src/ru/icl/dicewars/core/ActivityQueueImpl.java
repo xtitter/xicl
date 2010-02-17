@@ -53,4 +53,9 @@ public class ActivityQueueImpl implements ActivityQueue{
           isGameOver = false;
           isFlagDistributed = false;
      }
+     
+    @Override
+    public synchronized int size() {
+    	return queue.size();
+    }
 }
