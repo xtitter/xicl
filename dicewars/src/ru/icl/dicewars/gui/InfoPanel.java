@@ -25,7 +25,7 @@ public class InfoPanel extends JPanel {
 		setLayout(null);
 	}
 	
-	public void inirPlayers(FlagDistributedActivity fda) {
+	public void initPlayers(FlagDistributedActivity fda) {
 		int yoffset = 10;
 		for (PlayerPanel playerPanel : players.values()){
 			this.remove(playerPanel);

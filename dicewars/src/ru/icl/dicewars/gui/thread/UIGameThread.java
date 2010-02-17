@@ -7,6 +7,7 @@ import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.core.activity.DiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.FlagDistributedActivity;
+import ru.icl.dicewars.core.activity.GameEndedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
@@ -32,7 +33,7 @@ public class UIGameThread extends Thread {
 				WindowManager.getManager().getWorld().update(world);
 			} else if (activity instanceof FlagDistributedActivity){
 				FlagDistributedActivity fda = (FlagDistributedActivity) activity;
-				WindowManager.getManager().getInfoPanel().addPlayers(fda);
+				WindowManager.getManager().getInfoPanel().initPlayers(fda);
 			} else if (activity instanceof LandUpdatedActivity) {
 				FullLand land = ((LandUpdatedActivity) activity).getFullLand();
 				WindowManager.getManager().getWorld().update(land);
@@ -54,9 +55,11 @@ public class UIGameThread extends Thread {
 			} else if (activity instanceof DiceCountInReserveChangedActivity) {
 				DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
 				WindowManager.getManager().getInfoPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
+			} else if (activity instanceof GameEndedActivity){
+				break;
 			}
 			
-			_sleep(10);
+			//_sleep(10);
 		}
 		
 		while (gamePlayThread.isAlive()){
