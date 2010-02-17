@@ -51,7 +51,7 @@ public class PlayersJFrame extends JFrame {
 	
 	WindowListener windowListener = new WindowAdapter() {
 		public void windowClosing(WindowEvent w) {
-			PlayersJFrame.this.setVisible(false);
+  			PlayersJFrame.this.setVisible(false);
 		}
 	};
 	

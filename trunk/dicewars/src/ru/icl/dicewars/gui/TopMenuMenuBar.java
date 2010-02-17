@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.util.ImageUtil;
@@ -43,7 +44,8 @@ public class TopMenuMenuBar extends JMenuBar {
 	ActionListener playersActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			PlayersJFrame playersJFrame = new PlayersJFrame();
+   			PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
+   			playersJFrame.setVisible(true);
 		}
 	};
 

@@ -21,11 +21,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.MatteBorder;
 
 import ru.icl.dicewars.gui.InfoJPanel;
+import ru.icl.dicewars.gui.PlayersJFrame;
 import ru.icl.dicewars.gui.TopMenuMenuBar;
 import ru.icl.dicewars.gui.WorldJPanel;
 import ru.icl.dicewars.gui.manager.WindowManager;
@@ -121,17 +123,6 @@ public class MainJFrame extends JFrame {
         
         setVisible(true);
         
-        try {
-            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-            for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(laf.getName())) {
-					UIManager.setLookAndFeel(laf.getClassName());
-				}
-			}
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (Exception e) {
-        }
-        
         jLayeredPane = WindowManager.getInstance().getJLayeredPane();
         setLayeredPane(jLayeredPane);
         
@@ -173,6 +164,21 @@ public class MainJFrame extends JFrame {
 	@SuppressWarnings("unused")
 	private static void createAndShowGUI() {
 		MainJFrame mainJFrame = WindowManager.getInstance().getMainFrame();
+		PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
+		playersJFrame.setVisible(false);
+		
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+            for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(laf.getName())) {
+					UIManager.setLookAndFeel(laf.getClassName());
+				}
+			}
+            SwingUtilities.updateComponentTreeUI(mainJFrame);
+            SwingUtilities.updateComponentTreeUI(playersJFrame);
+        } catch (Exception e) {
+        }
+
     }
 	
     public static void main(String[] args) {
