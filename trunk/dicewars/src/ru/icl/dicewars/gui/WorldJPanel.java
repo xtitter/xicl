@@ -2,13 +2,13 @@ package ru.icl.dicewars.gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,12 +18,10 @@ import javax.swing.JPanel;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.core.FullLand;
-import ru.icl.dicewars.core.FullLandImpl;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.Point;
-import ru.icl.dicewars.gui.manager.ImageManager;
 
-public class World extends JPanel {
+public class WorldJPanel extends JPanel {
 
 	private FullWorld world;
 
@@ -56,7 +54,8 @@ public class World extends JPanel {
 	
 	private Map<Flag, Integer> diceOverallCount = new HashMap<Flag, Integer>();
 	
-	public World() {
+	public WorldJPanel() {
+		setPreferredSize(new Dimension(1350,930));
 	}
 	
 	public void update(FullWorld world) {
@@ -128,7 +127,7 @@ public class World extends JPanel {
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 		                RenderingHints.VALUE_ANTIALIAS_ON);
 				
-				g2d.setFont(World.diceFont);
+				g2d.setFont(WorldJPanel.diceFont);
 				
 				//AffineTransform at = AffineTransform.getTranslateInstance(0, 0);
 				//at.shear(-.5, 0);

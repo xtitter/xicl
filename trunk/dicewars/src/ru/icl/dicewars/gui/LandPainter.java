@@ -40,8 +40,8 @@ public class LandPainter {
 		int maxY = 0;
 		for (Point p : land.getPoints()) {
 			rowOffset = p.getY() % 2 == 0 ? 9 : 0;
-			int _x = World.X_OFFSET + p.getX()*19 + rowOffset;
-			int _y = World.Y_OFFSET + p.getY()*(20 - correction);
+			int _x = WorldJPanel.X_OFFSET + p.getX()*19 + rowOffset;
+			int _y = WorldJPanel.Y_OFFSET + p.getY()*(20 - correction);
 			if (_x < minX) minX = _x;
 			if (_y < minY) minY = _y;
 			if (_x > maxX) maxX = _x;
@@ -70,8 +70,8 @@ public class LandPainter {
 
 				for (Point p : land.getPoints()) {
 					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
-					int _x = World.X_OFFSET + p.getX() * 19 + rowOffset;
-					int _y = World.Y_OFFSET + p.getY() * (20 - correction);
+					int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
+					int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
 					Polygon pol = getHexagon(_x - minX, _y - minY, 10);
 					g2d.fillPolygon(pol);
 					drawBorder(g2d, land, p, pol);
@@ -96,8 +96,8 @@ public class LandPainter {
 		int maxY = 0;
 		for (Point p : land.getPoints()) {
 			rowOffset = p.getY() % 2 == 0 ? 9 : 0;
-			int _x = World.X_OFFSET + p.getX()*19 + rowOffset;
-			int _y = World.Y_OFFSET + p.getY()*(20 - correction);
+			int _x = WorldJPanel.X_OFFSET + p.getX()*19 + rowOffset;
+			int _y = WorldJPanel.Y_OFFSET + p.getY()*(20 - correction);
 			if (_x < minX) minX = _x;
 			if (_y < minY) minY = _y;
 			if (_x > maxX) maxX = _x;
@@ -124,8 +124,8 @@ public class LandPainter {
 
 			for (Point p : land.getPoints()) {
 				rowOffset = p.getY() % 2 == 0 ? 9 : 0;
-				int _x = World.X_OFFSET + p.getX() * 19 + rowOffset;
-				int _y = World.Y_OFFSET + p.getY() * (20 - correction);
+				int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
+				int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
 				Polygon pol = getHexagon(_x - minX, _y - minY, 10);
 				g2d.fillPolygon(pol);
 				drawBorder(g2d, land, p, pol);

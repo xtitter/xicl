@@ -14,27 +14,36 @@ import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.util.ImageUtil;
 
 public class TopMenuMenuBar extends JMenuBar {
+	private static final long serialVersionUID = 1921209489464172404L;
+
 	JMenu fileMenu = new JMenu("File");
 	JMenu settingsMenu = new JMenu("Settings");
 
 	ActionListener exitActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			WindowManager.getManager().getMainFrame().close();
+			WindowManager.getInstance().getMainFrame().close();
 		}
 	};
 
 	ActionListener startNewGameActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			WindowManager.getManager().getMainFrame().startNewGame();
+			WindowManager.getInstance().getMainFrame().startNewGame();
 		}
 	};
 
 	ActionListener stopGameActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			WindowManager.getManager().getMainFrame().stopGame();
+			WindowManager.getInstance().getMainFrame().stopGame();
+		}
+	};
+	
+	ActionListener playersActionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			PlayersJFrame playersJFrame = new PlayersJFrame();
 		}
 	};
 
@@ -43,7 +52,7 @@ public class TopMenuMenuBar extends JMenuBar {
 	Icon playersIcon = null;
 	Icon stopGameIcon = null;
 
-	public Icon getStartNewGameIcon() {
+	Icon getStartNewGameIcon() {
 		if (startNewGameIcon == null) {
 			String path = "/resources/icon/start.png";
 			Image image = ImageUtil.getImage(path);
@@ -54,7 +63,7 @@ public class TopMenuMenuBar extends JMenuBar {
 		return startNewGameIcon;
 	}
 
-	public Icon getExitIcon() {
+	Icon getExitIcon() {
 		if (exitIcon == null) {
 			String path = "/resources/icon/exit.png";
 			Image image = ImageUtil.getImage(path);
@@ -64,7 +73,7 @@ public class TopMenuMenuBar extends JMenuBar {
 		return exitIcon;
 	}
 
-	public Icon getPlayersIcon() {
+	Icon getPlayersIcon() {
 		if (playersIcon == null) {
 			String path = "/resources/icon/players.png";
 			Image image = ImageUtil.getImage(path);
@@ -74,7 +83,7 @@ public class TopMenuMenuBar extends JMenuBar {
 		return playersIcon;
 	}
 
-	public Icon getStopGameIcon() {
+	Icon getStopGameIcon() {
 		if (stopGameIcon == null) {
 			String path = "/resources/icon/stop.png";
 			Image image = ImageUtil.getImage(path);
@@ -105,9 +114,10 @@ public class TopMenuMenuBar extends JMenuBar {
 
 		this.add(fileMenu);
 
-		JMenuItem playersManuItem = new JMenuItem("Players");
-		playersManuItem.setIcon(getPlayersIcon());
-		settingsMenu.add(playersManuItem);
+		JMenuItem playersMenuItem = new JMenuItem("Players");
+		playersMenuItem.addActionListener(playersActionListener);
+		playersMenuItem.setIcon(getPlayersIcon());
+		settingsMenu.add(playersMenuItem);
 
 		this.add(settingsMenu);
 	}

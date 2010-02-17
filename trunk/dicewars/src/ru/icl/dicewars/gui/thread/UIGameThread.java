@@ -30,31 +30,31 @@ public class UIGameThread extends Thread {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
 				LandFactory.buildTheWorld(world);
 				LandFactory.buildBackground(world);
-				WindowManager.getManager().getWorld().update(world);
+				WindowManager.getInstance().getWorldJPanel().update(world);
 			} else if (activity instanceof FlagDistributedActivity){
 				FlagDistributedActivity fda = (FlagDistributedActivity) activity;
-				WindowManager.getManager().getInfoPanel().initPlayers(fda);
+				WindowManager.getInstance().getInfoJPanel().initPlayers(fda);
 			} else if (activity instanceof LandUpdatedActivity) {
 				FullLand land = ((LandUpdatedActivity) activity).getFullLand();
-				WindowManager.getManager().getWorld().update(land);
+				WindowManager.getInstance().getWorldJPanel().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
-				WindowManager.getManager().getWorld().updateAttackingPlayer(pa.getFromLandId());
-				WindowManager.getManager().getJLayeredPane().repaint();
+				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
+				WindowManager.getInstance().getJLayeredPane().repaint();
 				//if (!alreadyFrozen()) _sleep(700);
-				WindowManager.getManager().getWorld().updateDefendingPlayer(pa.getToLandId());
+				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(pa.getToLandId());
 				//Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
 				//WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
-				WindowManager.getManager().getJLayeredPane().repaint();
+				WindowManager.getInstance().getJLayeredPane().repaint();
 				//if (!alreadyFrozen()) _sleep(1000);
 				//WindowManager.getManager().getJLayeredPane().remove(arrow);
-				WindowManager.getManager().getWorld().updateAttackingPlayer(0);
-				WindowManager.getManager().getWorld().updateDefendingPlayer(0);
-				WindowManager.getManager().getJLayeredPane().repaint();
+				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
+				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(0);
+				WindowManager.getInstance().getJLayeredPane().repaint();
 				//if (!alreadyFrozen()) _sleep(300);
 			} else if (activity instanceof DiceCountInReserveChangedActivity) {
 				DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
-				WindowManager.getManager().getInfoPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
+				WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
 			} else if (activity instanceof GameEndedActivity){
 				break;
 			}
@@ -70,9 +70,9 @@ public class UIGameThread extends Thread {
 	
 	private boolean alreadyFrozen() {
 		boolean frozen = false;
-		while (WindowManager.getManager().isFrozen()) {
+		while (WindowManager.getInstance().isFrozen()) {
 			frozen = true;
-			WindowManager.getManager().fire();
+			WindowManager.getInstance().fire();
 			_sleep(1000);
 		}
 		return frozen;

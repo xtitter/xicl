@@ -19,8 +19,8 @@ public class BezierArrow extends LineArrowWithArrowHead {
 	@Override
 	protected void paintComponent(Graphics g) {
 
-		int w = WindowManager.getManager().getScreenWidth();
-		int h = WindowManager.getManager().getScreenHeight();
+		int w = WindowManager.getInstance().getScreenWidth();
+		int h = WindowManager.getInstance().getScreenHeight();
 		BufferedImage doubleBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2D = (Graphics2D) doubleBuffer.getGraphics();
         g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

@@ -9,9 +9,9 @@ import java.io.ObjectOutputStream;
 import ru.icl.dicewars.client.World;
 import ru.icl.dicewars.core.FullWorld;
 
-public class SerializeWorldUtil {
+public class WorldSerializationUtil {
 
-	private SerializeWorldUtil() {
+	private WorldSerializationUtil() {
 	}
 
 	public static void serializeWorld(final World world, final String name)

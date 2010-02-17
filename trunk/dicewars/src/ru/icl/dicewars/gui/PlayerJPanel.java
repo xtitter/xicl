@@ -4,12 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
-public class PlayerPanel extends JPanel {
+public class PlayerJPanel extends JPanel {
 
 	private static final long serialVersionUID = 8066379108638626622L;
 
@@ -23,7 +22,7 @@ public class PlayerPanel extends JPanel {
 	private boolean outOfTheGame = false;
 	private int rank = 0;
 	
-	public PlayerPanel(Flag flag, String playerName) {
+	public PlayerJPanel(Flag flag, String playerName) {
 		this.color = FlagToColorUtil.getColorByFlag(flag, 165);
 		this.flag = flag;
 		this.playerName = playerName;

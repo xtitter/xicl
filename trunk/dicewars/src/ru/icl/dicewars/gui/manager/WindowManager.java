@@ -1,36 +1,43 @@
 package ru.icl.dicewars.gui.manager;
 
-import java.awt.Color;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 
-import ru.icl.dicewars.DiceWars;
-import ru.icl.dicewars.gui.InfoPanel;
-import ru.icl.dicewars.gui.World;
+import ru.icl.dicewars.MainJFrame;
+import ru.icl.dicewars.gui.InfoJPanel;
+import ru.icl.dicewars.gui.PlayersJFrame;
+import ru.icl.dicewars.gui.WorldJPanel;
 
 public class WindowManager {
 	
 	private static WindowManager windowManager = null;
+	private static final Object windowManagerFlag = new Object();
+	
 	//private int screenWidth;
     //private int screenHeight;
 	
-    private World world;
-	private InfoPanel infoPanel;
-	
-	private Object sync = new Object();
+    private WorldJPanel worldJPanel;
+	private InfoJPanel infoJPanel;
+	private JLayeredPane jLayeredPane;
+	private MainJFrame mainJFrame;
+	private PlayersJFrame playersJFrame;
+	private JScrollPane jScrollPane;
+
 	private boolean frozen = false;
 	
-	private Object jLayeredPaneFlag = new Object();
-	private Object worldFlag = new Object();
-	private Object infoPanelFlag = new Object();
-	private Object mainFrameFlag = new Object();
-	private static Object windowManagerFlag = new Object();
+	private final Object sync = new Object();	
+	private final Object jLayeredPaneFlag = new Object();
+	private final Object worldJPanelFlag = new Object();
+	private final Object infoJPanelFlag = new Object();
+	private final Object mainJFrameFlag = new Object();
+	private final Object playersJFrameFlag = new Object();
+	private final Object jScrollPaneFlag = new Object();
 	
-	public static WindowManager getManager() {
+	//This class should be instantiated.
+	private WindowManager() {
+	}
+	
+	public static WindowManager getInstance() {
 		if (windowManager == null) {
 			synchronized (windowManagerFlag) {
 				if (windowManager == null) {
@@ -41,41 +48,36 @@ public class WindowManager {
 		return windowManager;
 	}
 	
-	public World getWorld() {
-		if (world == null) {
-			synchronized(worldFlag){
-				if (world == null){
-					world = new World();
-					world.setBorder(BorderFactory.createEtchedBorder());
+	public WorldJPanel getWorldJPanel() {
+		if (worldJPanel == null) {
+			synchronized(worldJPanelFlag){
+				if (worldJPanel == null){
+					worldJPanel = new WorldJPanel();
 				}
 			}
 		}
-		return world;
+		return worldJPanel;
 	}
 	
-	public JScrollPane getScrollPane(JComponent component) {
-		JScrollPane scrollPane = new JScrollPane(component);
-
-		scrollPane.setOpaque(false);
-		scrollPane.getViewport().setOpaque(false);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-		scrollPane.setBorder(BorderFactory.createLineBorder(new Color(0, 100, 0, 0)));
-
-		return scrollPane;
+	public JScrollPane getJScrollPane() {
+		if (jScrollPane == null){
+			synchronized (jScrollPaneFlag) {
+				jScrollPane = new JScrollPane(getWorldJPanel());
+			}
+		
+		}
+		return jScrollPane;
 	}
 	
-	public InfoPanel getInfoPanel() {
-		if (infoPanel == null) {
-			synchronized (infoPanelFlag) {
-				if (infoPanel == null) {
-					infoPanel = new InfoPanel();
-					//infoPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+	public InfoJPanel getInfoJPanel() {
+		if (infoJPanel == null) {
+			synchronized (infoJPanelFlag) {
+				if (infoJPanel == null) {
+					infoJPanel = new InfoJPanel();
 				}
 			}
 		}
-		return infoPanel;
+		return infoJPanel;
 	}
 	
 	public JLayeredPane getJLayeredPane() {
@@ -93,15 +95,26 @@ public class WindowManager {
 		this.mainFrame = mainFrame;
 	}*/
 	
-	public DiceWars getMainFrame() {
-		if (mainFrame == null){
-			synchronized (mainFrameFlag) {
-				if (mainFrame == null){
-					mainFrame = new DiceWars();
+	public MainJFrame getMainFrame() {
+		if (mainJFrame == null){
+			synchronized (mainJFrameFlag) {
+				if (mainJFrame == null){
+					mainJFrame = new MainJFrame();
 				}
 			}
 		}
-		return mainFrame;
+		return mainJFrame;
+	}
+	
+	public PlayersJFrame getPlayersJFrame(){
+		if (playersJFrame == null){
+			synchronized (playersJFrameFlag) {
+				if (playersJFrame == null){
+					playersJFrame = new PlayersJFrame();
+				}
+			}
+		}
+		return playersJFrame;
 	}
 	
 	/*public Arrow getArrow(SimplePlayerAttackActivity pa, ArrowFactory.ArrowType type) {
@@ -199,8 +212,4 @@ public class WindowManager {
 			return this.frozen;
 		}
 	}
-	
-	private JLayeredPane jLayeredPane;
-	
-	private DiceWars mainFrame;
 }
