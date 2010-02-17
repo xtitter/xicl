@@ -1,6 +1,5 @@
 package ru.icl.dicewars.gui.thread;
 
-import ru.icl.dicewars.core.ActivityQueue;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.GamePlayThread;
@@ -11,6 +10,7 @@ import ru.icl.dicewars.core.activity.FlagDistributedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
+import ru.icl.dicewars.gui.LandFactory;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class UIGameThread extends Thread {
@@ -27,6 +27,8 @@ public class UIGameThread extends Thread {
 			
 			if (activity instanceof WorldCreatedActivity) {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
+				LandFactory.buildTheWorld(world);
+				LandFactory.buildBackground(world);
 				WindowManager.getManager().getWorld().update(world);
 			} else if (activity instanceof FlagDistributedActivity){
 				FlagDistributedActivity fda = (FlagDistributedActivity) activity;
@@ -38,17 +40,17 @@ public class UIGameThread extends Thread {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
 				WindowManager.getManager().getWorld().updateAttackingPlayer(pa.getFromLandId());
 				WindowManager.getManager().getJLayeredPane().repaint();
-				if (!alreadyFrozen()) _sleep(700);
+				//if (!alreadyFrozen()) _sleep(700);
 				WindowManager.getManager().getWorld().updateDefendingPlayer(pa.getToLandId());
 				//Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
 				//WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
 				WindowManager.getManager().getJLayeredPane().repaint();
-				if (!alreadyFrozen()) _sleep(1000);
+				//if (!alreadyFrozen()) _sleep(1000);
 				//WindowManager.getManager().getJLayeredPane().remove(arrow);
 				WindowManager.getManager().getWorld().updateAttackingPlayer(0);
 				WindowManager.getManager().getWorld().updateDefendingPlayer(0);
 				WindowManager.getManager().getJLayeredPane().repaint();
-				if (!alreadyFrozen()) _sleep(300);
+				//if (!alreadyFrozen()) _sleep(300);
 			} else if (activity instanceof DiceCountInReserveChangedActivity) {
 				DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
 				WindowManager.getManager().getInfoPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());

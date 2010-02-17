@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,8 +22,6 @@ import ru.icl.dicewars.core.FullLandImpl;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.Point;
 import ru.icl.dicewars.gui.manager.ImageManager;
-import ru.icl.dicewars.gui.manager.WindowManager;
-import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
 public class World extends JPanel {
 
@@ -36,10 +35,10 @@ public class World extends JPanel {
 	public static final int Y_OFFSET = 30;
 	final static BasicStroke stroke = new BasicStroke(2.0f);
 	
-	private static final int MIN_X = -1;
-	private static final int MIN_Y = -1;
-	private static final int MAX_X = 68;
-	private static final int MAX_Y = 55;
+	public static final int MIN_X = -1;
+	public static final int MIN_Y = -1;
+	public static final int MAX_X = 68;
+	public static final int MAX_Y = 55;
 	
 	private static Font diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));;
 	private static Font idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
@@ -62,6 +61,7 @@ public class World extends JPanel {
 	
 	public void update(FullWorld world) {
 		this.world = world;
+
 		width = getWidth();
 		height = getHeight();
 		synchronized (flag2) {
@@ -111,6 +111,8 @@ public class World extends JPanel {
 
 		synchronized (flag2) {
 			if (this.doubleBuffer == null){
+				//long t1 = new Date().getTime();
+				
 				final int defendingLandId = defendingPlayer;
 				final int attackingLandId = attackingPlayer;
 
@@ -132,20 +134,32 @@ public class World extends JPanel {
 				//at.shear(-.5, 0);
 				//g2d.transform(at);
 				    
-				int correction = 4;
+				//int correction = 4;
 		
-				FullLand empty = new FullLandImpl(0);
+				/*FullLand empty = new FullLandImpl(0);
 				for (int i = MIN_X; i < MAX_X + 1; i++) {
 					for (int j = MIN_Y; j < MAX_Y + 1; j++) {
 						empty.getPoints().add(new Point(i,j));
 					}
-				}
+				}*/
 				
 				//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
 				
+				for (FullLand land : landsTmp) {
+					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
+					ColoredLand l = LandFactory.getLand(land.getLandId(), land.getFlag());
+					if (l != null) {
+						int offsetX = battle ? 2 : 0;
+						int offsetY = battle ? 5 : 0;
+						g2d.drawImage(l.image, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
+					}
+				}
+				
+				/*
 				int rowOffset = 0;
 				
 				for (FullLand land : landsTmp) {
+					
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					Color color = FlagToColorUtil.getColorByFlag(land.getFlag(), battle ? 75 : 165);
 					g2d.setColor(color);
@@ -161,28 +175,37 @@ public class World extends JPanel {
 						}
 						
 						Polygon pol = getHexagon(_x, _y, 10);
-						//g2d.drawPolygon(pol);
+						g2d.drawPolygon(pol);
 						empty.getPoints().remove(p);
 						
-						g2d.fillPolygon(pol);
-						/*if (battle) {
-							g2d.setColor(World.darkColor);
+						if (land.getLandId() > 10) {
 							g2d.fillPolygon(pol);
-							g2d.setColor(color);
-						}*/
-						drawBorder(g2d, land, p, pol);
+					
+							//if (battle) {
+								//g2d.setColor(World.darkColor);
+								//g2d.fillPolygon(pol);
+								//g2d.setColor(color);
+							//}
+					
+							drawBorder(g2d, land, p, pol);
+						}
 					}
 				}
+				*/
 				
-				g2d.setColor(new Color(240,240,240,150));
+				/*g2d.setColor(new Color(240,240,240,150));
 		        for (Point p : empty.getPoints()) {
 		             rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 		             Polygon pol = getHexagon(X_OFFSET + p.getX()*19 + rowOffset, Y_OFFSET + p.getY()*(20 - correction), 10);
 		             g2d.fillPolygon(pol);
 					 drawBorder(g2d, empty, p, pol);
+				}*/
+				ColoredLand l = LandFactory.getBackground();
+				if (l != null) {
+					g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
 				}
 				
-				diceOverallCount.clear();
+				/*diceOverallCount.clear();
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					
@@ -201,6 +224,7 @@ public class World extends JPanel {
 						x += _x;
 						y += _y;
 					}
+					
 					int size = land.getPoints().size();
 					//String count = "";
 					if (size > 0) {
@@ -232,22 +256,25 @@ public class World extends JPanel {
 						g2d.drawString(count, (int)x, (int)y);
 						g2d.setColor(Color.black);
 						*/
-						
+		        
+				        /*
 						// Displaying land ids
 						g2d.setColor(Color.black);
 						g2d.setFont(World.idFont);
 						g2d.drawString(land.getLandId()+"", (int)x+10, (int)y+10);
 						g2d.setFont(World.diceFont);
-						
 					}
-				}
+				}*/
 				
 				//FIXME: remove it here to UIGameThread when needed events are implemented
-				WindowManager.getManager().getInfoPanel().updateDiceCount(diceOverallCount);
-				WindowManager.getManager().getInfoPanel().sortPlayers();
+				//WindowManager.getManager().getInfoPanel().updateDiceCount(diceOverallCount);
+				//WindowManager.getManager().getInfoPanel().sortPlayers();
 				
 		        //g.drawImage(doubleBuffer, 0, 0, width, height, this);
 				g2d.dispose();
+				
+				//long t2 = new Date().getTime();
+				//System.out.println("generating new world: " + (t2 - t1) + "ms");
 			}
 			g.drawImage(this.doubleBuffer, 0, 0, width, height, this);
 		}
