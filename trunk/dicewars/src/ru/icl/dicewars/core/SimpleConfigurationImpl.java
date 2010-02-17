@@ -5,8 +5,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
@@ -15,6 +17,8 @@ import org.objectweb.asm.ClassReader;
 
 import ru.icl.dicewars.client.Player;
 import ru.icl.dicewars.core.exception.InvalidConfigurationLoadingExecption;
+import ru.icl.dicewars.core.exception.InvalidPlayerClassLoadingException;
+import ru.icl.dicewars.util.ClassUtil;
 
 public class SimpleConfigurationImpl implements Configuration {
 	private final static String[] CONFIG_FILE_LOCATIONS = new String[] { "configuration.properties" };
@@ -29,15 +33,15 @@ public class SimpleConfigurationImpl implements Configuration {
 	
 	private static final int DEFAULT_MAX_DICE_COUNT_IN_RESERVE = 64;
 
-	private int playersCount = 0;
 	private int maxDiceCountInReserve = DEFAULT_MAX_DICE_COUNT_IN_RESERVE;
-	private String[] classNames = new String[] {};
-	private PlayerClassesLoader playerClassesLoader = null;
+
 	private FullWorldGenerator fullWorldGenerator = null;
-	private Object flag = new Object();
 	private Object flag2 = new Object();
 	private String playerScanDir = DEFAULT_PLAYER_SCAN_DIR;
 
+	private Class<Player>[] allPlayerClasses;
+	private Class<Player>[] playerClasses;
+	
 	public SimpleConfigurationImpl() {
 		Properties properties = new Properties();
 		for (int i = 0; i < CONFIG_FILE_LOCATIONS.length; i++) {
@@ -106,8 +110,10 @@ public class SimpleConfigurationImpl implements Configuration {
 			}
 		}
 		
-		this.classNames = classNames.toArray(new String[]{});
-		this.playersCount = classNames.size();
+		Class<Player>[] allPlayerClasses = loadPlayerClasses(classNames.toArray(new String[]{}));
+		
+		this.allPlayerClasses = allPlayerClasses;
+		this.playerClasses = allPlayerClasses;
 		
 		try{
 			this.maxDiceCountInReserve = Integer.valueOf(properties.getProperty(MAX_DICE_COUNT_IN_RESERVE_PROPERTY_NAME));
@@ -115,13 +121,32 @@ public class SimpleConfigurationImpl implements Configuration {
 		}
 	}
 
+	private Class<Player>[] loadPlayerClasses(String[] classNames) {
+		List<Class<Player>> playersList = new ArrayList<Class<Player>>();
+		
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		for (String clazz : classNames) {
+			try{
+				Class<?> loadedClass = classLoader.loadClass(clazz);
+				if (ClassUtil.isAssignable(Player.class, loadedClass)) {
+					playersList.add((Class<Player>) loadedClass);
+				}else{
+					throw new InvalidPlayerClassLoadingException();
+				}
+			}catch (Exception e) {
+				throw new InvalidPlayerClassLoadingException(e);
+			}
+		}
+		return playersList.toArray(new Class[] {});
+	}
+	
 	@Override
 	public FullWorldGenerator geFullWorldGenerator() {
 		if (fullWorldGenerator == null) {
 			synchronized (flag2) {
 				if (fullWorldGenerator == null) {
 					RealFullWorldGeneratorImpl generator = new RealFullWorldGeneratorImpl();
-					generator.setPlayersCount(playersCount);
+					generator.setPlayersCount(getPlayersCount());
 					return generator;
 				}
 			}
@@ -129,22 +154,18 @@ public class SimpleConfigurationImpl implements Configuration {
 		return fullWorldGenerator;
 	}
 
-	@Override
-	public PlayerClassesLoader getPlayerClassesLoader() {
-		if (playerClassesLoader == null) {
-			synchronized (flag) {
-				if (playerClassesLoader == null) {
-					playerClassesLoader = new SimplePlayerClassesLoaderImpl(
-							classNames);
-				}
-			}
-		}
-		return playerClassesLoader;
+	public Class<Player>[] getAllPlayers() {
+		return allPlayerClasses;
 	}
-
+	
+	@Override
+	public Class<Player>[] getPlayerClasses() {
+		return playerClasses;
+	}
+	
 	@Override
 	public int getPlayersCount() {
-		return playersCount;
+		return getPlayerClasses().length;
 	}
 
 	@Override
