@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 import ru.icl.dicewars.client.Flag;
+import ru.icl.dicewars.core.activity.FlagDistributedActivity;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
 public class InfoPanel extends JPanel {
@@ -28,10 +29,10 @@ public class InfoPanel extends JPanel {
 		setLayout(null);
 	}
 	
-	public void addPlayers(List<Flag> flags) {
+	public void addPlayers(FlagDistributedActivity fda) {
 		int yoffset = 10;
-		for (Flag flag : flags) {
-			PlayerPanel player = new PlayerPanel(flag);
+		for (Flag flag : fda.getFlags()) {
+			PlayerPanel player = new PlayerPanel(flag, fda.getNameByFlag(flag));
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
 			player.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(player.getFlag(), 100), FlagToColorUtil.getColorByFlag(player.getFlag(), 100)));
 			players.put(flag, player);
@@ -82,11 +83,11 @@ public class InfoPanel extends JPanel {
 				return Integer.valueOf(arg1.getDiceOverallCount()).compareTo(Integer.valueOf(arg0.getDiceOverallCount()));
 			}
 		});
-		/*int yoffset = 10;
+		int yoffset = 10;
 		for (PlayerPanel player : list) {
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
 			yoffset += HEIGHT + 10;
-		}*/
+		}
 		revalidate();
 	}
 }

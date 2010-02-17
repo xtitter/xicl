@@ -23,21 +23,24 @@ public class PlayerPanel extends JPanel {
 	private boolean outOfTheGame = false;
 	private int rank = 0;
 	
-	public PlayerPanel(Flag flag) {
+	public PlayerPanel(Flag flag, String playerName) {
 		this.color = FlagToColorUtil.getColorByFlag(flag, 165);
 		this.flag = flag;
+		this.playerName = playerName;
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 10, 20);
-		g.drawString("Reserve: " + String.valueOf(reserveCount), 10, 40);
+		g.setColor(Color.black);
+		g.drawString("Name: " + playerName, 10, 18);
+		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 10, 36);
+		g.drawString("Reserve: " + String.valueOf(reserveCount), 10, 54);
 		
 		if (outOfTheGame) {
 			g.drawString("OUT", 140, 20);
 			if (rank > 0) {
-				g.drawString("Place: " + String.valueOf(rank), 10, 60);
+				g.drawString("Place: " + String.valueOf(rank), 10, 72);
 			}
 		}
 	}
