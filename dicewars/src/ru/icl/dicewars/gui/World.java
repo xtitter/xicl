@@ -242,6 +242,7 @@ public class World extends JPanel {
 					}
 				}
 				
+				//FIXME: remove it here to UIGameThread when needed events are implemented
 				WindowManager.getManager().getInfoPanel().updateDiceCount(diceOverallCount);
 				WindowManager.getManager().getInfoPanel().sortPlayers();
 				
