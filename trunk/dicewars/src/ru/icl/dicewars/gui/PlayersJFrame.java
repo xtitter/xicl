@@ -255,7 +255,7 @@ public class PlayersJFrame extends JFrame {
 		
 		setSize(450, 250);
 		setResizable(false);
-		setVisible(true);
+		setVisible(false);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(windowListener);
 	}

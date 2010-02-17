@@ -9,7 +9,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
 
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.util.ImageUtil;
