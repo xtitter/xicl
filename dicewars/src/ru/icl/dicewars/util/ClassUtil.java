@@ -3,6 +3,10 @@ package ru.icl.dicewars.util;
 import java.lang.reflect.Constructor;
 
 public class ClassUtil {
+	
+	private ClassUtil() {
+	}
+	
 	public static <T> Constructor<T> getConstructorIfAvailable(Class<T> clazz,
 			Class<?>... paramTypes) {
 		if (clazz == null)
