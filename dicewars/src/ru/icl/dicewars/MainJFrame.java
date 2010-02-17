@@ -163,7 +163,6 @@ public class MainJFrame extends JFrame {
 	private static void createAndShowGUI() {
 		MainJFrame mainJFrame = WindowManager.getInstance().getMainFrame();
 		PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
-		playersJFrame.setVisible(false);
 		
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
