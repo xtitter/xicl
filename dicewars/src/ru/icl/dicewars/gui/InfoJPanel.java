@@ -12,27 +12,27 @@ import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.core.activity.FlagDistributedActivity;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
-public class InfoPanel extends JPanel {
+public class InfoJPanel extends JPanel {
 
 	private static final long serialVersionUID = -222523072240558572L;
 
 	private static final int WIDTH = 180;
 	private static final int HEIGHT = 80;
 	
-	private Map<Flag, PlayerPanel> players = new HashMap<Flag, PlayerPanel>();
+	private Map<Flag, PlayerJPanel> players = new HashMap<Flag, PlayerJPanel>();
 	
-	public InfoPanel() {
+	public InfoJPanel() {
 		setLayout(null);
 	}
 	
 	public void initPlayers(FlagDistributedActivity fda) {
 		int yoffset = 10;
-		for (PlayerPanel playerPanel : players.values()){
+		for (PlayerJPanel playerPanel : players.values()){
 			this.remove(playerPanel);
 		}
 		players.clear();
 		for (Flag flag : fda.getFlags()) {
-			PlayerPanel player = new PlayerPanel(flag, fda.getNameByFlag(flag));
+			PlayerJPanel player = new PlayerJPanel(flag, fda.getNameByFlag(flag));
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
 			player.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(player.getFlag(), 100), FlagToColorUtil.getColorByFlag(player.getFlag(), 100)));
 			players.put(flag, player);
@@ -58,14 +58,14 @@ public class InfoPanel extends JPanel {
 		}
 		
 		Flag toremove = null;
-		for (PlayerPanel player : players.values()) {
+		for (PlayerJPanel player : players.values()) {
 			if (!diceOverallCount.containsKey(player.getFlag())) {
 				toremove = player.getFlag();
 				break;
 			}
 		}
 		if (toremove != null) {
-			PlayerPanel player = players.remove(toremove);
+			PlayerJPanel player = players.remove(toremove);
 			player.setBorder(BorderFactory.createEtchedBorder( FlagToColorUtil.getColorByFlag(player.getFlag(), 100), Color.gray));
 			player.setOutOfTheGame(true);
 			player.setDiceOverallCount(0);

@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,17 +35,27 @@ import javax.swing.UIManager;
 import ru.icl.dicewars.gui.util.ImageUtil;
 
 public class PlayersJFrame extends JFrame {
+	private static final long serialVersionUID = 6714237633991568095L;
+
+	final List<CheckBoxItem> checkBoxItems = new ArrayList<CheckBoxItem>();
+	final List<String> items = new ArrayList<String>();
 	
-	private final List<CheckBoxItem> checkBoxItems = new ArrayList<CheckBoxItem>();
-	private final List<String> items = new ArrayList<String>();
+	Icon upArrowIcon;
+	Icon downArrowIcon;
+	Icon okIcon;
+	Icon cancelIcon;
+	Image playersImage;
 	
-	private Icon upArrowIcon;
-	private Icon downArrowIcon;
+	final JList listCheckBox;
+	final JList listDescription;
 	
-	private final JList listCheckBox;
-	private final JList listDescription;
+	WindowListener windowListener = new WindowAdapter() {
+		public void windowClosing(WindowEvent w) {
+			PlayersJFrame.this.setVisible(false);
+		}
+	};
 	
-	private ActionListener upButtonActionListener = new ActionListener() {
+	ActionListener upButtonActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int selectedIndex = listDescription.getSelectedIndex();
@@ -58,7 +71,7 @@ public class PlayersJFrame extends JFrame {
 		}
 	}; 
 	
-	private ActionListener downButtonActionListener = new ActionListener() {
+	ActionListener downButtonActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int selectedIndex = listDescription.getSelectedIndex();
@@ -74,7 +87,14 @@ public class PlayersJFrame extends JFrame {
 		}
 	}; 
 	
-	public Icon getUpArrowIcon() {
+	ActionListener cancelButtonActionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			PlayersJFrame.this.setVisible(false);
+		}
+	};
+	
+	Icon getUpArrowIcon() {
 		if (upArrowIcon == null) {
 			String path = "/resources/icon/uparrow.png";
 			Image image = ImageUtil.getImage(path);
@@ -84,8 +104,19 @@ public class PlayersJFrame extends JFrame {
 		}
 		return upArrowIcon;
 	}
+	
+	Icon getCancelIcon() {
+		if (cancelIcon == null) {
+			String path = "/resources/icon/cancel.png";
+			Image image = ImageUtil.getImage(path);
+			if (image != null) {
+				cancelIcon = new ImageIcon(image);
+			}
+		}
+		return cancelIcon;
+	}
 
-	public Icon getDownArrowIcon() {
+	Icon getDownArrowIcon() {
 		if (downArrowIcon == null) {
 			String path = "/resources/icon/downarrow.png";
 			Image image = ImageUtil.getImage(path);
@@ -96,9 +127,28 @@ public class PlayersJFrame extends JFrame {
 		return downArrowIcon;
 	}
 	
+	Icon getOkIcon() {
+		if (okIcon == null) {
+			String path = "/resources/icon/ok.png";
+			Image image = ImageUtil.getImage(path);
+			if (image != null) {
+				okIcon = new ImageIcon(image);
+			}
+		}
+		return okIcon;
+	}
+	
+	Image getPlayersImage(){
+		if (playersImage == null){
+			String path = "/resources/icon/players.png";
+			playersImage = ImageUtil.getImage(path);
+		}
+		return playersImage;
+	}
+	
 	public PlayersJFrame() {
-		super("AKCheckList");
-
+		super("Players");
+		setIconImage(getPlayersImage());
 		String[] listData = { "Apple", "Orange", "Cherry", "Blue Berry",
 				"Banana", "Red Plum", "Watermelon" };
 
@@ -186,22 +236,32 @@ public class PlayersJFrame extends JFrame {
 		downButton.setIcon(getDownArrowIcon());
 		downButton.addActionListener(downButtonActionListener);
 		buttonPane.add(downButton);
+
+		JPanel endPagePane = new JPanel();
+		BoxLayout endPagePaneBoxLayout = new BoxLayout(endPagePane, BoxLayout.LINE_AXIS);
+		endPagePane.setLayout(endPagePaneBoxLayout);
+		endPagePane.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 4));
+		
+		JButton okButton = new JButton("Ok");
+		okButton.setIcon(getOkIcon());
+		endPagePane.add(okButton);
+		endPagePane.add(Box.createRigidArea(new Dimension(5, 0)));
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setIcon(getCancelIcon());
+		cancelButton.addActionListener(cancelButtonActionListener);
+		endPagePane.add(cancelButton);
+		
+		getContentPane().add(endPagePane, BorderLayout.PAGE_END);
 		
 		setSize(450, 250);
+		setResizable(false);
 		setVisible(true);
-	}
-
-	@SuppressWarnings("unused")
-	public static void main(String[] args) {
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				PlayersJFrame playerJFrame = new PlayersJFrame();
-			}
-		});
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(windowListener);
 	}
 
 	@SuppressWarnings("serial")
-	private ListModel buildCheckBoxItemsListModel(){
+	ListModel buildCheckBoxItemsListModel(){
 		return new AbstractListModel() {
 			@Override
 			public int getSize() {
@@ -216,7 +276,7 @@ public class PlayersJFrame extends JFrame {
 	}
 	
 	@SuppressWarnings("serial")
-	private ListModel buildItemsListModel() {
+	ListModel buildItemsListModel() {
 		return new AbstractListModel() {
 			@Override
 			public int getSize() {

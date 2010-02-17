@@ -29,8 +29,8 @@ public class LandFactory {
 	
 	public static void buildBackground(FullWorld world) {
 		FullLand empty = new FullLandImpl(0);
-		for (int i = World.MIN_X; i < World.MAX_X + 1; i++) {
-			for (int j = World.MIN_Y; j < World.MAX_Y + 1; j++) {
+		for (int i = WorldJPanel.MIN_X; i < WorldJPanel.MAX_X + 1; i++) {
+			for (int j = WorldJPanel.MIN_Y; j < WorldJPanel.MAX_Y + 1; j++) {
 				empty.getPoints().add(new Point(i,j));
 			}
 		}

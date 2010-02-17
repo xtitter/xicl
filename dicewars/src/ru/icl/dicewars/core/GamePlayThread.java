@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -26,6 +25,7 @@ import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.SimpleTotalDiceCountChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
 import ru.icl.dicewars.core.exception.InvalidPlayerClassInstatiationException;
+import ru.icl.dicewars.core.exception.InvalidPlayersCountException;
 import ru.icl.dicewars.core.roll.LandRoll;
 import ru.icl.dicewars.core.roll.LandRollResult;
 import ru.icl.dicewars.core.util.RandomUtil;
@@ -79,6 +79,10 @@ public class GamePlayThread extends Thread{
 	private Player[] getPlayers(){
 		Class<Player>[] playerClasses = configuration.getPlayerClasses(); 
 		final int playerCount = playerClasses.length;
+		
+		if (playerCount < 2 || playerCount > Flag.values().length)
+			throw new InvalidPlayersCountException();
+		
 		Player[] players = new Player[playerCount];
 		for (int i = 0; i < playerCount; i++) {
 			Constructor<Player> constructor = ClassUtil
