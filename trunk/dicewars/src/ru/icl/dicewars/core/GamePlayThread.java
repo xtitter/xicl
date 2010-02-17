@@ -18,6 +18,7 @@ import ru.icl.dicewars.client.World;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.SimpleDiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.SimpleFlagDistributedActivity;
+import ru.icl.dicewars.core.activity.SimpleGameEndedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimpleMaxConnectedLandsCountChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
@@ -31,7 +32,7 @@ import ru.icl.dicewars.util.ClassUtil;
 
 public class GamePlayThread extends Thread{
 	
-	private static final int MAX_ACTIVITY_COUNT_IN_QUEUE = 500;
+	private static final int MAX_ACTIVITY_COUNT_IN_QUEUE = 50;
 
 	private Configuration configuration;
 	
@@ -152,8 +153,6 @@ public class GamePlayThread extends Thread{
 		
 		addTotalDiceCountByFlag(playerFlag, totalAddedDiceCount);
 		
-		//Set<FullLand> grantedLands = new HashSet<FullLand>();
-		
 		Land land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		while (land != null && world.hasInReserve(playerFlag)){
 			if (land.getDiceCount() > 7) throw new IllegalStateException();
@@ -163,7 +162,6 @@ public class GamePlayThread extends Thread{
 			if (land instanceof FullLand){
 				FullLand fullLand = (FullLand) land;
 				fullLand.incDiceCount();
-				//grantedLands.add(fullLand);
 				addToActivityQueue(new SimpleLandUpdatedActivity(fullLand));
 				addTotalDiceCountByFlag(playerFlag, 1);
 			}else{
@@ -173,7 +171,6 @@ public class GamePlayThread extends Thread{
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
 		
-		//addToActivityQueue(new SimpleWorldGrantedActivityImpl(grantedLands));
 		addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(playerFlag, totalDiceCountMap.get(playerFlag)));
 		addToActivityQueue(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));		
 	}
@@ -352,6 +349,10 @@ public class GamePlayThread extends Thread{
 			}
 			leadNumber++;
 		}
+		
+		//Add activity that the game is ended.
+		if (t) 
+			addToActivityQueue(new SimpleGameEndedActivityImpl());
 		
 		//winnerPlayer = flagPlayerMap.get(getWinner(world));
 	}
