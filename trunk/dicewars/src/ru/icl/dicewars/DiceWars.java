@@ -130,14 +130,14 @@ public class DiceWars extends JFrame {
         }
         
         World world = WindowManager.getManager().getWorld();
-        world.setPreferredSize(new Dimension(1500,1200));
+        world.setPreferredSize(new Dimension(1350,930));
         final JScrollPane scroll = WindowManager.getManager().getScrollPane(world);
-        scroll.setBounds(20, 30, screenWidth - 240, screenHeight - 120);
+        scroll.setBounds(10, 30, screenWidth - 240, screenHeight - 120);
         scroll.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jLayeredPane.add(scroll, 0);
         
         final JPanel infoPanel = WindowManager.getManager().getInfoPanel();
-        infoPanel.setBounds(screenWidth - 210, 30, 190, screenHeight - 120);
+        infoPanel.setBounds(screenWidth - 220, 30, 200, screenHeight - 120);
         infoPanel.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jLayeredPane.add(infoPanel, 0);
         
@@ -149,9 +149,9 @@ public class DiceWars extends JFrame {
 				/*WindowManager.getManager().setScreenWidth(screenWidth);
 		        WindowManager.getManager().setScreenHeight(screenHeight);*/
 		        // Implement resizing here if needed
-		        scroll.setBounds(20, 30, screenWidth - 240, screenHeight - 120);
+		        scroll.setBounds(10, 30, screenWidth - 240, screenHeight - 120);
 		        scroll.revalidate();
-		        infoPanel.setBounds(screenWidth - 210, 30, 190, screenHeight - 120);
+		        infoPanel.setBounds(screenWidth - 220, 30, 200, screenHeight - 120);
 		        infoPanel.revalidate();
 			}
         };
