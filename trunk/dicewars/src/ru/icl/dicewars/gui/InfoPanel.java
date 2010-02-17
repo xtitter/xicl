@@ -1,9 +1,6 @@
 package ru.icl.dicewars.gui;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +25,12 @@ public class InfoPanel extends JPanel {
 		setLayout(null);
 	}
 	
-	public void addPlayers(FlagDistributedActivity fda) {
+	public void inirPlayers(FlagDistributedActivity fda) {
 		int yoffset = 10;
+		for (PlayerPanel playerPanel : players.values()){
+			this.remove(playerPanel);
+		}
+		players.clear();
 		for (Flag flag : fda.getFlags()) {
 			PlayerPanel player = new PlayerPanel(flag, fda.getNameByFlag(flag));
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
@@ -73,7 +74,7 @@ public class InfoPanel extends JPanel {
 		}
 	}
 	
-	public void sortPlayers() {
+	/*public void sortPlayers() {
 		ArrayList<PlayerPanel> list = new ArrayList<PlayerPanel>();
 		list.addAll(players.values());
 		Collections.sort(list, new Comparator<PlayerPanel>() {
@@ -88,5 +89,5 @@ public class InfoPanel extends JPanel {
 			yoffset += HEIGHT + 10;
 		}
 		revalidate();
-	}
+	}*/
 }
