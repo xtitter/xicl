@@ -101,7 +101,7 @@ public class DiceWars extends JFrame {
         setUndecorated(true);
         device.setFullScreenWindow(this);*/
         
-        setTitle("DiceWars (Version 0.0.1)");
+        setTitle("DiceWars (Version 0.0.2)");
         
         this.setIconImage(getDiceIconImage());
         
