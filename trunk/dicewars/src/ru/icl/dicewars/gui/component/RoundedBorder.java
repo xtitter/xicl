@@ -3,22 +3,12 @@ package ru.icl.dicewars.gui.component;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
-/**
- * A border with cute rounded edges.
- * 
- * @author <a href="mailto:jesse@swank.ca">Jesse Wilson</a>
- */
 public class RoundedBorder implements Border {
 
     private final Color background;
@@ -102,44 +92,5 @@ public class RoundedBorder implements Border {
 
     public boolean isBorderOpaque() {
         return false;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new TestRunnable());
-    }
-
-    private static class TestRunnable implements Runnable {
-        public void run() {
-            JPanel panel = new JPanel(new FlowLayout());
-            final Color background = new Color(204, 204, 255);
-            final Color border = Color.BLACK;
-            final Color foreground = Color.WHITE;
-            panel.setBackground(background);
-
-            int p = 50;
-            int s = 30;
-            JPanel cell = new JPanel();
-            cell.add(new JLabel("<html><i>radius</i>: " + p + "<br><i>stroke</i>: " + s));
-            cell.setBorder(new RoundedBorder(background, border, foreground, p, s));
-            cell.setBackground(Color.WHITE);
-            panel.add(cell);
-
-            for(p = 2; p < 20; p++) {
-                for(s = 0; s <= p; s++) {
-                    cell = new JPanel();
-                    cell.add(new JLabel("<html><i>radius</i>: " + p + "<br><i>stroke</i>: " + s));
-                    cell.setBorder(new RoundedBorder(background, border, foreground, p, s));
-                    cell.setBackground(Color.WHITE);
-                    panel.add(cell);
-                }
-            }
-
-            JFrame frame = new JFrame();
-            frame.getContentPane().add(panel);
-            frame.setSize(640, 480);
-            frame.setLocationRelativeTo(null);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
-        }
     }
 }
