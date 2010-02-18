@@ -3,8 +3,6 @@ package ru.icl.dicewars.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -20,33 +18,24 @@ import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
-import ru.icl.dicewars.gui.util.ImageUtil;
+import ru.icl.dicewars.gui.manager.ImageManager;
 
 public class PlayersJFrame extends JFrame {
 	private static final long serialVersionUID = 6714237633991568095L;
 
 	final List<CheckBoxItem> checkBoxItems = new ArrayList<CheckBoxItem>();
 	final List<String> items = new ArrayList<String>();
-	
-	Icon upArrowIcon;
-	Icon downArrowIcon;
-	Icon okIcon;
-	Icon cancelIcon;
-	Image playersImage;
 	
 	final JList listCheckBox;
 	final JList listDescription;
@@ -98,61 +87,9 @@ public class PlayersJFrame extends JFrame {
 		}
 	};
 	
-	Icon getUpArrowIcon() {
-		if (upArrowIcon == null) {
-			String path = "/resources/icon/uparrow.png";
-			Image image = ImageUtil.getImage(path);
-			if (image != null) {
-				upArrowIcon = new ImageIcon(image);
-			}
-		}
-		return upArrowIcon;
-	}
-	
-	Icon getCancelIcon() {
-		if (cancelIcon == null) {
-			String path = "/resources/icon/cancel.png";
-			Image image = ImageUtil.getImage(path);
-			if (image != null) {
-				cancelIcon = new ImageIcon(image);
-			}
-		}
-		return cancelIcon;
-	}
-
-	Icon getDownArrowIcon() {
-		if (downArrowIcon == null) {
-			String path = "/resources/icon/downarrow.png";
-			Image image = ImageUtil.getImage(path);
-			if (image != null) {
-				downArrowIcon = new ImageIcon(image);
-			}
-		}
-		return downArrowIcon;
-	}
-	
-	Icon getOkIcon() {
-		if (okIcon == null) {
-			String path = "/resources/icon/ok.png";
-			Image image = ImageUtil.getImage(path);
-			if (image != null) {
-				okIcon = new ImageIcon(image);
-			}
-		}
-		return okIcon;
-	}
-	
-	Image getPlayersImage(){
-		if (playersImage == null){
-			String path = "/resources/icon/players.png";
-			playersImage = ImageUtil.getImage(path);
-		}
-		return playersImage;
-	}
-	
 	public PlayersJFrame() {
 		super("Players");
-		setIconImage(getPlayersImage());
+		setIconImage(ImageManager.getPlayersImage());
 		String[] listData = { "Apple", "Orange", "Cherry", "Blue Berry",
 				"Banana", "Red Plum", "Watermelon" };
 
@@ -232,26 +169,26 @@ public class PlayersJFrame extends JFrame {
 
 		getContentPane().add(buttonPane, BorderLayout.LINE_END);
 		JButton upButton = new JButton("");
-		upButton.setIcon(getUpArrowIcon());
+		upButton.setIcon(ImageManager.getUpArrowIcon());
 		upButton.addActionListener(upButtonActionListener);		
 		buttonPane.add(upButton);
 		buttonPane.add(Box.createRigidArea(new Dimension(0, 4)));
 		JButton downButton = new JButton("");
-		downButton.setIcon(getDownArrowIcon());
+		downButton.setIcon(ImageManager.getDownArrowIcon());
 		downButton.addActionListener(downButtonActionListener);
 		buttonPane.add(downButton);
 
 		JPanel endPagePane = new JPanel();
 		BoxLayout endPagePaneBoxLayout = new BoxLayout(endPagePane, BoxLayout.LINE_AXIS);
 		endPagePane.setLayout(endPagePaneBoxLayout);
-		endPagePane.setBorder(BorderFactory.createEmptyBorder(4, 20, 4, 4));
+		endPagePane.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 4));
 		
 		JButton okButton = new JButton("Ok");
-		okButton.setIcon(getOkIcon());
+		okButton.setIcon(ImageManager.getOkIcon());
 		endPagePane.add(okButton);
 		endPagePane.add(Box.createRigidArea(new Dimension(5, 0)));
 		JButton cancelButton = new JButton("Cancel");
-		cancelButton.setIcon(getCancelIcon());
+		cancelButton.setIcon(ImageManager.getCancelIcon());
 		cancelButton.addActionListener(cancelButtonActionListener);
 		endPagePane.add(cancelButton);
 		
@@ -316,8 +253,9 @@ public class PlayersJFrame extends JFrame {
 	}
 
 	/* Inner class that renders JCheckBox to JList */
-	//@SuppressWarnings("serial")
 	class CheckBoxRenderer extends JCheckBox implements ListCellRenderer {
+		private static final long serialVersionUID = 3432297079393020346L;
+
 		public CheckBoxRenderer() {
 			setBackground(UIManager.getColor("List.textBackground"));
 			setForeground(UIManager.getColor("List.textForeground"));

@@ -90,8 +90,6 @@ public class MainJFrame extends JFrame {
         private static final long serialVersionUID = 1L;
     };
     
-    Image diceIconImage;
-    
     ComponentAdapter resizeListener = new ComponentAdapter(){
 		@Override
 		public void componentResized(ComponentEvent e) {
@@ -131,14 +129,6 @@ public class MainJFrame extends JFrame {
 			close();
 		}
 	};
-	
-	Image getDiceIconImage(){
-		if (diceIconImage == null){
-			String path = "/resources/icon/dice.png";
-			diceIconImage = ImageUtil.getImage(path);
-		}
-		return diceIconImage;
-	}
 	
 	public void stopGame(){
 		while (uiGameThread != null && uiGameThread.isAlive()){
@@ -180,7 +170,7 @@ public class MainJFrame extends JFrame {
         
         setTitle("DiceWars (Version 0.0.2)");
         
-        setIconImage(getDiceIconImage());
+        setIconImage(ImageManager.getDiceIconImage());
         
         setResizable(true);
         

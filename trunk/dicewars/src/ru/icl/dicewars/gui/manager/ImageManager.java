@@ -3,50 +3,36 @@ package ru.icl.dicewars.gui.manager;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import ru.icl.dicewars.gui.util.ImageUtil;
-import ru.icl.dicewars.gui.util.TransparencyUtil;
 
 public class ImageManager {
+	
+	private ImageManager(){
+		
+	}
 
-	protected static Image getImageFromResource(String path) {
-        URL imageURL = ImageManager.class.getResource(path);
-        BufferedImage image = null;
-
-        try {
-            image = ImageIO.read(imageURL);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return image;
+	private static Image getImageFromResource(String path) {
+		return ImageUtil.getImage(path);
     }
-    protected static Image getImageFromResource(String path, Rectangle rec) {
-        URL imageURL = ImageManager.class.getResource(path);
-        BufferedImage image = null;
-        Image resized = null;
 
-        try {
-            image = ImageIO.read(imageURL);
+	private static Image getImageFromResource(String path, Rectangle rec) {
+        Image image = getImageFromResource(path);
+        
+        if (rec == null && image == null)
+             return image;
 
-            if (rec == null)
-                return image;
-
-            resized = image.getScaledInstance(rec.width, rec.height, java.awt.Image.SCALE_AREA_AVERAGING);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        Image resized = image.getScaledInstance(rec.width, rec.height, java.awt.Image.SCALE_AREA_AVERAGING);
+        
         return resized;
     }
 
-    protected static Image getImageFromResourceTransparent(String path, Color mask) {
+    /*private static Image getImageFromResourceTransparent(String path, Color mask) {
         BufferedImage image = null;
         Image imageCardTransparent = null;
 
@@ -66,7 +52,7 @@ public class ImageManager {
         return imageCardTransparent;
     }
 
-    protected static Image getImageFromResourceTransparent(String path, Color mask, Rectangle rec) {
+    private static Image getImageFromResourceTransparent(String path, Color mask, Rectangle rec) {
         BufferedImage image = null;
         Image imageCardTransparent = null;
         Image resized = null;
@@ -83,7 +69,7 @@ public class ImageManager {
         }
 
         return resized;
-    }
+    }*/
     
     public static Image getDice(int num, Color color) {
     	if (dices == null) {
@@ -193,6 +179,106 @@ public class ImageManager {
     	return inatickSpeedImageHoveredSelected;
     }
        
+    public static Image getDiceIconImage(){
+		if (diceIconImage == null){
+			diceIconImage = getImageFromResource("/resources/icon/dice.png");
+		}
+		return diceIconImage;
+	}
+    
+    public static Icon getStartNewGameIcon() {
+		if (startNewGameIcon == null) {
+			String path = "/resources/icon/start.png";
+			Image image = getImageFromResource(path);
+			if (image != null) {
+				startNewGameIcon = new ImageIcon(image);
+			}
+		}
+		return startNewGameIcon;
+	}
+
+    public static Icon getExitIcon() {
+		if (exitIcon == null) {
+			String path = "/resources/icon/exit.png";
+			Image image = getImageFromResource(path);
+			if (image != null)
+				exitIcon = new ImageIcon(image);
+		}
+		return exitIcon;
+	}
+
+    public static Icon getPlayersIcon() {
+		if (playersIcon == null) {
+			String path = "/resources/icon/players.png";
+			Image image = getImageFromResource(path);
+			if (image != null)
+				playersIcon = new ImageIcon(image);
+		}
+		return playersIcon;
+	}
+
+    public static Icon getStopGameIcon() {
+		if (stopGameIcon == null) {
+			String path = "/resources/icon/stop.png";
+			Image image = getImageFromResource(path);
+			if (image != null)
+				stopGameIcon = new ImageIcon(image);
+		}
+		return stopGameIcon;
+	}
+    
+    public static Icon getUpArrowIcon() {
+		if (upArrowIcon == null) {
+			String path = "/resources/icon/uparrow.png";
+			Image image = getImageFromResource(path);
+			if (image != null) {
+				upArrowIcon = new ImageIcon(image);
+			}
+		}
+		return upArrowIcon;
+	}
+	
+    public static Icon getCancelIcon() {
+		if (cancelIcon == null) {
+			String path = "/resources/icon/cancel.png";
+			Image image = getImageFromResource(path);
+			if (image != null) {
+				cancelIcon = new ImageIcon(image);
+			}
+		}
+		return cancelIcon;
+	}
+
+    public static Icon getDownArrowIcon() {
+		if (downArrowIcon == null) {
+			String path = "/resources/icon/downarrow.png";
+			Image image = getImageFromResource(path);
+			if (image != null) {
+				downArrowIcon = new ImageIcon(image);
+			}
+		}
+		return downArrowIcon;
+	}
+	
+    public static Icon getOkIcon() {
+		if (okIcon == null) {
+			String path = "/resources/icon/ok.png";
+			Image image = getImageFromResource(path);
+			if (image != null) {
+				okIcon = new ImageIcon(image);
+			}
+		}
+		return okIcon;
+	}
+	
+    public static Image getPlayersImage(){
+		if (playersImage == null){
+			String path = "/resources/icon/players.png";
+			playersImage = getImageFromResource(path);
+		}
+		return playersImage;
+	}
+    
     private static Map<Integer, Map<Color,Image>> dices;
     
     private static Image normalSpeedImage;
@@ -209,4 +295,18 @@ public class ImageManager {
     private static Image inatickSpeedImageSelected;
     private static Image inatickSpeedImageHovered;
     private static Image inatickSpeedImageHoveredSelected;
+    
+    private static Image diceIconImage;
+    
+    private static Icon startNewGameIcon;
+    private static Icon exitIcon;
+    private static Icon playersIcon;
+    private static Icon stopGameIcon ;
+    
+    private static Icon upArrowIcon;
+    private static Icon downArrowIcon;
+    private static Icon okIcon;
+    private static Icon cancelIcon;
+    private static Image playersImage;
+
 }
