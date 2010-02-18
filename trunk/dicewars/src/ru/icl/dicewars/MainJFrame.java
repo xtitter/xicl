@@ -227,6 +227,7 @@ public class MainJFrame extends JFrame {
             }
             private static final long serialVersionUID = 1L;
         });
+        fastSpeed.setToolTipText("Ну чего ты удивляешься? Да вот так вот, супермэн сосёт у молнии по скорости ;)");
         
         buttonSize = new Rectangle(103, 59);
         imageSize = new Rectangle(103, 59);
