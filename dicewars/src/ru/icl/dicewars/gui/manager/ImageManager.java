@@ -1,11 +1,9 @@
 package ru.icl.dicewars.gui.manager;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +11,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import ru.icl.dicewars.gui.util.ImageUtil;
+import ru.icl.dicewars.gui.util.TransparencyUtil;
 
 public class ImageManager {
 
@@ -28,54 +27,6 @@ public class ImageManager {
 
         return image;
     }
-    
-	protected static BufferedImage getBufferedImageFromResource(String path) {
-        URL imageURL = ImageManager.class.getResource(path);
-        BufferedImage image = null;
-
-        try {
-            image = ImageIO.read(imageURL);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return image;
-    }
-    
-	protected static BufferedImage getBufferedImageFromDisk(String path) {
-        BufferedImage image = null;
-
-        try {
-    		image = ImageIO.read(new File(path));
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-
-        return image;
-    }
-    
-    protected static BufferedImage getBufferedImageFromDisk(String path, Rectangle rec) {
-        BufferedImage image = null;
-        BufferedImage resized = null;
-        
-        try {
-    		image = ImageIO.read(new File(path));
-    		
-    		if (rec == null) {
-                 return image;
-    		}
-
-    		resized = new BufferedImage((int)rec.getWidth(), (int)rec.getHeight(), BufferedImage.TYPE_INT_ARGB);
-    		Graphics2D g = resized.createGraphics();
-    		g.drawImage(image, 0, 0, (int)rec.getWidth(), (int)rec.getHeight(), null);
-    		g.dispose();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-
-        return resized;
-    }
-
     protected static Image getImageFromResource(String path, Rectangle rec) {
         URL imageURL = ImageManager.class.getResource(path);
         BufferedImage image = null;
@@ -95,7 +46,7 @@ public class ImageManager {
         return resized;
     }
 
-   /* protected static Image getImageFromResourceTransparent(String path, Color mask) {
+    protected static Image getImageFromResourceTransparent(String path, Color mask) {
         BufferedImage image = null;
         Image imageCardTransparent = null;
 
@@ -107,7 +58,7 @@ public class ImageManager {
 
         try {
             image = ImageIO.read(imageURL);
-            imageCardTransparent = Transparency.makeColorTransparent(image, mask);
+            imageCardTransparent = TransparencyUtil.makeColorTransparent(image, mask);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,7 +75,7 @@ public class ImageManager {
 
         try {
             image = ImageIO.read(imageURL);
-            imageCardTransparent = Transparency.makeColorTransparent(image, mask);
+            imageCardTransparent = TransparencyUtil.makeColorTransparent(image, mask);
 
             resized = imageCardTransparent.getScaledInstance(rec.width, rec.height, java.awt.Image.SCALE_SMOOTH);
         } catch (Exception e) {
@@ -132,7 +83,7 @@ public class ImageManager {
         }
 
         return resized;
-    }*/
+    }
     
     public static Image getDice(int num, Color color) {
     	if (dices == null) {
@@ -158,5 +109,104 @@ public class ImageManager {
     	return d.get(color);
     }
     
+    public static Image getNormalSpeedImage() {
+    	if (normalSpeedImage == null) {
+    		normalSpeedImage = getImageFromResource("/resources/speed/normal.png");
+    	}
+    	return normalSpeedImage;
+    }
+    
+    public static Image getNormalSpeedImageSelected() {
+    	if (normalSpeedImageSelected == null) {
+    		normalSpeedImageSelected = getImageFromResource("/resources/speed/normal_s.png");
+    	}
+    	return normalSpeedImageSelected;
+    }
+    
+    public static Image getNormalSpeedImageHovered() {
+    	if (normalSpeedImageHovered == null) {
+    		normalSpeedImageHovered = getImageFromResource("/resources/speed/normal_h.png");
+    	}
+    	return normalSpeedImageHovered;
+    }
+    
+    public static Image getNormalSpeedImageHoveredSelected() {
+    	if (normalSpeedImageHoveredSelected == null) {
+    		normalSpeedImageHoveredSelected = getImageFromResource("/resources/speed/normal_sh.png");
+    	}
+    	return normalSpeedImageHoveredSelected;
+    }
+    
+    public static Image getFastSpeedImage() {
+    	if (fastSpeedImage == null) {
+    		fastSpeedImage = getImageFromResource("/resources/speed/fast.png");
+    	}
+    	return fastSpeedImage;
+    }
+    
+    public static Image getFastSpeedImageSelected() {
+    	if (fastSpeedImageSelected == null) {
+    		fastSpeedImageSelected = getImageFromResource("/resources/speed/fast_s.png");
+    	}
+    	return fastSpeedImageSelected;
+    }
+    
+    public static Image getFastSpeedImageHovered() {
+    	if (fastSpeedImageHovered == null) {
+    		fastSpeedImageHovered = getImageFromResource("/resources/speed/fast_h.png");
+    	}
+    	return fastSpeedImageHovered;
+    }
+    
+    public static Image getFastSpeedImageHoveredSelected() {
+    	if (fastSpeedImageHoveredSelected == null) {
+    		fastSpeedImageHoveredSelected = getImageFromResource("/resources/speed/fast_sh.png");
+    	}
+    	return fastSpeedImageHoveredSelected;
+    }
+    
+    public static Image getInatickSpeedImage() {
+    	if (inatickSpeedImage == null) {
+    		inatickSpeedImage = getImageFromResource("/resources/speed/inatick.png");
+    	}
+    	return inatickSpeedImage;
+    }
+    
+    public static Image getInatickSpeedImageSelected() {
+    	if (inatickSpeedImageSelected == null) {
+    		inatickSpeedImageSelected = getImageFromResource("/resources/speed/inatick_s.png");
+    	}
+    	return inatickSpeedImageSelected;
+    }
+    
+    public static Image getInatickSpeedImageHovered() {
+    	if (inatickSpeedImageHovered == null) {
+    		inatickSpeedImageHovered = getImageFromResource("/resources/speed/inatick_h.png");
+    	}
+    	return inatickSpeedImageHovered;
+    }
+    
+    public static Image getInatickSpeedImageHoveredSelected() {
+    	if (inatickSpeedImageHoveredSelected == null) {
+    		inatickSpeedImageHoveredSelected = getImageFromResource("/resources/speed/inatick_sh.png");
+    	}
+    	return inatickSpeedImageHoveredSelected;
+    }
+       
     private static Map<Integer, Map<Color,Image>> dices;
+    
+    private static Image normalSpeedImage;
+    private static Image normalSpeedImageSelected;
+    private static Image normalSpeedImageHovered;
+    private static Image normalSpeedImageHoveredSelected;
+    
+    private static Image fastSpeedImage;
+    private static Image fastSpeedImageSelected;
+    private static Image fastSpeedImageHovered;
+    private static Image fastSpeedImageHoveredSelected;
+
+    private static Image inatickSpeedImage;
+    private static Image inatickSpeedImageSelected;
+    private static Image inatickSpeedImageHovered;
+    private static Image inatickSpeedImageHoveredSelected;
 }
