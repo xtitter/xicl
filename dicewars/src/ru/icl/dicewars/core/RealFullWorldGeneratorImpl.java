@@ -548,7 +548,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         cheesetime = new GregorianCalendar().getTimeInMillis();
         cheeseMaker.make();
         cheesetime = new GregorianCalendar().getTimeInMillis() - cheesetime;
-        System.out.println("cheese   : " + cheesetime + " ms");
+        //System.out.println("cheese   : " + cheesetime + " ms");
         //output(lands);
         // get all land colors are to place into the world
         createPlayerStack(playerFlags);
@@ -556,13 +556,13 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         landtime = new GregorianCalendar().getTimeInMillis();
         createNewLand(lands);
         landtime = new GregorianCalendar().getTimeInMillis() - landtime;
-        System.out.println("lands    : " + landtime + " ms");
-        System.out.println("back     : " + back);
+        //System.out.println("lands    : " + landtime + " ms");
+        //System.out.println("back     : " + back);
         // fill holes
         eliminatetime = new GregorianCalendar().getTimeInMillis();
         eliminateHoles(lands);
         eliminatetime = new GregorianCalendar().getTimeInMillis() - eliminatetime;
-        System.out.println("eliminate: " + eliminatetime + " ms");
+        //System.out.println("eliminate: " + eliminatetime + " ms");
         // return!
         return lands;
     }
