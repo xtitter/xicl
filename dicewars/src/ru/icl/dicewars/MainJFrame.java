@@ -166,8 +166,9 @@ public class MainJFrame extends JFrame {
 	private static void createAndShowGUI() {
 		MainJFrame mainJFrame = WindowManager.getInstance().getMainFrame();
 		PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
+		playersJFrame.setLocationRelativeTo(mainJFrame);
 		
-        try {
+		try {
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
             for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(laf.getName())) {

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -26,6 +27,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
@@ -52,6 +54,7 @@ public class PlayersJFrame extends JFrame {
 	WindowListener windowListener = new WindowAdapter() {
 		public void windowClosing(WindowEvent w) {
   			PlayersJFrame.this.setVisible(false);
+  			PlayersJFrame.this.setEnabled(false);
 		}
 	};
 	
@@ -90,7 +93,8 @@ public class PlayersJFrame extends JFrame {
 	ActionListener cancelButtonActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			PlayersJFrame.this.setVisible(false);
+  			PlayersJFrame.this.setVisible(false);
+  			PlayersJFrame.this.setEnabled(false);
 		}
 	};
 	
@@ -256,6 +260,9 @@ public class PlayersJFrame extends JFrame {
 		setSize(450, 250);
 		setResizable(false);
 		setVisible(false);
+		setEnabled(false);
+		setAlwaysOnTop(true);
+		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(windowListener);
 	}
