@@ -20,6 +20,7 @@ import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.Point;
+import ru.icl.dicewars.gui.manager.ImageManager;
 
 public class WorldJPanel extends JPanel {
 
@@ -32,6 +33,10 @@ public class WorldJPanel extends JPanel {
 	public static final int X_OFFSET = 35;
 	public static final int Y_OFFSET = 30;
 	final static BasicStroke stroke = new BasicStroke(2.0f);
+	
+	public static final int DICE_X_OFFSET = -30;
+	public static final int DICE_Y_OFFSET = -70;
+	
 	
 	public static final int MIN_X = -1;
 	public static final int MIN_Y = -1;
@@ -144,13 +149,28 @@ public class WorldJPanel extends JPanel {
 				
 				//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
 				
+				ColoredLand l = LandFactory.getBackground();
+				if (l != null) {
+					g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
+				}
+				
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
-					ColoredLand l = LandFactory.getLand(land.getLandId(), land.getFlag());
+					l = LandFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
 						int offsetX = battle ? 2 : 0;
 						int offsetY = battle ? 5 : 0;
 						g2d.drawImage(l.image, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
+					}
+				}
+				
+				for (FullLand land : landsTmp) {
+					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
+					l = LandFactory.getLand(land.getLandId(), land.getFlag());
+					if (l != null) {
+						g2d.drawImage(ImageManager.getDice(land.getDiceCount(), 
+								getDiceColorByFlag(land.getFlag(), battle ? 130 : 255 )), 
+								l.center.x + DICE_X_OFFSET, l.center.y + DICE_Y_OFFSET, this);
 					}
 				}
 				
@@ -199,10 +219,8 @@ public class WorldJPanel extends JPanel {
 		             g2d.fillPolygon(pol);
 					 drawBorder(g2d, empty, p, pol);
 				}*/
-				ColoredLand l = LandFactory.getBackground();
-				if (l != null) {
-					g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
-				}
+
+					
 				
 				/*diceOverallCount.clear();
 				for (FullLand land : landsTmp) {

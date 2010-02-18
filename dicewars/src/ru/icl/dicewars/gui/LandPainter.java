@@ -54,6 +54,8 @@ public class LandPainter {
 		maxY -= minY;
 		
 		if (maxX > 0 && maxY > 0) {
+			int size = land.getPoints().size();
+			java.awt.Point center = null;
 			for (Flag flag : flags) {
 				ColoredLand coloredLand = new ColoredLand();
 				coloredLand.image = new BufferedImage(maxX + 20, maxY + 20, BufferedImage.TYPE_INT_ARGB);
@@ -68,6 +70,8 @@ public class LandPainter {
 				g2d.setColor(color);
 				g2d.setStroke(stroke);
 
+				int x = 0;
+				int y = 0;
 				for (Point p : land.getPoints()) {
 					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 					int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
@@ -75,7 +79,14 @@ public class LandPainter {
 					Polygon pol = getHexagon(_x - minX, _y - minY, 10);
 					g2d.fillPolygon(pol);
 					drawBorder(g2d, land, p, pol);
+					x += _x;
+					y += _y;
 				}
+				
+				if (center == null && size > 0) {
+					center = new java.awt.Point(x / size, y / size);
+				}
+				coloredLand.center = center;
 
 				g2d.dispose();
 
