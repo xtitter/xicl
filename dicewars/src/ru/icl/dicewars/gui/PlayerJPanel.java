@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import ru.icl.dicewars.client.Flag;
+import ru.icl.dicewars.gui.component.RoundedBorder;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
 public class PlayerJPanel extends JPanel {
@@ -26,20 +27,22 @@ public class PlayerJPanel extends JPanel {
 		this.color = FlagToColorUtil.getColorByFlag(flag, 165);
 		this.flag = flag;
 		this.playerName = playerName;
+		setBorder(new RoundedBorder(getBackground(), this.color, getBackground(), 12, 3));
+		//setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(flag, 100), FlagToColorUtil.getColorByFlag(flag, 100)));
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(Color.black);
-		g.drawString("Name: " + playerName, 10, 18);
-		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 10, 36);
-		g.drawString("Reserve: " + String.valueOf(reserveCount), 10, 54);
+		g.drawString("Name: " + playerName, 15, 23);
+		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 15, 41);
+		g.drawString("Reserve: " + String.valueOf(reserveCount), 15, 59);
 		
 		if (outOfTheGame) {
-			g.drawString("OUT", 140, 20);
+			g.drawString("OUT", 140, 25);
 			if (rank > 0) {
-				g.drawString("Place: " + String.valueOf(rank), 10, 72);
+				g.drawString("Place: " + String.valueOf(rank), 15, 78);
 			}
 		}
 	}
@@ -48,6 +51,14 @@ public class PlayerJPanel extends JPanel {
 		this.areaCount = areaCount;
 	}
 
+	public int getAreaCount() {
+		return areaCount;
+	}
+	
+	public Color getColor() {
+		return color;
+	}
+	
 	public void setDiceOverallCount(int diceOverallCount) {
 		this.diceOverallCount = diceOverallCount;
 	}
