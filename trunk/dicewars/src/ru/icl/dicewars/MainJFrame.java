@@ -45,8 +45,8 @@ public class MainJFrame extends JFrame {
     UIGameThread uiGameThread;
     
     private HoverButton normalSpeed;
-    private HoverButton fastSpeed;
     private HoverButton inatickSpeed;
+    private HoverButton fastSpeed;
     
     Image diceIconImage;
     
@@ -63,6 +63,18 @@ public class MainJFrame extends JFrame {
 			final InfoJPanel infoJPanel = WindowManager.getInstance().getInfoJPanel();
 	        infoJPanel.setBounds(screenWidth - 220, 30, 200, screenHeight - 120);
 	        infoJPanel.revalidate();
+	        
+	        Rectangle buttonSize = new Rectangle(103, 59);
+	        int x = screenWidth / 2 - buttonSize.width * 2 - 50;
+	        int y = (int)(screenHeight - 150);
+	        normalSpeed.setLocation(x, y);
+	        normalSpeed.repaint();
+	        x += 50 + 75; 
+	        fastSpeed.setLocation(x, y);
+	        fastSpeed.repaint();
+	        x += 110; 
+	        inatickSpeed.setLocation(x, y);
+	        inatickSpeed.repaint();
 		}
     };
     
@@ -178,7 +190,7 @@ public class MainJFrame extends JFrame {
         		ImageManager.getNormalSpeedImageHoveredSelected(),
         		ImageManager.getNormalSpeedImage(),
                 imageSize);
-        jLayeredPane.add(normalSpeed, 0);
+        jLayeredPane.add(normalSpeed, JLayeredPane.MODAL_LAYER);
         int x = scrnRect.width / 2 - buttonSize.width * 2 - 50;
         int y = (int)(scrnRect.height - 150);
         normalSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
@@ -191,25 +203,25 @@ public class MainJFrame extends JFrame {
             	System.out.println("normal speed");
             	normalSpeed.setSelected(true);
             	normalSpeed.repaint();
-            	fastSpeed.setSelected(false);
-            	fastSpeed.repaint();
             	inatickSpeed.setSelected(false);
             	inatickSpeed.repaint();
+            	fastSpeed.setSelected(false);
+            	fastSpeed.repaint();
             }
             private static final long serialVersionUID = 1L;
-        });
-        
+        });        
+              
         buttonSize = new Rectangle(103, 59);
         imageSize = new Rectangle(103, 59);
         fastSpeed = new HoverButton("",
-        		ImageManager.getFastSpeedImage(),
-        		ImageManager.getFastSpeedImageSelected(),
-        		ImageManager.getFastSpeedImageHovered(),
-        		ImageManager.getFastSpeedImageHoveredSelected(),
-        		ImageManager.getFastSpeedImage(),
+        		ImageManager.getInatickSpeedImage(),
+        		ImageManager.getInatickSpeedImageSelected(),
+        		ImageManager.getInatickSpeedImageHovered(),
+        		ImageManager.getInatickSpeedImageHoveredSelected(),
+        		ImageManager.getInatickSpeedImage(),
                 imageSize);
-        jLayeredPane.add(fastSpeed, 0);
-        x = scrnRect.width / 2 - buttonSize.width * 2 + 185;
+        jLayeredPane.add(fastSpeed, JLayeredPane.MODAL_LAYER);
+        x = scrnRect.width / 2 - buttonSize.width * 2 + 75;
         y = (int)(scrnRect.height - 150);
         fastSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         fastSpeed.setEnabled(true);
@@ -227,19 +239,18 @@ public class MainJFrame extends JFrame {
             }
             private static final long serialVersionUID = 1L;
         });
-        fastSpeed.setToolTipText("Ну чего ты удивляешься? Да вот так вот, супермэн сосёт у молнии по скорости ;)");
         
         buttonSize = new Rectangle(103, 59);
         imageSize = new Rectangle(103, 59);
         inatickSpeed = new HoverButton("",
-        		ImageManager.getInatickSpeedImage(),
-        		ImageManager.getInatickSpeedImageSelected(),
-        		ImageManager.getInatickSpeedImageHovered(),
-        		ImageManager.getInatickSpeedImageHoveredSelected(),
-        		ImageManager.getInatickSpeedImage(),
+        		ImageManager.getFastSpeedImage(),
+        		ImageManager.getFastSpeedImageSelected(),
+        		ImageManager.getFastSpeedImageHovered(),
+        		ImageManager.getFastSpeedImageHoveredSelected(),
+        		ImageManager.getFastSpeedImage(),
                 imageSize);
-        jLayeredPane.add(inatickSpeed, 0);
-        x = scrnRect.width / 2 - buttonSize.width * 2 + 75;
+        jLayeredPane.add(inatickSpeed, JLayeredPane.MODAL_LAYER);
+        x = scrnRect.width / 2 - buttonSize.width * 2 + 185;
         y = (int)(scrnRect.height - 150);
         inatickSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         inatickSpeed.setEnabled(true);
