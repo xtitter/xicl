@@ -34,7 +34,6 @@ public class InfoJPanel extends JPanel {
 		for (Flag flag : fda.getFlags()) {
 			PlayerJPanel player = new PlayerJPanel(flag, fda.getNameByFlag(flag));
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
-			player.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(player.getFlag(), 100), FlagToColorUtil.getColorByFlag(player.getFlag(), 100)));
 			players.put(flag, player);
 			add(player);
 			yoffset += HEIGHT + 10;
