@@ -4,11 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
 
 import ru.icl.dicewars.client.Flag;
+import ru.icl.dicewars.gui.component.RoundedBorder;
 import ru.icl.dicewars.gui.manager.ImageManager;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
@@ -28,11 +27,14 @@ public class PlayerJPanel extends JPanel {
 	
 	private Image avatar;
 	
+	private final static int radius = 12; 
+	private final static int alpha = 90; 
+	
 	public PlayerJPanel(Flag flag, String playerName) {
-		this.color = FlagToColorUtil.getColorByFlag(flag, 165);
+		this.color = FlagToColorUtil.getColorByFlag(flag, alpha);
 		this.flag = flag;
 		this.playerName = playerName;
-		//setBorder(new RoundedBorder(getBackground(), this.color, getBackground(), 12, 3));
+		setBorder(new RoundedBorder(this.color, this.color, this.color, radius, 0));
 		//setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(flag, 100), FlagToColorUtil.getColorByFlag(flag, 100)));
 		avatar = ImageManager.getAvatar(flag);
 	}
@@ -41,12 +43,10 @@ public class PlayerJPanel extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		g.setColor(FlagToColorUtil.getColorByFlag(flag, 150));
-		g.fillRoundRect(0, 0, getWidth() - 5, getHeight() - 5, 10, 10);
-		//g.setColor(FlagToColorUtil.getColorByFlag(flag, 150));
-		//g.drawRoundRect(0, 0, getWidth() - 5, getHeight() - 5, 10, 10);
+		g.setColor(FlagToColorUtil.getColorByFlag(flag, alpha));
+		g.fillRect(radius, radius, getWidth() - radius*2, getHeight() - radius*2);
 		
-		if (avatar != null) g.drawImage(avatar, 10, 12, 50, 50, this);
+		if (avatar != null) g.drawImage(avatar, radius, radius, 50, 50, this);
 		
 		g.setColor(Color.black);
 		g.drawString(playerName, 75, 23);
