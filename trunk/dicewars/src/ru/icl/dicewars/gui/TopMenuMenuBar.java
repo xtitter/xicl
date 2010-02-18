@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -45,6 +46,9 @@ public class TopMenuMenuBar extends JMenuBar {
 		public void actionPerformed(ActionEvent e) {
    			PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
    			playersJFrame.setVisible(true);
+   			playersJFrame.setEnabled(true);
+   			playersJFrame.setState(JFrame.NORMAL);
+   			playersJFrame.toFront();
 		}
 	};
 
