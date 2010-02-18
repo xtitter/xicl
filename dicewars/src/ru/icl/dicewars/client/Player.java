@@ -6,7 +6,7 @@ public interface Player {
 
 	public void init();
 
-	public void apponentAttack(Flag apponentFlag, Lead lead, World world);
+	public void opponentAttack(Flag apponentFlag, Lead lead, World world);
 	
 	public Lead attack(World world);
 }

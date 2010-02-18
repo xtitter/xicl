@@ -335,7 +335,7 @@ public class GamePlayThread extends Thread{
 									Flag f = playerFlagMap.get(players[j]);
 									if (!f.equals(playerFlag) && world.isExistsLandByFlag(f)){
 										try{
-											players[j].apponentAttack(f, lead, immutableWorld);
+											players[j].opponentAttack(f, lead, immutableWorld);
 										}catch (Exception e) {
 										}
 									}
