@@ -37,16 +37,58 @@ import ru.icl.dicewars.gui.thread.UIGameThread;
 import ru.icl.dicewars.gui.util.ImageUtil;
 
 public class MainJFrame extends JFrame {
-	static final long serialVersionUID = -6592937624280635427L;
+	private static final long serialVersionUID = -6592937624280635427L;
 	
     JPanel contentPane;
     JLayeredPane jLayeredPane;
     JMenuBar jMenuBar;
     UIGameThread uiGameThread;
     
-    private HoverButton normalSpeed;
-    private HoverButton inatickSpeed;
-    private HoverButton fastSpeed;
+    HoverButton normalSpeed;
+    HoverButton inatickSpeed;
+    HoverButton fastSpeed;
+    
+    Command normalSpeedCommand = new Command() {
+        @Override
+        public void execute() {
+        	System.out.println("normal speed");
+        	normalSpeed.setSelected(true);
+        	normalSpeed.repaint();
+        	inatickSpeed.setSelected(false);
+        	inatickSpeed.repaint();
+        	fastSpeed.setSelected(false);
+        	fastSpeed.repaint();
+        }
+        private static final long serialVersionUID = 1L;
+    };        
+    
+    Command fastSpeedCommand = new Command() {
+        @Override
+        public void execute() {
+        	System.out.println("fast speed");
+        	fastSpeed.setSelected(true);
+        	fastSpeed.repaint();
+        	normalSpeed.setSelected(false);
+        	normalSpeed.repaint();
+        	inatickSpeed.setSelected(false);
+        	inatickSpeed.repaint();
+        }
+        private static final long serialVersionUID = 1L;
+    };
+    
+    Command inatickSpeedCommand = new Command() {
+        @Override
+        public void execute() {
+        	System.out.println("very fast speed");
+        	inatickSpeed.setSelected(true);
+        	inatickSpeed.repaint();
+        	normalSpeed.setSelected(false);
+        	normalSpeed.repaint();
+        	fastSpeed.setSelected(false);
+        	fastSpeed.repaint();
+        }
+        private static final long serialVersionUID = 1L;
+    };
     
     Image diceIconImage;
     
@@ -197,19 +239,7 @@ public class MainJFrame extends JFrame {
         normalSpeed.setEnabled(true);
         normalSpeed.setVisible(true);
         normalSpeed.setSelected(true);
-        normalSpeed.setObserver(new Command() {
-            @Override
-            public void execute() {
-            	System.out.println("normal speed");
-            	normalSpeed.setSelected(true);
-            	normalSpeed.repaint();
-            	inatickSpeed.setSelected(false);
-            	inatickSpeed.repaint();
-            	fastSpeed.setSelected(false);
-            	fastSpeed.repaint();
-            }
-            private static final long serialVersionUID = 1L;
-        });        
+        normalSpeed.setObserver(normalSpeedCommand);
               
         buttonSize = new Rectangle(103, 59);
         imageSize = new Rectangle(103, 59);
@@ -226,19 +256,7 @@ public class MainJFrame extends JFrame {
         fastSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         fastSpeed.setEnabled(true);
         fastSpeed.setVisible(true);
-        fastSpeed.setObserver(new Command() {
-            @Override
-            public void execute() {
-            	System.out.println("fast speed");
-            	fastSpeed.setSelected(true);
-            	fastSpeed.repaint();
-            	normalSpeed.setSelected(false);
-            	normalSpeed.repaint();
-            	inatickSpeed.setSelected(false);
-            	inatickSpeed.repaint();
-            }
-            private static final long serialVersionUID = 1L;
-        });
+        fastSpeed.setObserver(fastSpeedCommand);
         
         buttonSize = new Rectangle(103, 59);
         imageSize = new Rectangle(103, 59);
@@ -255,19 +273,7 @@ public class MainJFrame extends JFrame {
         inatickSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         inatickSpeed.setEnabled(true);
         inatickSpeed.setVisible(true);
-        inatickSpeed.setObserver(new Command() {
-            @Override
-            public void execute() {
-            	System.out.println("very fast speed");
-            	inatickSpeed.setSelected(true);
-            	inatickSpeed.repaint();
-            	normalSpeed.setSelected(false);
-            	normalSpeed.repaint();
-            	fastSpeed.setSelected(false);
-            	fastSpeed.repaint();
-            }
-            private static final long serialVersionUID = 1L;
-        });
+        inatickSpeed.setObserver(inatickSpeedCommand);
 	}
 	
 	private static void createAndShowGUI() {
