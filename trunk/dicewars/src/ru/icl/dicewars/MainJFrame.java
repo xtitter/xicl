@@ -29,6 +29,9 @@ import ru.icl.dicewars.gui.InfoJPanel;
 import ru.icl.dicewars.gui.PlayersJFrame;
 import ru.icl.dicewars.gui.TopMenuMenuBar;
 import ru.icl.dicewars.gui.WorldJPanel;
+import ru.icl.dicewars.gui.component.Command;
+import ru.icl.dicewars.gui.component.HoverButton;
+import ru.icl.dicewars.gui.manager.ImageManager;
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.thread.UIGameThread;
 import ru.icl.dicewars.gui.util.ImageUtil;
@@ -40,6 +43,10 @@ public class MainJFrame extends JFrame {
     JLayeredPane jLayeredPane;
     JMenuBar jMenuBar;
     UIGameThread uiGameThread;
+    
+    private HoverButton normalSpeed;
+    private HoverButton fastSpeed;
+    private HoverButton inatickSpeed;
     
     Image diceIconImage;
     
@@ -161,6 +168,94 @@ public class MainJFrame extends JFrame {
 		//Because windows is closed by event.
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(windowListener);
+		
+        Rectangle buttonSize = new Rectangle(103, 59);
+        Rectangle imageSize = new Rectangle(103, 59);
+        normalSpeed = new HoverButton("",
+        		ImageManager.getNormalSpeedImage(),
+        		ImageManager.getNormalSpeedImageSelected(),
+        		ImageManager.getNormalSpeedImageHovered(),
+        		ImageManager.getNormalSpeedImageHoveredSelected(),
+        		ImageManager.getNormalSpeedImage(),
+                imageSize);
+        jLayeredPane.add(normalSpeed, 0);
+        int x = scrnRect.width / 2 - buttonSize.width * 2 - 50;
+        int y = (int)(scrnRect.height - 150);
+        normalSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
+        normalSpeed.setEnabled(true);
+        normalSpeed.setVisible(true);
+        normalSpeed.setSelected(true);
+        normalSpeed.setObserver(new Command() {
+            @Override
+            public void execute() {
+            	System.out.println("normal speed");
+            	normalSpeed.setSelected(true);
+            	normalSpeed.repaint();
+            	fastSpeed.setSelected(false);
+            	fastSpeed.repaint();
+            	inatickSpeed.setSelected(false);
+            	inatickSpeed.repaint();
+            }
+            private static final long serialVersionUID = 1L;
+        });
+        
+        buttonSize = new Rectangle(103, 59);
+        imageSize = new Rectangle(103, 59);
+        fastSpeed = new HoverButton("",
+        		ImageManager.getFastSpeedImage(),
+        		ImageManager.getFastSpeedImageSelected(),
+        		ImageManager.getFastSpeedImageHovered(),
+        		ImageManager.getFastSpeedImageHoveredSelected(),
+        		ImageManager.getFastSpeedImage(),
+                imageSize);
+        jLayeredPane.add(fastSpeed, 0);
+        x = scrnRect.width / 2 - buttonSize.width * 2 + 75;
+        y = (int)(scrnRect.height - 150);
+        fastSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
+        fastSpeed.setEnabled(true);
+        fastSpeed.setVisible(true);
+        fastSpeed.setObserver(new Command() {
+            @Override
+            public void execute() {
+            	System.out.println("fast speed");
+            	fastSpeed.setSelected(true);
+            	fastSpeed.repaint();
+            	normalSpeed.setSelected(false);
+            	normalSpeed.repaint();
+            	inatickSpeed.setSelected(false);
+            	inatickSpeed.repaint();
+            }
+            private static final long serialVersionUID = 1L;
+        });
+        
+        buttonSize = new Rectangle(103, 59);
+        imageSize = new Rectangle(103, 59);
+        inatickSpeed = new HoverButton("",
+        		ImageManager.getInatickSpeedImage(),
+        		ImageManager.getInatickSpeedImageSelected(),
+        		ImageManager.getInatickSpeedImageHovered(),
+        		ImageManager.getInatickSpeedImageHoveredSelected(),
+        		ImageManager.getInatickSpeedImage(),
+                imageSize);
+        jLayeredPane.add(inatickSpeed, 0);
+        x = scrnRect.width / 2 - buttonSize.width * 2 + 185;
+        y = (int)(scrnRect.height - 150);
+        inatickSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
+        inatickSpeed.setEnabled(true);
+        inatickSpeed.setVisible(true);
+        inatickSpeed.setObserver(new Command() {
+            @Override
+            public void execute() {
+            	System.out.println("very fast speed");
+            	inatickSpeed.setSelected(true);
+            	inatickSpeed.repaint();
+            	normalSpeed.setSelected(false);
+            	normalSpeed.repaint();
+            	fastSpeed.setSelected(false);
+            	fastSpeed.repaint();
+            }
+            private static final long serialVersionUID = 1L;
+        });
 	}
 	
 	private static void createAndShowGUI() {
