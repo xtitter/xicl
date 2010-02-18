@@ -209,7 +209,7 @@ public class MainJFrame extends JFrame {
         		ImageManager.getFastSpeedImage(),
                 imageSize);
         jLayeredPane.add(fastSpeed, 0);
-        x = scrnRect.width / 2 - buttonSize.width * 2 + 75;
+        x = scrnRect.width / 2 - buttonSize.width * 2 + 185;
         y = (int)(scrnRect.height - 150);
         fastSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         fastSpeed.setEnabled(true);
@@ -238,7 +238,7 @@ public class MainJFrame extends JFrame {
         		ImageManager.getInatickSpeedImage(),
                 imageSize);
         jLayeredPane.add(inatickSpeed, 0);
-        x = scrnRect.width / 2 - buttonSize.width * 2 + 185;
+        x = scrnRect.width / 2 - buttonSize.width * 2 + 75;
         y = (int)(scrnRect.height - 150);
         inatickSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         inatickSpeed.setEnabled(true);
