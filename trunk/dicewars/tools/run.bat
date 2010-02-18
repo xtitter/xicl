@@ -6,4 +6,4 @@ set JPDA_OPTS=-agentlib:jdwp=transport=%JPDA_TRANSPORT%,address=%JPDA_ADDRESS%,s
 
 set JAVA_OPTS=-Xmx256m -Xms64m
 
-java %JAVA_OPTS% %JPDA_OPTS% ru.icl.dicewars.DiceWars
+java %JAVA_OPTS% %JPDA_OPTS% ru.icl.dicewars.MainJFrame
