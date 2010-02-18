@@ -3,7 +3,6 @@ package ru.icl.dicewars;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -34,7 +33,6 @@ import ru.icl.dicewars.gui.component.HoverButton;
 import ru.icl.dicewars.gui.manager.ImageManager;
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.thread.UIGameThread;
-import ru.icl.dicewars.gui.util.ImageUtil;
 
 public class MainJFrame extends JFrame {
 	private static final long serialVersionUID = -6592937624280635427L;
