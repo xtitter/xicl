@@ -2,11 +2,13 @@ package ru.icl.dicewars.gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 
 import javax.swing.JPanel;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.gui.component.RoundedBorder;
+import ru.icl.dicewars.gui.manager.ImageManager;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
 public class PlayerJPanel extends JPanel {
@@ -23,21 +25,27 @@ public class PlayerJPanel extends JPanel {
 	private boolean outOfTheGame = false;
 	private int rank = 0;
 	
+	private Image avatar;
+	
 	public PlayerJPanel(Flag flag, String playerName) {
 		this.color = FlagToColorUtil.getColorByFlag(flag, 165);
 		this.flag = flag;
 		this.playerName = playerName;
 		setBorder(new RoundedBorder(getBackground(), this.color, getBackground(), 12, 3));
 		//setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(flag, 100), FlagToColorUtil.getColorByFlag(flag, 100)));
+		avatar = ImageManager.getAvatar(flag);
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+		if (avatar != null) g.drawImage(avatar, 10, 14, 50, 50, this);
+		
 		g.setColor(Color.black);
-		g.drawString("Name: " + playerName, 15, 23);
-		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 15, 41);
-		g.drawString("Reserve: " + String.valueOf(reserveCount), 15, 59);
+		g.drawString(playerName, 75, 23);
+		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 75, 41);
+		g.drawString("Reserve: " + String.valueOf(reserveCount), 75, 59);
 		
 		if (outOfTheGame) {
 			g.drawString("OUT", 140, 25);

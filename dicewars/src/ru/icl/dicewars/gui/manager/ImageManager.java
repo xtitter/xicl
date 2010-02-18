@@ -4,11 +4,15 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.gui.util.ImageUtil;
 
 public class ImageManager {
@@ -279,6 +283,23 @@ public class ImageManager {
 		return playersImage;
 	}
     
+    synchronized public static Image getAvatar(Flag flag) {
+    	if (!avatars.containsKey(flag)) {
+    		Random randomGenerator = new Random();
+    		Integer index = randomGenerator.nextInt(6) + 1;
+    		int attempts = 10;
+    		Image avatar = getImageFromResource("/resources/avatars/avatar" + String.valueOf(index) + ".png");
+    		while (avatarUsed.contains(index) && attempts > 0) {
+    			index = randomGenerator.nextInt(6) + 1;
+    			avatar = getImageFromResource("/resources/avatars/avatar" + String.valueOf(index) + ".png");
+    			attempts--;
+    		}
+    		avatars.put(flag, avatar);
+    		avatarUsed.add(index);
+    	}
+    	return avatars.get(flag);
+    }
+    
     private static Map<Integer, Map<Color,Image>> dices;
     
     private static Image normalSpeedImage;
@@ -309,4 +330,6 @@ public class ImageManager {
     private static Icon cancelIcon;
     private static Image playersImage;
 
+    private static Map<Flag, Image> avatars = new HashMap<Flag, Image>();
+    private static Set<Integer> avatarUsed = new HashSet<Integer>();
 }
