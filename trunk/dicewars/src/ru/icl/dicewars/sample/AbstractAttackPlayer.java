@@ -7,6 +7,7 @@ import ru.icl.dicewars.client.Land;
 import ru.icl.dicewars.client.Lead;
 import ru.icl.dicewars.client.Player;
 import ru.icl.dicewars.client.World;
+import ru.icl.dicewars.gui.manager.WindowManager;
 
 public abstract class AbstractAttackPlayer implements Player{
 	@Override
@@ -19,6 +20,8 @@ public abstract class AbstractAttackPlayer implements Player{
 
 	@Override
 	public Lead attack(World world) {
+		WindowManager.getInstance().getInfoJPanel().setVisible(false);
+		
 		Set<Land> lands = world.getLands();
 		for (final Land land : lands) {
 			if (land.getFlag().equals(world.getMyFlag()) && land.getDiceCount() > 1) {
