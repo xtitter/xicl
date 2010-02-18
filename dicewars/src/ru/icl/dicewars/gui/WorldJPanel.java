@@ -1,5 +1,6 @@
 package ru.icl.dicewars.gui;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -158,9 +159,19 @@ public class WorldJPanel extends JPanel {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					l = LandFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
-						int offsetX = battle ? 2 : 0;
-						int offsetY = battle ? 5 : 0;
-						g2d.drawImage(l.image, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
+						if (!battle) {
+							g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
+						} else {
+							int offsetX = 2;
+							int offsetY = 5;
+							
+							BufferedImage doubleBuffer2 = new BufferedImage(l.size.width, l.size.height, BufferedImage.TYPE_INT_ARGB);
+							Graphics2D gd = (Graphics2D) doubleBuffer2.getGraphics();
+							gd.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.7f));
+							gd.drawImage(l.image, 0, 0, l.size.width, l.size.height, this);
+							g2d.drawImage(doubleBuffer2, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
+							gd.dispose();
+						}
 					}
 				}
 				
