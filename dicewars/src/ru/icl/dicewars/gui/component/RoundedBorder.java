@@ -7,9 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.RenderingHints;
 
-import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -44,10 +42,10 @@ public class RoundedBorder implements Border {
 
         // background in corners
         g2d.setColor(background);
-        g2d.fillRect(0,              0,               radius, radius);
-        g2d.fillRect(width - radius, 0,               radius, radius);
-        g2d.fillRect(0,              height - radius, radius, radius);
-        g2d.fillRect(width - radius, height - radius, radius, radius);
+        //g2d.fillRect(0,              0,               radius, radius);
+        //g2d.fillRect(width - radius, 0,               radius, radius);
+        //g2d.fillRect(0,              height - radius, radius, radius);
+        //g2d.fillRect(width - radius, height - radius, radius, radius);
 
         // fill corners
         int arcLeft = 0;
@@ -62,11 +60,12 @@ public class RoundedBorder implements Border {
         g2d.fillArc(arcRight, arcTop,    arcDiameter, arcDiameter, 0, 90);
         g2d.fillArc(arcLeft,  arcBottom, arcDiameter, arcDiameter, 180, 90);
         g2d.fillArc(arcRight, arcBottom, arcDiameter, arcDiameter, 270, 90);
+       
         // fill sides
-        g2d.fillRect(radius,         0,               sideWidth, radius);
-        g2d.fillRect(radius,         height - radius, sideWidth, radius);
-        g2d.fillRect(0,              radius,          radius,    sideHeight);
-        g2d.fillRect(width - radius, radius,          radius,    sideHeight);
+        g2d.fillRect(radius,         0,               sideWidth - 1, radius);
+        g2d.fillRect(radius,         height - radius, sideWidth - 1, radius);
+        g2d.fillRect(0,              radius,          radius,    sideHeight - 1);
+        g2d.fillRect(width - radius, radius,          radius,    sideHeight - 1);
 
         // prepare the arc lines
         if(stroke > 0) {
