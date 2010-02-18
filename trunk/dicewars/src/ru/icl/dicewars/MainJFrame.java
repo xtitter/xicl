@@ -91,8 +91,11 @@ public class MainJFrame extends JFrame {
 	
 	public void close(){
 		stopGame();
-		this.setVisible(false);
-		this.dispose();
+		setVisible(false);
+		PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
+		playersJFrame.setVisible(false);
+		playersJFrame.dispose();
+		dispose();
 	}
 	
 	private void startGame(){
