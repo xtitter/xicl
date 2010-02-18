@@ -6,6 +6,11 @@ import ru.icl.dicewars.client.Flag;
 
 public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
+    // do not change these values!
+    private final static Integer COLOR_SELECTION_LIMIT = 100;
+    private final static Integer HEXES_TRY_CREATION_LIMIT = 5;
+    private final static Integer LAND_TRY_CREATION_LIMIT = 5;
+
     /*** CONST ***/
 
     private final static Integer WORLD_Y_SIZE = 55;
@@ -18,8 +23,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     private final static Integer MIN_DICE_PER_LAND = 1;
     private final static Integer MAX_DICE_PER_LAND = 8;
     private final static Integer HOLES_COUNT = 5;
-    private final static Integer HOLE_SIZE = 150;
-    private final static Integer COLOR_SELECTION_LIMIT = 100;
+    private final static Integer HOLE_SIZE = 100;
+    private final static Integer TENTACLE_WIDTH = 4;
 
     private class Hex {
 
@@ -102,15 +107,67 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
     }
 
+    private class CheeseMaker {
+
+        private Boolean[][] cheese;
+
+        public CheeseMaker() {
+            // init cheese
+            if (null == cheese) { cheese = new Boolean[WORLD_Y_SIZE][WORLD_X_SIZE]; }
+            for (int row=0; row<WORLD_Y_SIZE; row++) {
+                if (null == cheese[row]) { cheese[row] = new Boolean[WORLD_X_SIZE]; }
+                for (int column=0; column<WORLD_X_SIZE; column++) {
+                    cheese[row][column] = false;
+                }
+            }
+        }
+
+        public void make() {
+            for (int i=0; i<HOLES_COUNT; i++) {
+                Set<Hex> cheeseHole = wave(getRandomHex(true), HOLE_SIZE, true);
+                for (Hex hex : cheeseHole) { cheese[hex.getY()][hex.getX()] = true; }
+            }
+        }
+
+        public Boolean checkForCheese(Hex hex, Set<Hex> inside) {
+            if (isWorldBorder(hex)) {
+                return false;
+            }
+            Set<Hex> border = getBorder(hex);
+            for (Integer i=0; i<TENTACLE_WIDTH-1; i++) {
+                border = getBorder(border);
+            }
+            border.removeAll(inside);
+            for (Hex candidate : border) {
+                if (cheese[candidate.getY()][candidate.getX()]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public Set<Hex> checkForCheese(Set<Hex> hexes, Set<Hex> inside) {
+            Set<Hex> result = new HashSet<Hex>();
+            for (Hex hex : hexes) {
+                if (checkForCheese(hex, inside)) { result.add(hex); }
+            }
+            return result;
+        }
+    }
+
     /*** ATTRS ***/
 
-    private Integer lastId;
+    private int back = 0;
+
+    private long cheesetime;
+
+    private long landtime;
+
+    private long eliminatetime;
 
 	private int playersCount;
 
     private Boolean[][] empty;
-
-    private Boolean[][] cheese;
 
     private Integer[][] ids;
 
@@ -118,12 +175,24 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
     private List<Flag> playerStack;
 
+    private CheeseMaker cheeseMaker = new CheeseMaker();
+
 	public void setPlayersCount(int playersCount) {
 		this.playersCount = playersCount;
 	}
 
+    private Integer countFrees() {
+        Integer frees = 0;
+        for (int i=0; i<WORLD_Y_SIZE; i++) {
+            for (int j=0; j<WORLD_X_SIZE; j++) {
+                frees += isEmpty(new Hex(j, i)) ? 1 : 0;
+            }
+        }
+        return frees;
+    }
+
     private void createPlayerStack(Collection<Flag> playerFlags) {
-        Integer maxLandCount = Math.min(Math.round((1.0F * WORLD_X_SIZE * WORLD_Y_SIZE - HOLE_SIZE * HOLES_COUNT) / MAX_LAND_SIZE), MAX_LAND_COUNT);
+        Integer maxLandCount = Math.min(Math.round(1.0F * countFrees() / MAX_LAND_SIZE), MAX_LAND_COUNT);
         Integer landCount = MIN_LAND_COUNT + random(maxLandCount - MIN_LAND_COUNT);
         playerStack = new ArrayList<Flag>();
         Set<Flag> remains = new HashSet<Flag>();
@@ -172,12 +241,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return result;
     }
 
-    private Hex getHex(Set<Hex> border, Boolean check) {
-        if (check) {
-            return chooseWeightened(weight(check(border)));
-        } else {
-            return chooseWeightened(weight(border));
-        }
+    private Hex getHex(Set<Hex> border) {
+        return chooseWeightened(weight(border));
     }
 
     private Set<Hex> getBorder(Set<Hex> hexes) {
@@ -238,7 +303,6 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return empty[hex.getY()][hex.getX()];
     }
 
-    // todo: check
     private Set<Hex> filterFree(Set<Hex> hexes) {
         Set<Hex> free = new HashSet<Hex>();
         for (Hex hex : hexes) {
@@ -247,7 +311,6 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return free;
     }
 
-    // todo: check
     private Set<Hex> filterBusy(Set<Hex> hexes) {
         Set<Hex> result = new HashSet<Hex>();
         for (Hex hex : hexes) {
@@ -256,18 +319,12 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return result;
     }
 
-    private void processBorder(Hex hex, Set<Hex> border) {
-//        int bsize = border.size();
-//        boolean bfound = contains(hex, border);
+    private void processBorder(Hex hex, Set<Hex> border, Set<Hex> inside, Boolean check) {
         border.remove(hex);
-//        if (bfound && bsize == border.size()) { throw new IllegalStateException(); }
-        Set<Hex> hexes = filterFree(getBorder(hex));
+        Set<Hex> hexes = check
+                ? cheeseMaker.checkForCheese(filterFree(getBorder(hex)), inside)
+                : filterFree(getBorder(hex));
         border.addAll(hexes);
-//        for (Hex h : hexes) {
-//            if (!contains(h, border)) {
-//                border.add(h);
-//            }
-//        }
     }
 
     private Integer getLandSize() {
@@ -283,54 +340,41 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
                 || WORLD_Y_SIZE-1 == hex.getY();
     }
 
-    private Boolean check(Hex hex) {
-        if (isWorldBorder(hex)) {
-            return false;
-        }
-        Set<Hex> border = getBorder(hex);
-        for (Hex candidate : border) {
-            if (cheese[candidate.getY()][candidate.getX()]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private Set<Hex> check(Set<Hex> hexes) {
-        Set<Hex> result = new HashSet<Hex>();
-        for (Hex hex : hexes) {
-            if (check(hex)) { result.add(hex); }
-        }
-        return result;
-    }
-
     private Set<Hex> wave(Hex initialHex, Integer size, Boolean check) {
         if (null == initialHex) { return null; }
         Set<Hex> inside = new HashSet<Hex>();
         Set<Hex> border = new HashSet<Hex>();
         border.add(initialHex);
-        Hex newHex = getHex(border, check);
+        Hex newHex = getHex(border);
         for (int i=0; i<size && null != newHex; i++) {
-            busy(newHex);
-            processBorder(newHex, border);
-            inside.add(newHex);
-            newHex = getHex(border, check);
+            busy(newHex); inside.add(newHex);
+            processBorder(newHex, border, inside, check);
+            newHex = getHex(border);
         }
         return inside;
     }
 
-    private Set<Hex> getLandHexes(Set<Hex> worldBorder) {
+    private Set<Hex> getLandHexes(Set<FullLand> lands) {
         Set<Hex> landHexes = null;
-        while (null == landHexes) {
-            landHexes = wave(getHex(worldBorder, false), getLandSize(), false);
+        Integer count = 0;
+        while (null == landHexes && count++ < HEXES_TRY_CREATION_LIMIT) {
+            landHexes = wave(
+                    0 == lands.size() ? getRandomHex(false) : getHex(getWorldBorder(lands)),
+                    getLandSize(),
+                    false
+            );
             if (landHexes.size() < MIN_LAND_SIZE) {
                 empty(landHexes);
                 landHexes = null;
             }
         }
-        worldBorder.removeAll(landHexes);
-        worldBorder.addAll(filterFree(getBorder(landHexes)));
         return landHexes;
+    }
+
+    private Set<Hex> getWorldBorder(Set<FullLand> lands) {
+        Set<Hex> territory = new HashSet<Hex>();
+        for (FullLand land : lands) { territory.addAll(hexes(land.getPoints())); }
+        return filterFree(getBorder(territory));
     }
 
     private Hex hex(Point point) {
@@ -366,6 +410,18 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         for (Hex hex : hexes) { color(land, hex); }
     }
 
+    private void uncolor(Hex hex) {
+        if (0 == id(hex)) { throw new IllegalArgumentException(); }
+        colors[hex.getY()][hex.getX()] = null;
+        ids[hex.getY()][hex.getX()] = 0;
+        empty(hex);
+    }
+
+    private void uncolor(FullLand land) {
+        Set<Hex> hexes = hexes(land.getPoints());
+        for (Hex hex : hexes) { uncolor(hex); }
+    }
+
     private Flag getColor(Set<Hex> landHexes) {
         Set<Hex> neighbourHexes = filterBusy(getBorder(landHexes));
         Set<Flag> neighbours = new HashSet<Flag>();
@@ -379,48 +435,64 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         while (count++ < COLOR_SELECTION_LIMIT && neighbours.contains(result)) {
             result =  playerStack.get(random(playerStack.size()));
         }
-        playerStack.remove(result);
         return result;
     }
 
-    private FullLand createNewLand(Set<Hex> worldBorder) {
-        FullLand land = new FullLandImpl(lastId + 1);
-        Set<Hex> landHexes = getLandHexes(worldBorder);
+    private FullLand addLand(Set<FullLand> lands, Set<Hex> landHexes) {
+        FullLand land = new FullLandImpl(lands.size() + 1);
         land.setFlag(getColor(landHexes));
+        playerStack.remove(land.getFlag());
         color(land, landHexes);
-        lastId++;
+        lands.add(land);
         return land;
     }
 
+    private void removeLand(FullLand land, Set<FullLand> lands) {
+        playerStack.add(land.getFlag());
+        uncolor(land); // and empty too
+        lands.remove(land);
+    }
+
+    private Boolean createNewLand(Set<FullLand> lands) {
+        if (0 == playerStack.size()) { return true; }
+        if (countFrees() < playerStack.size()*MIN_LAND_SIZE) { return false; }
+
+        Integer count = 0;
+        do {
+            Set<Hex> landHexes = getLandHexes(lands);
+            if (null == landHexes) { return false; }
+            FullLand land = addLand(lands, landHexes);
+            if (createNewLand(lands)) { return true; }
+            removeLand(land, lands); back++;
+        } while(count++ < LAND_TRY_CREATION_LIMIT);
+
+        return false;
+    }
+
     private Hex getRandomHex(Boolean center) {
+        if (!center && isEmpty(new Hex(0, 0))) { return new Hex(0, 0); }
+        if (!center && isEmpty(new Hex(WORLD_X_SIZE-1, 0))) { return new Hex(WORLD_X_SIZE-1, 0); }
+        if (!center && isEmpty(new Hex(0, WORLD_Y_SIZE-1))) { return new Hex(0, WORLD_Y_SIZE-1); }
+        if (!center && isEmpty(new Hex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1))) { return new Hex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1); }
+
         Integer offsetX = center ? WORLD_X_SIZE/6 : 0;
         Integer offsetY = center ? WORLD_Y_SIZE/6 : 0;
         Integer rangeX = center ? 2*WORLD_X_SIZE/3 : WORLD_X_SIZE;
         Integer rangeY = center ? 2*WORLD_Y_SIZE/3 : WORLD_Y_SIZE;
         Hex hex = new Hex(offsetX + random(rangeX), offsetY + random(rangeY));
-        while (!isEmpty(hex)) {
+        while (!isEmpty(hex) || !cheeseMaker.checkForCheese(hex, new HashSet<Hex>())) {
             hex = new Hex(offsetX + random(rangeX), offsetY + random(rangeY));
         }
         return hex;
     }
 
     private void init() {
-        // lastId
-        lastId = 0;
         // init empties
         if (null == empty) { empty = new Boolean[WORLD_Y_SIZE][WORLD_X_SIZE]; }
         for (int row=0; row<WORLD_Y_SIZE; row++) {
             if (null == empty[row]) { empty[row] = new Boolean[WORLD_X_SIZE]; }
             for (int column=0; column<WORLD_X_SIZE; column++) {
                 empty[row][column] = true;
-            }
-        }
-        // init cheese
-        if (null == cheese) { cheese = new Boolean[WORLD_Y_SIZE][WORLD_X_SIZE]; }
-        for (int row=0; row<WORLD_Y_SIZE; row++) {
-            if (null == cheese[row]) { cheese[row] = new Boolean[WORLD_X_SIZE]; }
-            for (int column=0; column<WORLD_X_SIZE; column++) {
-                cheese[row][column] = false;
             }
         }
         // init colors
@@ -441,7 +513,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         }
     }
 
-    private void eliminateHoles(Set<FullLand> lands, Set<Hex> worldBorder) {
+    private void eliminateHoles(Set<FullLand> lands) {
+        Set<Hex> worldBorder = getWorldBorder(lands);
         SortedSet<Weightened<Hex>> heap = new TreeSet<Weightened<Hex>>(new WeightenedComparator());
         for (Hex hex : worldBorder) { heap.add(weight(hex)); }
         while (!heap.isEmpty() && heap.last().getWeight() > 4) {
@@ -466,34 +539,30 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         }
     }
 
-    private void makeCheese() {
-        for (int i=0; i<HOLES_COUNT; i++) {
-            Set<Hex> cheeseHole = wave(getRandomHex(true), HOLE_SIZE, true);
-            for (Hex hex : cheeseHole) {
-                cheese[hex.getY()][hex.getX()] = true;
-            }
-        }
-    }
-
     private Set<FullLand> createLands(Collection<Flag> playerFlags) {
         // init
         init();
         // set of all lands
         Set<FullLand> lands = new HashSet<FullLand>();
+        // create big holes
+        cheesetime = new GregorianCalendar().getTimeInMillis();
+        cheeseMaker.make();
+        cheesetime = new GregorianCalendar().getTimeInMillis() - cheesetime;
+        System.out.println("cheese   : " + cheesetime + " ms");
+        //output(lands);
         // get all land colors are to place into the world
         createPlayerStack(playerFlags);
-        // create big holes
-        makeCheese();
-        // world border
-        Set<Hex> worldBorder = new HashSet<Hex>();
-        // initial position
-        worldBorder.add(getRandomHex(false));
-        // place lands into world one by one
-        while (0 < playerStack.size()) {
-            lands.add(createNewLand(worldBorder));
-        }
+        // place lands into world one by one in recursive manner
+        landtime = new GregorianCalendar().getTimeInMillis();
+        createNewLand(lands);
+        landtime = new GregorianCalendar().getTimeInMillis() - landtime;
+        System.out.println("lands    : " + landtime + " ms");
+        System.out.println("back     : " + back);
         // fill holes
-        eliminateHoles(lands, worldBorder);
+        eliminatetime = new GregorianCalendar().getTimeInMillis();
+        eliminateHoles(lands);
+        eliminatetime = new GregorianCalendar().getTimeInMillis() - eliminatetime;
+        System.out.println("eliminate: " + eliminatetime + " ms");
         // return!
         return lands;
     }
@@ -572,13 +641,12 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 	}
     
     private void output(Set<FullLand> lands) {
-        Set<Hex> border = new HashSet<Hex>();
-        for (FullLand land : lands) { border.addAll(getBorder(hexes(land.getPoints()))); }
+        Set<Hex> border = getWorldBorder(lands);
         for (int row=0; row<WORLD_Y_SIZE; row++) {
             for (int column=0; column<WORLD_Y_SIZE; column++) {
                 Hex current = new Hex(column, row);
                 FullLand owner = getOwnerLand(current, lands);
-                System.out.print(null != owner ? getChar(owner.getFlag()) : (contains(current, border) ? '.' : ' '));
+                System.out.print(null != owner ? getChar(owner.getFlag()) : (contains(current, border) ? '.' : (!isEmpty(current) ? '#' : ' ')));
             }
             System.out.println();
         }
