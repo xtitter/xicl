@@ -24,6 +24,7 @@ public class PlayerJPanel extends JPanel {
 	private int reserveCount = 0;
 	private boolean outOfTheGame = false;
 	private int rank = 0;
+	private boolean winner = false;
 	
 	private Image avatar;
 	
@@ -46,13 +47,11 @@ public class PlayerJPanel extends JPanel {
 		g.setColor(FlagToColorUtil.getColorByFlag(flag, alpha));
 		g.fillRect(radius, radius, getWidth() - radius*2, getHeight() - radius*2);
 		
-		if (avatar != null) g.drawImage(avatar, radius, radius, 50, 50, this);
-		
 		g.setColor(Color.black);
-		g.drawString(playerName, 75, 23);
-		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 75, 41);
-		g.drawString("Dice per turn: " + String.valueOf(areaCount), 75, 55);
-		g.drawString("Reserve: " + String.valueOf(reserveCount), 75, 69);
+		g.drawString(playerName, 67, 20);
+		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 67, 41);
+		g.drawString("Dice per turn: " + String.valueOf(areaCount), 67, 55);
+		g.drawString("Reserve: " + String.valueOf(reserveCount), 67, 69);
 		
 		if (outOfTheGame) {
 			g.drawString("OUT", 140, 25);
@@ -62,6 +61,17 @@ public class PlayerJPanel extends JPanel {
 		}		
 	}
 	
+	@Override
+	public void paintBorder(Graphics g) {
+		super.paintBorder(g);
+	
+		if (avatar != null) g.drawImage(avatar, radius - 2, radius + 2, 50, 50, this);
+		
+		if (winner) {
+			g.drawImage(ImageManager.getTrophy(), 147, 2, 48, 48, this);
+		}
+	}
+
 	public void setAreaCount(int areaCount) {
 		this.areaCount = areaCount;
 	}
@@ -96,5 +106,9 @@ public class PlayerJPanel extends JPanel {
 	
 	public void setRank(int rank) {
 		this.rank = rank;
+	}
+	
+	public void setWinner(boolean winner) {
+		this.winner = winner;
 	}
 }
