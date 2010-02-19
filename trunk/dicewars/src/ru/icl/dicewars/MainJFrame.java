@@ -52,12 +52,12 @@ public class MainJFrame extends JFrame {
         public void execute() {
         	pauseSpeed.setSelected(true);
         	pauseSpeed.repaint();
+        	playSpeed.setSelected(false);
+        	playSpeed.repaint();
         	forwardSpeed.setSelected(false);
         	forwardSpeed.repaint();
         	fastForwardSpeed.setSelected(false);
         	fastForwardSpeed.repaint();
-        	forwardSpeed.setSelected(false);
-        	forwardSpeed.repaint();
         	if (uiGameThread != null){
         		//uiGameThread.setSpeed(0);
         	}
@@ -72,10 +72,10 @@ public class MainJFrame extends JFrame {
         	pauseSpeed.repaint();
         	playSpeed.setSelected(true);
         	playSpeed.repaint();
-        	fastForwardSpeed.setSelected(false);
-        	fastForwardSpeed.repaint();
         	forwardSpeed.setSelected(false);
         	forwardSpeed.repaint();
+        	fastForwardSpeed.setSelected(false);
+        	fastForwardSpeed.repaint();
         	if (uiGameThread != null){
         		uiGameThread.setSpeed(1);
         	}
@@ -88,10 +88,10 @@ public class MainJFrame extends JFrame {
         public void execute() {
         	pauseSpeed.setSelected(false);
         	pauseSpeed.repaint();
-        	forwardSpeed.setSelected(true);
-        	forwardSpeed.repaint();
         	playSpeed.setSelected(false);
         	playSpeed.repaint();
+        	forwardSpeed.setSelected(true);
+        	forwardSpeed.repaint();
         	fastForwardSpeed.setSelected(false);
         	fastForwardSpeed.repaint();
         	if (uiGameThread != null){
