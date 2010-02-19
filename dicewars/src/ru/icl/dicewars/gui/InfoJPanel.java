@@ -39,6 +39,7 @@ public class InfoJPanel extends JPanel {
 			yoffset += HEIGHT + 10;
 		}
 		revalidate();
+		repaint();
 	}
 	
 	public void updateReserve(Flag flag, int diceCount) {
