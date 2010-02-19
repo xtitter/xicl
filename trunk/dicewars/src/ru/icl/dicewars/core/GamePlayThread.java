@@ -295,7 +295,7 @@ public class GamePlayThread extends Thread{
 											Flag neighbouringLandFlag = neighbouringLand.getFlag();
 											LandRollResult landRollResult = LandRoll.roll(land, neighbouringLand);
 											if (landRollResult.isLeftWin()){
-												addTotalDiceCountByFlag(playerFlag, (neighbouringLand.getDiceCount())*(-1));
+												addTotalDiceCountByFlag(neighbouringLandFlag, (neighbouringLand.getDiceCount())*(-1));
 												neighbouringLand.setDiceCount(DiceStack.valueOf(land.getDiceCount() - 1));
 												
 												neighbouringLand.setFlag(playerFlag);
