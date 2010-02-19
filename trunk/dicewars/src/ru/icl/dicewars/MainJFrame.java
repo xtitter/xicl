@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
@@ -59,7 +57,7 @@ public class MainJFrame extends JFrame {
         	fastForwardSpeed.setSelected(false);
         	fastForwardSpeed.repaint();
         	if (uiGameThread != null){
-        		//uiGameThread.setSpeed(0);
+        		uiGameThread.setSpeed(-1);
         	}
         }
         private static final long serialVersionUID = 1L;
@@ -152,11 +150,11 @@ public class MainJFrame extends JFrame {
 		}
     };
     
-    AdjustmentListener scrollListener = new AdjustmentListener() {
+    /*AdjustmentListener scrollListener = new AdjustmentListener() {
 		public void adjustmentValueChanged(AdjustmentEvent e) {
 			WindowManager.getInstance().freeze();
 		}
-	};
+	};*/
 	
 	WindowListener windowListener = new WindowAdapter() {
 		public void windowClosing(WindowEvent w) {
@@ -198,7 +196,15 @@ public class MainJFrame extends JFrame {
 	private void startGame(){
 		uiGameThread = new UIGameThread(); 
 		uiGameThread.start();
-		speedButtonSetVisible(true);
+		pauseSpeed.setSelected(false);
+    	pauseSpeed.repaint();
+    	playSpeed.setSelected(true);
+    	playSpeed.repaint();
+    	forwardSpeed.setSelected(false);
+    	forwardSpeed.repaint();
+    	fastForwardSpeed.setSelected(false);
+    	fastForwardSpeed.repaint();
+    	speedButtonSetVisible(true);
 	}
 	
 	public void startNewGame(){
@@ -244,8 +250,8 @@ public class MainJFrame extends JFrame {
 		jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		jScrollPane.setBorder(BorderFactory.createLineBorder(new Color(0, 100, 0, 0)));
-		jScrollPane.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
-		jScrollPane.getVerticalScrollBar().addAdjustmentListener(scrollListener);
+		//jScrollPane.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
+		//jScrollPane.getVerticalScrollBar().addAdjustmentListener(scrollListener);
         
 		jLayeredPane.add(jScrollPane, 0);
         
