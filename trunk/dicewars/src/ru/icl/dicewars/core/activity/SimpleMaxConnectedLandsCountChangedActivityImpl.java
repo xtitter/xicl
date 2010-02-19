@@ -3,7 +3,7 @@ package ru.icl.dicewars.core.activity;
 import ru.icl.dicewars.client.Flag;
 
 public class SimpleMaxConnectedLandsCountChangedActivityImpl implements
-		MaxConnectedLandsCountChangedActivityImpl {
+		MaxConnectedLandsCountChangedActivity {
 	private Flag flag;
 	private int landsCount;
 

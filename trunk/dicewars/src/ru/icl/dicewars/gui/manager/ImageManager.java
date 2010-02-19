@@ -300,6 +300,17 @@ public class ImageManager {
     	return avatars.get(flag);
     }
     
+    public static Image getTrophy() {
+    	if (trophy == null) {
+    		synchronized (sync) {
+				if (trophy == null) {
+					trophy = getImageFromResource("/resources/info/cup.png");
+				}
+			}
+    	}
+    	return trophy;
+    }
+    
     private static Map<Integer, Map<Color,Image>> dices;
     
     private static Image normalSpeedImage;
@@ -330,6 +341,10 @@ public class ImageManager {
     private static Icon cancelIcon;
     private static Image playersImage;
 
+    private static Object sync = new Object();
+    
     private static Map<Flag, Image> avatars = new HashMap<Flag, Image>();
     private static Set<Integer> avatarUsed = new HashSet<Integer>();
+    
+    private static Image trophy;
 }

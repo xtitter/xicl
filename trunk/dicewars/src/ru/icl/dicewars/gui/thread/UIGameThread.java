@@ -9,7 +9,7 @@ import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.FlagDistributedActivity;
 import ru.icl.dicewars.core.activity.GameEndedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
-import ru.icl.dicewars.core.activity.MaxConnectedLandsCountChangedActivityImpl;
+import ru.icl.dicewars.core.activity.MaxConnectedLandsCountChangedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.TotalDiceCountChangedActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
@@ -60,8 +60,8 @@ public class UIGameThread extends Thread {
 			} else if (activity instanceof TotalDiceCountChangedActivity) {
 				TotalDiceCountChangedActivity tda = (TotalDiceCountChangedActivity)activity;
 				WindowManager.getInstance().getInfoJPanel().updateDiceCount(tda.getFlag(), tda.getTotalDiceCount());
-			} else if (activity instanceof MaxConnectedLandsCountChangedActivityImpl) {
-				MaxConnectedLandsCountChangedActivityImpl max = (MaxConnectedLandsCountChangedActivityImpl)activity;
+			} else if (activity instanceof MaxConnectedLandsCountChangedActivity) {
+				MaxConnectedLandsCountChangedActivity max = (MaxConnectedLandsCountChangedActivity)activity;
 				WindowManager.getInstance().getInfoJPanel().updateAreaCount(max.getFlag(), max.getLandsCount());
 			} else if (activity instanceof GameEndedActivity){
 				break;
