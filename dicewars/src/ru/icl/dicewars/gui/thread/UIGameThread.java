@@ -23,11 +23,27 @@ public class UIGameThread extends Thread {
 	volatile int speed = 1;
 	
 	public void setSpeed(int speed) {
+		if (speed >= 0){
+			synchronized (this) {
+				this.notifyAll();
+			}
+		}
 		this.speed = speed;
 	}
 	
 	public int getSpeed() {
 		return speed;
+	}
+	
+	private void checkPause(){
+		if (speed < 0){
+			try{
+				synchronized (this) {
+					this.wait();	
+				}
+			}catch (InterruptedException e) {
+			}
+		}
 	}
 	
 	@Override
@@ -52,17 +68,23 @@ public class UIGameThread extends Thread {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
 				WindowManager.getInstance().getWorldJPanel().repaint();
-				if (!alreadyFrozen()) _sleep(700, speed);
+				//if (!alreadyFrozen()) _sleep(700, speed);
+				_sleep(700, speed);
+				checkPause();
 				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(pa.getToLandId());
 				//Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
 				//WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
 				WindowManager.getInstance().getWorldJPanel().repaint();
-				if (!alreadyFrozen()) _sleep(1000, speed);
+				//if (!alreadyFrozen()) _sleep(1000, speed);
+				_sleep(1000, speed);
+				checkPause();
 				//WindowManager.getManager().getJLayeredPane().remove(arrow);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
 				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(0);
 				WindowManager.getInstance().getWorldJPanel().repaint();
-				if (!alreadyFrozen()) _sleep(300, speed);
+				//if (!alreadyFrozen()) _sleep(300, speed);
+				_sleep(300, speed);
+				checkPause();
 			} else if (activity instanceof DiceCountInReserveChangedActivity) {
 				DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
 				WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
@@ -79,7 +101,7 @@ public class UIGameThread extends Thread {
 			
 			if (speed != 0)
 				_sleep(10);
-			//_sleep(0);
+			checkPause();
 		}
 		
 		while (gamePlayThread.isAlive()){
@@ -88,7 +110,7 @@ public class UIGameThread extends Thread {
 		}
 	}
 	
-	private boolean alreadyFrozen() {
+	/*private boolean alreadyFrozen() {
 		boolean frozen = false;
 		while (WindowManager.getInstance().isFrozen()) {
 			frozen = true;
@@ -96,7 +118,7 @@ public class UIGameThread extends Thread {
 			_sleep(1000);
 		}
 		return frozen;
-	}
+	}*/
 	
 	private void _sleep(long time) {
 		try {
@@ -119,5 +141,8 @@ public class UIGameThread extends Thread {
 
 	public void kill() {
 		this.t = false;
+		synchronized (this) {
+			this.notifyAll();
+		}
 	}
 }

@@ -23,9 +23,9 @@ public class WindowManager {
 	private PlayersJFrame playersJFrame;
 	private JScrollPane jScrollPane;
 
-	private boolean frozen = false;
+	/*private boolean frozen = false;
 	
-	private final Object sync = new Object();	
+	private final Object sync = new Object();*/	
 	private final Object jLayeredPaneFlag = new Object();
 	private final Object worldJPanelFlag = new Object();
 	private final Object infoJPanelFlag = new Object();
@@ -195,7 +195,7 @@ public class WindowManager {
 		this.screenHeight = screenHeight;
 	}*/
 	
-	public void freeze() {
+	/*public void freeze() {
 		synchronized (sync) {
 			this.frozen = true;
 		}
@@ -211,5 +211,5 @@ public class WindowManager {
 		synchronized (sync) {
 			return this.frozen;
 		}
-	}
+	}*/
 }
