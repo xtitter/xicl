@@ -99,88 +99,116 @@ public class ImageManager {
     	return d.get(color);
     }
     
-    public static Image getNormalSpeedImage() {
-    	if (normalSpeedImage == null) {
-    		normalSpeedImage = getImageFromResource("/resources/speed/normal.png");
+    public static Image getPauseSpeedImage() {
+    	if (pauseSpeedImage == null) {
+    		pauseSpeedImage = getImageFromResource("/resources/speed/pause.png");
     	}
-    	return normalSpeedImage;
+    	return pauseSpeedImage;
     }
     
-    public static Image getNormalSpeedImageSelected() {
-    	if (normalSpeedImageSelected == null) {
-    		normalSpeedImageSelected = getImageFromResource("/resources/speed/normal_s.png");
+    public static Image getPauseSpeedImageSelected() {
+    	if (pauseSpeedImageSelected == null) {
+    		pauseSpeedImageSelected = getImageFromResource("/resources/speed/pause_s.png");
     	}
-    	return normalSpeedImageSelected;
+    	return pauseSpeedImageSelected;
     }
     
-    public static Image getNormalSpeedImageHovered() {
-    	if (normalSpeedImageHovered == null) {
-    		normalSpeedImageHovered = getImageFromResource("/resources/speed/normal_h.png");
+    public static Image getPauseSpeedImageHovered() {
+    	if (pauseSpeedImageHovered == null) {
+    		pauseSpeedImageHovered = getImageFromResource("/resources/speed/pause_h.png");
     	}
-    	return normalSpeedImageHovered;
+    	return pauseSpeedImageHovered;
     }
     
-    public static Image getNormalSpeedImageHoveredSelected() {
-    	if (normalSpeedImageHoveredSelected == null) {
-    		normalSpeedImageHoveredSelected = getImageFromResource("/resources/speed/normal_sh.png");
+    public static Image getPauseSpeedImageHoveredSelected() {
+    	if (pauseSpeedImageHoveredSelected == null) {
+    		pauseSpeedImageHoveredSelected = getImageFromResource("/resources/speed/pause_sh.png");
     	}
-    	return normalSpeedImageHoveredSelected;
+    	return pauseSpeedImageHoveredSelected;
+    }
+
+    public static Image getPlaySpeedImage() {
+    	if (playSpeedImage == null) {
+    		playSpeedImage = getImageFromResource("/resources/speed/play.png");
+    	}
+    	return playSpeedImage;
     }
     
-    public static Image getFastSpeedImage() {
-    	if (fastSpeedImage == null) {
-    		fastSpeedImage = getImageFromResource("/resources/speed/fast.png");
+    public static Image getPlaySpeedImageSelected() {
+    	if (playSpeedImageSelected == null) {
+    		playSpeedImageSelected = getImageFromResource("/resources/speed/play_s.png");
     	}
-    	return fastSpeedImage;
+    	return playSpeedImageSelected;
     }
     
-    public static Image getFastSpeedImageSelected() {
-    	if (fastSpeedImageSelected == null) {
-    		fastSpeedImageSelected = getImageFromResource("/resources/speed/fast_s.png");
+    public static Image getPlaySpeedImageHovered() {
+    	if (playSpeedImageHovered == null) {
+    		playSpeedImageHovered = getImageFromResource("/resources/speed/play_h.png");
     	}
-    	return fastSpeedImageSelected;
+    	return playSpeedImageHovered;
     }
     
-    public static Image getFastSpeedImageHovered() {
-    	if (fastSpeedImageHovered == null) {
-    		fastSpeedImageHovered = getImageFromResource("/resources/speed/fast_h.png");
+    public static Image getPlaySpeedImageHoveredSelected() {
+    	if (playSpeedImageHoveredSelected == null) {
+    		playSpeedImageHoveredSelected = getImageFromResource("/resources/speed/play_sh.png");
     	}
-    	return fastSpeedImageHovered;
+    	return playSpeedImageHoveredSelected;
     }
     
-    public static Image getFastSpeedImageHoveredSelected() {
-    	if (fastSpeedImageHoveredSelected == null) {
-    		fastSpeedImageHoveredSelected = getImageFromResource("/resources/speed/fast_sh.png");
+    public static Image getForwardSpeedImage() {
+    	if (forwardSpeedImage == null) {
+    		forwardSpeedImage = getImageFromResource("/resources/speed/forward.png");
     	}
-    	return fastSpeedImageHoveredSelected;
+    	return forwardSpeedImage;
     }
     
-    public static Image getInatickSpeedImage() {
-    	if (inatickSpeedImage == null) {
-    		inatickSpeedImage = getImageFromResource("/resources/speed/inatick.png");
+    public static Image getForwardSpeedImageSelected() {
+    	if (forwardSpeedImageSelected == null) {
+    		forwardSpeedImageSelected = getImageFromResource("/resources/speed/forward_s.png");
     	}
-    	return inatickSpeedImage;
+    	return forwardSpeedImageSelected;
     }
     
-    public static Image getInatickSpeedImageSelected() {
-    	if (inatickSpeedImageSelected == null) {
-    		inatickSpeedImageSelected = getImageFromResource("/resources/speed/inatick_s.png");
+    public static Image getForwardSpeedImageHovered() {
+    	if (forwardSpeedImageHovered == null) {
+    		forwardSpeedImageHovered = getImageFromResource("/resources/speed/forward_h.png");
     	}
-    	return inatickSpeedImageSelected;
+    	return forwardSpeedImageHovered;
     }
     
-    public static Image getInatickSpeedImageHovered() {
-    	if (inatickSpeedImageHovered == null) {
-    		inatickSpeedImageHovered = getImageFromResource("/resources/speed/inatick_h.png");
+    public static Image getForwardSpeedImageHoveredSelected() {
+    	if (forwardSpeedImageHoveredSelected == null) {
+    		forwardSpeedImageHoveredSelected = getImageFromResource("/resources/speed/forward_sh.png");
     	}
-    	return inatickSpeedImageHovered;
+    	return forwardSpeedImageHoveredSelected;
     }
     
-    public static Image getInatickSpeedImageHoveredSelected() {
-    	if (inatickSpeedImageHoveredSelected == null) {
-    		inatickSpeedImageHoveredSelected = getImageFromResource("/resources/speed/inatick_sh.png");
+    public static Image getFastForwardSpeedImage() {
+    	if (fastForwardSpeedImage == null) {
+    		fastForwardSpeedImage = getImageFromResource("/resources/speed/fastforward.png");
     	}
-    	return inatickSpeedImageHoveredSelected;
+    	return fastForwardSpeedImage;
+    }
+    
+    public static Image getFastForwardSpeedImageSelected() {
+    	if (fastForwardSpeedImageSelected == null) {
+    		fastForwardSpeedImageSelected = getImageFromResource("/resources/speed/fastforward_s.png");
+    	}
+    	return fastForwardSpeedImageSelected;
+    }
+    
+    public static Image getFastForwardSpeedImageHovered() {
+    	if (fastForwardSpeedImageHovered == null) {
+    		fastForwardSpeedImageHovered = getImageFromResource("/resources/speed/fastforward_h.png");
+    	}
+    	return fastForwardSpeedImageHovered;
+    }
+    
+    public static Image getFastForwardSpeedImageHoveredSelected() {
+    	if (fastForwardSpeedImageHoveredSelected == null) {
+    		fastForwardSpeedImageHoveredSelected = getImageFromResource("/resources/speed/fastforward_sh.png");
+    	}
+    	return fastForwardSpeedImageHoveredSelected;
     }
        
     public static Image getDiceIconImage(){
@@ -313,20 +341,25 @@ public class ImageManager {
     
     private static Map<Integer, Map<Color,Image>> dices;
     
-    private static Image normalSpeedImage;
-    private static Image normalSpeedImageSelected;
-    private static Image normalSpeedImageHovered;
-    private static Image normalSpeedImageHoveredSelected;
+    private static Image pauseSpeedImage;
+    private static Image pauseSpeedImageSelected;
+    private static Image pauseSpeedImageHovered;
+    private static Image pauseSpeedImageHoveredSelected;
     
-    private static Image fastSpeedImage;
-    private static Image fastSpeedImageSelected;
-    private static Image fastSpeedImageHovered;
-    private static Image fastSpeedImageHoveredSelected;
+    private static Image playSpeedImage;
+    private static Image playSpeedImageSelected;
+    private static Image playSpeedImageHovered;
+    private static Image playSpeedImageHoveredSelected;
+    
+    private static Image forwardSpeedImage;
+    private static Image forwardSpeedImageSelected;
+    private static Image forwardSpeedImageHovered;
+    private static Image forwardSpeedImageHoveredSelected;
 
-    private static Image inatickSpeedImage;
-    private static Image inatickSpeedImageSelected;
-    private static Image inatickSpeedImageHovered;
-    private static Image inatickSpeedImageHoveredSelected;
+    private static Image fastForwardSpeedImage;
+    private static Image fastForwardSpeedImageSelected;
+    private static Image fastForwardSpeedImageHovered;
+    private static Image fastForwardSpeedImageHoveredSelected;
     
     private static Image diceIconImage;
     
