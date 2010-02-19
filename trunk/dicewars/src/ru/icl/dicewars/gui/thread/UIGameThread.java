@@ -20,6 +20,16 @@ public class UIGameThread extends Thread {
 
 	boolean t = true;
 	
+	volatile int speed = 1;
+	
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+	
 	@Override
 	public void run() {
 		GamePlayThread gamePlayThread = new GamePlayThread(new SimpleConfigurationImpl());
@@ -27,7 +37,6 @@ public class UIGameThread extends Thread {
 		
 		while (t) {
 			DiceWarsActivity activity = gamePlayThread.pollFromActivityQueue();
-			
 			if (activity instanceof WorldCreatedActivity) {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
 				LandFactory.buildTheWorld(world);
@@ -43,17 +52,17 @@ public class UIGameThread extends Thread {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
 				WindowManager.getInstance().getWorldJPanel().repaint();
-				if (!alreadyFrozen()) _sleep(700);
+				if (!alreadyFrozen()) _sleep(700, speed);
 				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(pa.getToLandId());
 				//Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
 				//WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
 				WindowManager.getInstance().getWorldJPanel().repaint();
-				if (!alreadyFrozen()) _sleep(1000);
+				if (!alreadyFrozen()) _sleep(1000, speed);
 				//WindowManager.getManager().getJLayeredPane().remove(arrow);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
 				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(0);
 				WindowManager.getInstance().getWorldJPanel().repaint();
-				if (!alreadyFrozen()) _sleep(300);
+				if (!alreadyFrozen()) _sleep(300, speed);
 			} else if (activity instanceof DiceCountInReserveChangedActivity) {
 				DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
 				WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
@@ -64,10 +73,12 @@ public class UIGameThread extends Thread {
 				MaxConnectedLandsCountChangedActivity max = (MaxConnectedLandsCountChangedActivity)activity;
 				WindowManager.getInstance().getInfoJPanel().updateAreaCount(max.getFlag(), max.getLandsCount());
 			} else if (activity instanceof GameEndedActivity){
+				WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
 				break;
 			}
 			
-			//_sleep(10);
+			if (speed != 0)
+				_sleep(10);
 			//_sleep(0);
 		}
 		
@@ -90,6 +101,17 @@ public class UIGameThread extends Thread {
 	private void _sleep(long time) {
 		try {
 			Thread.sleep(time);
+		} catch (InterruptedException ie) {
+			ie.printStackTrace();
+		}
+	}
+
+	private void _sleep(long time, int speed) {
+		try {
+			if (speed == 1)
+				Thread.sleep(time);
+			if (speed == 2)
+				Thread.sleep(time / 10);
 		} catch (InterruptedException ie) {
 			ie.printStackTrace();
 		}

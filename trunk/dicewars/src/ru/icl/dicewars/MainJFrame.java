@@ -42,48 +42,80 @@ public class MainJFrame extends JFrame {
     JMenuBar jMenuBar;
     UIGameThread uiGameThread;
     
-    HoverButton normalSpeed;
-    HoverButton inatickSpeed;
-    HoverButton fastSpeed;
+    HoverButton pauseSpeed;
+    HoverButton playSpeed;
+    HoverButton fastForwardSpeed;
+    HoverButton forwardSpeed;
     
-    Command normalSpeedCommand = new Command() {
+    Command pauseSpeedCommand = new Command() {
         @Override
         public void execute() {
-        	System.out.println("normal speed");
-        	normalSpeed.setSelected(true);
-        	normalSpeed.repaint();
-        	inatickSpeed.setSelected(false);
-        	inatickSpeed.repaint();
-        	fastSpeed.setSelected(false);
-        	fastSpeed.repaint();
+        	pauseSpeed.setSelected(true);
+        	pauseSpeed.repaint();
+        	forwardSpeed.setSelected(false);
+        	forwardSpeed.repaint();
+        	fastForwardSpeed.setSelected(false);
+        	fastForwardSpeed.repaint();
+        	forwardSpeed.setSelected(false);
+        	forwardSpeed.repaint();
+        	if (uiGameThread != null){
+        		//uiGameThread.setSpeed(0);
+        	}
+        }
+        private static final long serialVersionUID = 1L;
+    };        
+
+    Command playSpeedCommand = new Command() {
+        @Override
+        public void execute() {
+        	pauseSpeed.setSelected(false);
+        	pauseSpeed.repaint();
+        	playSpeed.setSelected(true);
+        	playSpeed.repaint();
+        	fastForwardSpeed.setSelected(false);
+        	fastForwardSpeed.repaint();
+        	forwardSpeed.setSelected(false);
+        	forwardSpeed.repaint();
+        	if (uiGameThread != null){
+        		uiGameThread.setSpeed(1);
+        	}
         }
         private static final long serialVersionUID = 1L;
     };        
     
-    Command fastSpeedCommand = new Command() {
+    Command forwardSpeedCommand = new Command() {
         @Override
         public void execute() {
-        	System.out.println("fast speed");
-        	fastSpeed.setSelected(true);
-        	fastSpeed.repaint();
-        	normalSpeed.setSelected(false);
-        	normalSpeed.repaint();
-        	inatickSpeed.setSelected(false);
-        	inatickSpeed.repaint();
+        	pauseSpeed.setSelected(false);
+        	pauseSpeed.repaint();
+        	forwardSpeed.setSelected(true);
+        	forwardSpeed.repaint();
+        	playSpeed.setSelected(false);
+        	playSpeed.repaint();
+        	fastForwardSpeed.setSelected(false);
+        	fastForwardSpeed.repaint();
+        	if (uiGameThread != null){
+        		uiGameThread.setSpeed(2);
+        	}
         }
         private static final long serialVersionUID = 1L;
     };
     
-    Command inatickSpeedCommand = new Command() {
+    Command fastForwardSpeedCommand = new Command() {
         @Override
         public void execute() {
         	System.out.println("very fast speed");
-        	inatickSpeed.setSelected(true);
-        	inatickSpeed.repaint();
-        	normalSpeed.setSelected(false);
-        	normalSpeed.repaint();
-        	fastSpeed.setSelected(false);
-        	fastSpeed.repaint();
+        	pauseSpeed.setSelected(false);
+        	pauseSpeed.repaint();
+        	fastForwardSpeed.setSelected(true);
+        	fastForwardSpeed.repaint();
+        	playSpeed.setSelected(false);
+        	playSpeed.repaint();
+        	forwardSpeed.setSelected(false);
+        	forwardSpeed.repaint();
+        	if (uiGameThread != null){
+        		uiGameThread.setSpeed(0);
+        	}
         }
         private static final long serialVersionUID = 1L;
     };
@@ -102,17 +134,21 @@ public class MainJFrame extends JFrame {
 	        infoJPanel.setBounds(screenWidth - 220, 30, 200, screenHeight - 120);
 	        infoJPanel.revalidate();
 	        
-	        Rectangle buttonSize = new Rectangle(103, 59);
-	        int x = screenWidth / 2 - buttonSize.width * 2 - 50;
+	        Rectangle buttonSize = new Rectangle(48, 48);
+	        int x = (screenWidth - 220) / 2 - buttonSize.width * 2 - 15 - 30;
 	        int y = (int)(screenHeight - 150);
-	        normalSpeed.setLocation(x, y);
-	        normalSpeed.repaint();
-	        x += 50 + 75; 
-	        fastSpeed.setLocation(x, y);
-	        fastSpeed.repaint();
-	        x += 110; 
-	        inatickSpeed.setLocation(x, y);
-	        inatickSpeed.repaint();
+	        x += buttonSize.width + 30; 
+	        pauseSpeed.setLocation(x, y);
+	        pauseSpeed.repaint();
+	        x += buttonSize.width + 30;
+	        playSpeed.setLocation(x, y);
+	        playSpeed.repaint();
+	        x += buttonSize.width + 30; 
+	        forwardSpeed.setLocation(x, y);
+	        forwardSpeed.repaint();
+	        x += buttonSize.width + 30; 
+	        fastForwardSpeed.setLocation(x, y);
+	        fastForwardSpeed.repaint();
 		}
     };
     
@@ -128,6 +164,13 @@ public class MainJFrame extends JFrame {
 		}
 	};
 	
+	private void speedButtonSetVisible(boolean visible){
+		pauseSpeed.setVisible(visible);
+		playSpeed.setVisible(visible);
+		forwardSpeed.setVisible(visible);
+		fastForwardSpeed.setVisible(visible);
+	}
+	
 	public void stopGame(){
 		while (uiGameThread != null && uiGameThread.isAlive()){
 			uiGameThread.kill();
@@ -136,6 +179,11 @@ public class MainJFrame extends JFrame {
 			}catch (InterruptedException e) {
 			}
 		}
+		speedButtonSetVisible(false);
+	}
+	
+	public void notifyThatGameIsEnded(){
+		speedButtonSetVisible(false);
 	}
 	
 	public void close(){
@@ -150,6 +198,7 @@ public class MainJFrame extends JFrame {
 	private void startGame(){
 		uiGameThread = new UIGameThread(); 
 		uiGameThread.start();
+		speedButtonSetVisible(true);
 	}
 	
 	public void startNewGame(){
@@ -207,61 +256,68 @@ public class MainJFrame extends JFrame {
 
         addComponentListener(resizeListener);
 		
+        Rectangle buttonSize = new Rectangle(48, 48);
+        Rectangle imageSize = new Rectangle(48, 48);
+        
+        pauseSpeed = new HoverButton("",
+        		ImageManager.getPauseSpeedImage(),
+        		ImageManager.getPauseSpeedImageSelected(),
+        		ImageManager.getPauseSpeedImageHovered(),
+        		ImageManager.getPauseSpeedImageHoveredSelected(),
+        		ImageManager.getPauseSpeedImage(),
+                imageSize);
+        int x = (scrnRect.width - 220) / 2 - buttonSize.width * 2 - 15 - 30;
+        int y = (int)(scrnRect.height - 150);
+        pauseSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
+        pauseSpeed.setEnabled(true);
+        pauseSpeed.setObserver(pauseSpeedCommand);
+        jLayeredPane.add(pauseSpeed, JLayeredPane.MODAL_LAYER);
+        
+        playSpeed = new HoverButton("",
+        		ImageManager.getPlaySpeedImage(),
+        		ImageManager.getPlaySpeedImageSelected(),
+        		ImageManager.getPlaySpeedImageHovered(),
+        		ImageManager.getPlaySpeedImageHoveredSelected(),
+        		ImageManager.getPlaySpeedImage(),
+                imageSize);
+        jLayeredPane.add(playSpeed, JLayeredPane.MODAL_LAYER);
+        x = x + buttonSize.width + 30; 
+        playSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
+        playSpeed.setEnabled(true);
+        playSpeed.setSelected(true);
+        playSpeed.setObserver(playSpeedCommand);
+              
+        forwardSpeed = new HoverButton("",
+        		ImageManager.getForwardSpeedImage(),
+        		ImageManager.getForwardSpeedImageSelected(),
+        		ImageManager.getForwardSpeedImageHovered(),
+        		ImageManager.getForwardSpeedImageHoveredSelected(),
+        		ImageManager.getForwardSpeedImage(),
+                imageSize);
+        jLayeredPane.add(forwardSpeed, JLayeredPane.MODAL_LAYER);
+        x = x + buttonSize.width + 30;
+        forwardSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
+        forwardSpeed.setEnabled(true);
+        forwardSpeed.setObserver(forwardSpeedCommand);
+        
+        fastForwardSpeed = new HoverButton("",
+        		ImageManager.getFastForwardSpeedImage(),
+        		ImageManager.getFastForwardSpeedImageSelected(),
+        		ImageManager.getFastForwardSpeedImageHovered(),
+        		ImageManager.getFastForwardSpeedImageHoveredSelected(),
+        		ImageManager.getFastForwardSpeedImage(),
+                imageSize);
+        jLayeredPane.add(fastForwardSpeed, JLayeredPane.MODAL_LAYER);
+        x = x + buttonSize.width + 30;
+        fastForwardSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
+        fastForwardSpeed.setEnabled(true);
+        fastForwardSpeed.setObserver(fastForwardSpeedCommand);
+        
+        speedButtonSetVisible(false);
+        
 		//Because windows is closed by event.
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(windowListener);
-		
-        Rectangle buttonSize = new Rectangle(103, 59);
-        Rectangle imageSize = new Rectangle(103, 59);
-        normalSpeed = new HoverButton("",
-        		ImageManager.getNormalSpeedImage(),
-        		ImageManager.getNormalSpeedImageSelected(),
-        		ImageManager.getNormalSpeedImageHovered(),
-        		ImageManager.getNormalSpeedImageHoveredSelected(),
-        		ImageManager.getNormalSpeedImage(),
-                imageSize);
-        jLayeredPane.add(normalSpeed, JLayeredPane.MODAL_LAYER);
-        int x = scrnRect.width / 2 - buttonSize.width * 2 - 50;
-        int y = (int)(scrnRect.height - 150);
-        normalSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
-        normalSpeed.setEnabled(true);
-        normalSpeed.setVisible(true);
-        normalSpeed.setSelected(true);
-        normalSpeed.setObserver(normalSpeedCommand);
-              
-        buttonSize = new Rectangle(103, 59);
-        imageSize = new Rectangle(103, 59);
-        fastSpeed = new HoverButton("",
-        		ImageManager.getInatickSpeedImage(),
-        		ImageManager.getInatickSpeedImageSelected(),
-        		ImageManager.getInatickSpeedImageHovered(),
-        		ImageManager.getInatickSpeedImageHoveredSelected(),
-        		ImageManager.getInatickSpeedImage(),
-                imageSize);
-        jLayeredPane.add(fastSpeed, JLayeredPane.MODAL_LAYER);
-        x = scrnRect.width / 2 - buttonSize.width * 2 + 75;
-        y = (int)(scrnRect.height - 150);
-        fastSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
-        fastSpeed.setEnabled(true);
-        fastSpeed.setVisible(true);
-        fastSpeed.setObserver(fastSpeedCommand);
-        
-        buttonSize = new Rectangle(103, 59);
-        imageSize = new Rectangle(103, 59);
-        inatickSpeed = new HoverButton("",
-        		ImageManager.getFastSpeedImage(),
-        		ImageManager.getFastSpeedImageSelected(),
-        		ImageManager.getFastSpeedImageHovered(),
-        		ImageManager.getFastSpeedImageHoveredSelected(),
-        		ImageManager.getFastSpeedImage(),
-                imageSize);
-        jLayeredPane.add(inatickSpeed, JLayeredPane.MODAL_LAYER);
-        x = scrnRect.width / 2 - buttonSize.width * 2 + 185;
-        y = (int)(scrnRect.height - 150);
-        inatickSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
-        inatickSpeed.setEnabled(true);
-        inatickSpeed.setVisible(true);
-        inatickSpeed.setObserver(inatickSpeedCommand);
 	}
 	
 	private static void createAndShowGUI() {
