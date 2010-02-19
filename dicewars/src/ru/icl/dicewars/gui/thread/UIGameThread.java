@@ -40,18 +40,18 @@ public class UIGameThread extends Thread {
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
-				WindowManager.getInstance().getJLayeredPane().repaint();
-				//if (!alreadyFrozen()) _sleep(700);
+				WindowManager.getInstance().getWorldJPanel().repaint();
+				if (!alreadyFrozen()) _sleep(700);
 				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(pa.getToLandId());
 				//Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
 				//WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
-				WindowManager.getInstance().getJLayeredPane().repaint();
-				//if (!alreadyFrozen()) _sleep(1000);
+				WindowManager.getInstance().getWorldJPanel().repaint();
+				if (!alreadyFrozen()) _sleep(1000);
 				//WindowManager.getManager().getJLayeredPane().remove(arrow);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
 				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(0);
-				WindowManager.getInstance().getJLayeredPane().repaint();
-				//if (!alreadyFrozen()) _sleep(300);
+				WindowManager.getInstance().getWorldJPanel().repaint();
+				if (!alreadyFrozen()) _sleep(300);
 			} else if (activity instanceof DiceCountInReserveChangedActivity) {
 				DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
 				WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
@@ -60,6 +60,7 @@ public class UIGameThread extends Thread {
 			}
 			
 			//_sleep(10);
+			//_sleep(0);
 		}
 		
 		while (gamePlayThread.isAlive()){
