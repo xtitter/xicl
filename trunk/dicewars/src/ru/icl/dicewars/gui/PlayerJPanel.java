@@ -51,7 +51,8 @@ public class PlayerJPanel extends JPanel {
 		g.setColor(Color.black);
 		g.drawString(playerName, 75, 23);
 		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 75, 41);
-		g.drawString("Reserve: " + String.valueOf(reserveCount), 75, 59);
+		g.drawString("Dice per turn: " + String.valueOf(areaCount), 75, 55);
+		g.drawString("Reserve: " + String.valueOf(reserveCount), 75, 69);
 		
 		if (outOfTheGame) {
 			g.drawString("OUT", 140, 25);

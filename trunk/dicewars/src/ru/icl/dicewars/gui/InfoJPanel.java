@@ -48,6 +48,20 @@ public class InfoJPanel extends JPanel {
 			players.get(flag).repaint();
 		}
 	}
+
+	public void updateDiceCount(Flag flag, int count) {
+		if (players.containsKey(flag)) {
+			players.get(flag).setDiceOverallCount(count);
+			players.get(flag).repaint();
+		}
+	}
+	
+	public void updateAreaCount(Flag flag, int count) {
+		if (players.containsKey(flag)) {
+			players.get(flag).setAreaCount(count);
+			players.get(flag).repaint();
+		}
+	}
 	
 	public void updateDiceCount(Map<Flag, Integer> diceOverallCount) {
 		for (Flag flag : diceOverallCount.keySet()) {
@@ -57,7 +71,7 @@ public class InfoJPanel extends JPanel {
 			}
 		}
 		
-		Flag toremove = null;
+		/*Flag toremove = null;
 		for (PlayerJPanel player : players.values()) {
 			if (!diceOverallCount.containsKey(player.getFlag())) {
 				toremove = player.getFlag();
@@ -71,7 +85,7 @@ public class InfoJPanel extends JPanel {
 			player.setDiceOverallCount(0);
 			player.setRank(diceOverallCount.size());
 			player.repaint();
-		}
+		}*/
 	}
 	
 	/*public void sortPlayers() {
