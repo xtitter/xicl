@@ -99,8 +99,12 @@ public class UIGameThread extends Thread {
 				break;
 			}
 			
-			if (speed != 0)
+			if (speed == 1)
+				_sleep(100);
+
+			if (speed == 2)
 				_sleep(10);
+
 			checkPause();
 		}
 		
