@@ -15,7 +15,7 @@ public class InfoJPanel extends JPanel {
 	private static final int WIDTH = 180;
 	private static final int HEIGHT = 80;
 	
-	private Map<Flag, PlayerJPanel> players = new HashMap<Flag, PlayerJPanel>();
+	private Map<Flag, PlayerJPanel> playerJPanelMap = new HashMap<Flag, PlayerJPanel>();
 	private Flag winner;
 	private int winnerCount;
 	
@@ -25,14 +25,14 @@ public class InfoJPanel extends JPanel {
 	
 	public void initPlayers(FlagDistributedActivity fda) {
 		int yoffset = 10;
-		for (PlayerJPanel playerPanel : players.values()){
+		for (PlayerJPanel playerPanel : playerJPanelMap.values()){
 			this.remove(playerPanel);
 		}
-		players.clear();
+		playerJPanelMap.clear();
 		for (Flag flag : fda.getFlags()) {
 			PlayerJPanel player = new PlayerJPanel(flag, fda.getNameByFlag(flag));
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
-			players.put(flag, player);
+			playerJPanelMap.put(flag, player);
 			add(player);
 			yoffset += HEIGHT + 10;
 		}
@@ -41,58 +41,70 @@ public class InfoJPanel extends JPanel {
 	}
 	
 	public void updateReserve(Flag flag, int diceCount) {
-		if (players.containsKey(flag)) {
-			players.get(flag).setReserveCount(diceCount);
-			players.get(flag).repaint();
+		if (playerJPanelMap.containsKey(flag)) {
+			playerJPanelMap.get(flag).setReserveCount(diceCount);
+			playerJPanelMap.get(flag).repaint();
 		}
 	}
 
-	public void updateDiceCount(Flag flag, int count) {
-		if (players.containsKey(flag)) {
-			players.get(flag).setDiceOverallCount(count);
+	public void updateDiceCount(Flag flag, int totalDiceCount) {
+		if (playerJPanelMap.containsKey(flag)) {
+			playerJPanelMap.get(flag).setTotalDiceCount(totalDiceCount);
 			if (winner != null) {
 				if (!flag.equals(winner)) {
-					if (count > winnerCount) {
-						winnerCount = count;
+					if (totalDiceCount > winnerCount) {
+						winnerCount = totalDiceCount;
 						changeWinnerTo(winner, flag);
+						for (PlayerJPanel playerJPanel : playerJPanelMap.values()){
+							playerJPanel.setWinnerTotalDiceCount(winnerCount);
+							playerJPanel.repaint();
+						}
 					}	
-				} else if (count > winnerCount) {
-					winnerCount = count;
+				} else if (totalDiceCount > winnerCount) {
+					winnerCount = totalDiceCount;
+					for (PlayerJPanel playerJPanel : playerJPanelMap.values()){
+						playerJPanel.setWinnerTotalDiceCount(winnerCount);
+						playerJPanel.repaint();
+					}
 				} else { // check if another player became a winner
-					winnerCount = count;
+					winnerCount = totalDiceCount;
 					Flag previousWinner = winner;
-					for (PlayerJPanel player : players.values()) {
-						if (!player.getFlag().equals(winner) && player.getDiceOverallCount() > winnerCount) {
+					for (PlayerJPanel player : playerJPanelMap.values()) {
+						if (!player.getFlag().equals(winner) && player.getTotalDiceCount() > winnerCount) {
 							winner = player.getFlag();
-							winnerCount = player.getDiceOverallCount(); 
+							winnerCount = player.getTotalDiceCount(); 
 						}
 					}
 					// winner has been changed
 					if (!previousWinner.equals(winner)) {
 						changeWinnerTo(previousWinner, winner);
+						for (PlayerJPanel playerJPanel : playerJPanelMap.values()){
+							playerJPanel.setWinnerTotalDiceCount(winnerCount);
+							playerJPanel.repaint();
+						}
 					}
 				}
 			} else {
 				winner = flag;
-				winnerCount = count;
-				players.get(flag).setWinner(true);
+				winnerCount = totalDiceCount;
+				playerJPanelMap.get(flag).setWinner(true);
 			}
-			players.get(flag).repaint();
+			playerJPanelMap.get(flag).repaint();
 		}
 	}
 	
 	private void changeWinnerTo(Flag from, Flag to) {
-		players.get(from).setWinner(false);
-		players.get(from).repaint();
-		players.get(to).setWinner(true);
-		players.get(to).repaint();
+		playerJPanelMap.get(from).setWinner(false);
+		playerJPanelMap.get(from).repaint();
+		playerJPanelMap.get(to).setWinner(true);
+		playerJPanelMap.get(to).repaint();
 		winner = to;
 	}
 	
 	public void updateAreaCount(Flag flag, int count) {
-		if (players.containsKey(flag)) {
-			players.get(flag).setAreaCount(count);
-			players.get(flag).repaint();
+		if (playerJPanelMap.containsKey(flag)) {
+			playerJPanelMap.get(flag).setAreaCount(count);
+			playerJPanelMap.get(flag).repaint();
 		}
 	}
 	
