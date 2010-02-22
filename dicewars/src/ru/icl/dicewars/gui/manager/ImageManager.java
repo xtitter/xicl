@@ -311,26 +311,35 @@ public class ImageManager {
 		return playersImage;
 	}
     
-    synchronized public static Image getAvatar(Flag flag) {
-    	if (!avatars.containsKey(flag)) {
-    		Random randomGenerator = new Random();
-    		Integer index = randomGenerator.nextInt(6) + 1;
-    		int attempts = 10;
-    		Image avatar = getImageFromResource("/resources/avatars/avatar" + String.valueOf(index) + ".png");
-    		while (avatarUsed.contains(index) && attempts > 0) {
-    			index = randomGenerator.nextInt(6) + 1;
-    			avatar = getImageFromResource("/resources/avatars/avatar" + String.valueOf(index) + ".png");
-    			attempts--;
-    		}
-    		avatars.put(flag, avatar);
-    		avatarUsed.add(index);
+    public static Image getAvatar(Flag flag, int emotion) {
+    	if (!avatars.containsKey(flag)){
+    		avatars.put(flag, new HashMap<Integer, Image>());
     	}
-    	return avatars.get(flag);
+    	Map<Integer, Image> map = avatars.get(flag);
+    	
+    	if (!map.containsKey(Integer.valueOf(emotion))){
+    		String flagName = null;
+    		
+    		switch (flag) {
+				case BLUE:	flagName = "blue";break;
+				case RED:	flagName = "red";break;
+				case CYAN:	flagName = "cyan";break;
+				case YELLOW:	flagName = "yellow";break;
+				case GREEN:	flagName = "green";break;
+				case ORANGE:	flagName = "orange";break;
+				default:
+					flagName = "blue";break;
+			}
+    		Image avatar = getImageFromResource("/resources/avatars/"+flagName+"_" + String.valueOf(emotion) + ".png", new Rectangle(0,0,64,64));
+    		map.put(emotion, avatar);
+    	}
+    	
+    	return map.get(Integer.valueOf(emotion));
     }
     
     public static Image getTrophy() {
     	if (trophy == null) {
-    		synchronized (sync) {
+    		synchronized (trophySync) {
 				if (trophy == null) {
 					trophy = getImageFromResource("/resources/info/cup.png");
 				}
@@ -374,10 +383,9 @@ public class ImageManager {
     private static Icon cancelIcon;
     private static Image playersImage;
 
-    private static Object sync = new Object();
+    private static Object trophySync = new Object();
     
-    private static Map<Flag, Image> avatars = new HashMap<Flag, Image>();
-    private static Set<Integer> avatarUsed = new HashSet<Integer>();
+    private static Map<Flag, Map<Integer, Image>> avatars = new HashMap<Flag, Map<Integer,Image>>();
     
     private static Image trophy;
 }

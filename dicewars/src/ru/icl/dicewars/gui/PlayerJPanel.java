@@ -26,7 +26,6 @@ public class PlayerJPanel extends JPanel {
 	private int rank = 0;
 	private boolean winner = false;
 	
-	private Image avatar;
 	
 	private final static int radius = 12; 
 	private final static int alpha = 90; 
@@ -36,8 +35,6 @@ public class PlayerJPanel extends JPanel {
 		this.flag = flag;
 		this.playerName = playerName;
 		setBorder(new RoundedBorder(this.color, this.color, this.color, radius, 0));
-		//setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED, FlagToColorUtil.getColorByFlag(flag, 100), FlagToColorUtil.getColorByFlag(flag, 100)));
-		avatar = ImageManager.getAvatar(flag);
 	}
 	
 	@Override
@@ -64,12 +61,16 @@ public class PlayerJPanel extends JPanel {
 	@Override
 	public void paintBorder(Graphics g) {
 		super.paintBorder(g);
-	
-		if (avatar != null) g.drawImage(avatar, radius - 2, radius + 2, 50, 50, this);
 		
+		Image avatar = null;	
 		if (winner) {
 			g.drawImage(ImageManager.getTrophy(), 147, 2, 48, 48, this);
+			avatar = ImageManager.getAvatar(flag, 1);
+		}else{
+			avatar = ImageManager.getAvatar(flag, 2);
 		}
+		
+		if (avatar != null) g.drawImage(avatar, radius - 12, radius - 4, 64, 64, this);
 	}
 
 	public void setAreaCount(int areaCount) {
