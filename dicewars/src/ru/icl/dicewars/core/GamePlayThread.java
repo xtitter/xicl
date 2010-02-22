@@ -169,7 +169,6 @@ public class GamePlayThread extends Thread{
 				FullLand fullLand = (FullLand) land;
 				fullLand.incDiceCount();
 				addToActivityQueue(new SimpleLandUpdatedActivity(fullLand));
-				addTotalDiceCountByFlag(playerFlag, 1);
 			}else{
 				throw new IllegalStateException();
 			}
@@ -177,7 +176,7 @@ public class GamePlayThread extends Thread{
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
 		
-		addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(playerFlag, totalDiceCountMap.get(playerFlag)));
+		addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(playerFlag, getTotalDiceCountByFlag(playerFlag)));
 		addToActivityQueue(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));		
 	}
 	
