@@ -18,15 +18,14 @@ public class PlayerJPanel extends JPanel {
 	private Flag flag;
 	private Color color;
 	private String playerName;
-	private int diceOverallCount = 0;
+	private int totalDiceCount = 0;
 
 	private int areaCount = 0;
 	private int reserveCount = 0;
-	private boolean outOfTheGame = false;
+	private int winnerTotalDiceCount = 0;
 	private int rank = 0;
 	private boolean winner = false;
-	
-	
+		
 	private final static int radius = 12; 
 	private final static int alpha = 90; 
 	
@@ -46,16 +45,9 @@ public class PlayerJPanel extends JPanel {
 		
 		g.setColor(Color.black);
 		g.drawString(playerName, 67, 20);
-		g.drawString("Dice count: " + String.valueOf(diceOverallCount), 67, 41);
+		g.drawString("Dice count: " + String.valueOf(totalDiceCount), 67, 41);
 		g.drawString("Dice per turn: " + String.valueOf(areaCount), 67, 55);
 		g.drawString("Reserve: " + String.valueOf(reserveCount), 67, 69);
-		
-		if (outOfTheGame) {
-			g.drawString("OUT", 140, 25);
-			if (rank > 0) {
-				g.drawString("Place: " + String.valueOf(rank), 15, 78);
-			}
-		}		
 	}
 	
 	@Override
@@ -65,11 +57,20 @@ public class PlayerJPanel extends JPanel {
 		Image avatar = null;	
 		if (winner) {
 			g.drawImage(ImageManager.getTrophy(), 147, 2, 48, 48, this);
-			avatar = ImageManager.getAvatar(flag, 1);
-		}else{
-			avatar = ImageManager.getAvatar(flag, 2);
+			avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
 		}
-		
+		if (winnerTotalDiceCount * 2 / 3 > totalDiceCount){
+			avatar = ImageManager.getAvatar(flag, Emotion.CALM.value());
+		}
+		if (winnerTotalDiceCount * 1 / 3 > totalDiceCount){
+			avatar = ImageManager.getAvatar(flag, Emotion.SAD.value());
+		}
+		if (totalDiceCount == 0){
+			avatar = ImageManager.getAvatar(flag, Emotion.EVIL.value());
+		}
+		if (avatar == null){
+			avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
+		}
 		if (avatar != null) g.drawImage(avatar, radius - 12, radius - 4, 64, 64, this);
 	}
 
@@ -81,35 +82,61 @@ public class PlayerJPanel extends JPanel {
 		return areaCount;
 	}
 	
-	public Color getColor() {
-		return color;
-	}
-	
-	public void setDiceOverallCount(int diceOverallCount) {
-		this.diceOverallCount = diceOverallCount;
-	}
-
 	public void setReserveCount(int reserveCount) {
 		this.reserveCount = reserveCount;
 	}
 	
-	public int getDiceOverallCount() {
-		return diceOverallCount;
+	public int getReserveCount() {
+		return reserveCount;
+	}
+	
+	public int getTotalDiceCount() {
+		return totalDiceCount;
+	}
+	
+	public void setTotalDiceCount(int totalDiceCount) {
+		this.totalDiceCount = totalDiceCount;
 	}
 	
 	public Flag getFlag() {
 		return flag;
 	}
 	
-	public void setOutOfTheGame(boolean outOfTheGame) {
-		this.outOfTheGame = outOfTheGame;
-	}
-	
 	public void setRank(int rank) {
 		this.rank = rank;
 	}
 	
+	public int getRank() {
+		return rank;
+	}
+	
 	public void setWinner(boolean winner) {
 		this.winner = winner;
+	}
+	
+	public boolean isWinner() {
+		return winner;
+	}
+	
+	public void setWinnerTotalDiceCount(int winnerTotalDiceCount) {
+		this.winnerTotalDiceCount = winnerTotalDiceCount;
+	}
+	
+	public int getWinnerTotalDiceCount() {
+		return winnerTotalDiceCount;
+	}
+	
+	private static enum Emotion{
+		HAPPY(1), SMILING(2), CALM(3), SAD(4), EVIL(5);
+		
+		int i;
+		
+		private Emotion(int i){
+			this.i = i;
+		}
+		
+		public int value(){
+			return i;
+		}
 	}
 }
