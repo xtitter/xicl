@@ -24,6 +24,7 @@ public class PlayerJPanel extends JPanel {
 	private int reserveCount = 0;
 	private int winnerTotalDiceCount = 0;
 	private int rank = 0;
+	private boolean atstart = true;
 	private boolean winner = false;
 		
 	private final static int radius = 12; 
@@ -68,7 +69,7 @@ public class PlayerJPanel extends JPanel {
 		if (totalDiceCount == 0){
 			avatar = ImageManager.getAvatar(flag, Emotion.EVIL.value());
 		}
-		if (avatar == null){
+		if (avatar == null || atstart){
 			avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
 		}
 		if (avatar != null) g.drawImage(avatar, radius - 12, radius - 4, 64, 64, this);
@@ -96,6 +97,7 @@ public class PlayerJPanel extends JPanel {
 	
 	public void setTotalDiceCount(int totalDiceCount) {
 		this.totalDiceCount = totalDiceCount;
+		this.atstart = false;
 	}
 	
 	public Flag getFlag() {
