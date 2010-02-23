@@ -1,6 +1,7 @@
 package ru.icl.dicewars.gui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -44,7 +45,11 @@ public class PlayerJPanel extends JPanel {
 		g.fillRect(radius, radius, getWidth() - radius*2, getHeight() - radius*2);
 		
 		g.setColor(Color.black);
-		g.drawString(playerName, 67, 20);
+		Font oldFont = g.getFont();
+		Font playerNameFont = new Font("playerNameFont", Font.BOLD, 12);
+		g.setFont(playerNameFont);
+		g.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
+		g.setFont(oldFont);
 		g.drawString("Dice count: " + String.valueOf(totalDiceCount), 67, 41);
 		g.drawString("Dice per turn: " + String.valueOf(areaCount), 67, 55);
 		g.drawString("Reserve: " + String.valueOf(reserveCount), 67, 69);
