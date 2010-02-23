@@ -23,19 +23,21 @@ public class InfoJPanel extends JPanel {
 		setLayout(null);
 	}
 	
-	public void initPlayers(FlagDistributedActivity fda) {
+	public void initPlayers(FlagDistributedActivity flagDistributedActivity) {
 		int yoffset = 10;
 		for (PlayerJPanel playerPanel : playerJPanelMap.values()){
 			this.remove(playerPanel);
 		}
 		playerJPanelMap.clear();
-		for (Flag flag : fda.getFlags()) {
-			PlayerJPanel player = new PlayerJPanel(flag, fda.getNameByFlag(flag));
+		for (Flag flag : flagDistributedActivity.getFlags()) {
+			PlayerJPanel player = new PlayerJPanel(flag, flagDistributedActivity.getNameByFlag(flag));
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
 			playerJPanelMap.put(flag, player);
 			add(player);
 			yoffset += HEIGHT + 10;
 		}
+		winner = null;
+		winnerCount = 0;
 		revalidate();
 		repaint();
 	}
