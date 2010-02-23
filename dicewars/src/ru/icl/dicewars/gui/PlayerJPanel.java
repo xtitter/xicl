@@ -18,13 +18,12 @@ public class PlayerJPanel extends JPanel {
 	private Flag flag;
 	private Color color;
 	private String playerName;
-	private int totalDiceCount = 0;
+	private int totalDiceCount = -1;
 
 	private int areaCount = 0;
 	private int reserveCount = 0;
 	private int winnerTotalDiceCount = 0;
 	private int rank = 0;
-	private boolean atstart = true;
 	private boolean winner = false;
 		
 	private final static int radius = 12; 
@@ -60,16 +59,16 @@ public class PlayerJPanel extends JPanel {
 			g.drawImage(ImageManager.getTrophy(), 147, 2, 48, 48, this);
 			avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
 		}
-		if (winnerTotalDiceCount * 2 / 3 > totalDiceCount){
+		if (winnerTotalDiceCount / 2 > totalDiceCount){
 			avatar = ImageManager.getAvatar(flag, Emotion.CALM.value());
 		}
-		if (winnerTotalDiceCount * 1 / 3 > totalDiceCount){
-			avatar = ImageManager.getAvatar(flag, Emotion.SAD.value());
-		}
-		if (totalDiceCount == 0){
+		if (winnerTotalDiceCount / 4 > totalDiceCount){
 			avatar = ImageManager.getAvatar(flag, Emotion.EVIL.value());
 		}
-		if (avatar == null || atstart){
+		if (totalDiceCount == 0){
+			avatar = ImageManager.getAvatar(flag, Emotion.SAD.value());
+		}
+		if (avatar == null || totalDiceCount == -1){
 			avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
 		}
 		if (avatar != null) g.drawImage(avatar, radius - 12, radius - 4, 64, 64, this);
@@ -97,7 +96,6 @@ public class PlayerJPanel extends JPanel {
 	
 	public void setTotalDiceCount(int totalDiceCount) {
 		this.totalDiceCount = totalDiceCount;
-		this.atstart = false;
 	}
 	
 	public Flag getFlag() {
@@ -129,7 +127,7 @@ public class PlayerJPanel extends JPanel {
 	}
 	
 	private static enum Emotion{
-		HAPPY(1), SMILING(2), CALM(3), SAD(4), EVIL(5);
+		HAPPY(1), SMILING(2), CALM(3), EVIL(4), SAD(5);
 		
 		int i;
 		
