@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -72,13 +73,11 @@ public class LandPainter {
 
 				int x = 0;
 				int y = 0;
+				
 				for (Point p : land.getPoints()) {
 					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 					int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
 					int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
-					Polygon pol = getHexagon(_x - minX, _y - minY, 10);
-					g2d.fillPolygon(pol);
-					drawBorder(g2d, land, p, pol);
 					x += _x;
 					y += _y;
 				}
@@ -86,7 +85,27 @@ public class LandPainter {
 				if (center == null && size > 0) {
 					center = new java.awt.Point(x / size, y / size);
 				}
-				coloredLand.center = center;
+				
+				coloredLand.center = center;		
+				
+				java.awt.Point c = new java.awt.Point(maxX*2, maxY*2);
+				
+				for (Point p : land.getPoints()) {
+					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
+					int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
+					int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
+					Polygon pol = getHexagon(_x - minX, _y - minY, 10);
+					
+					float d = maxX + maxY;
+					
+					RadialGradientPaint gradient = new RadialGradientPaint(c, (float)Math.sqrt(d*d)*4/3, new float[]{0.25f, 0.95f}, new Color[]{Color.black, color});
+					
+					g2d.setPaint(gradient);
+					
+					g2d.fillPolygon(pol);
+					
+					drawBorder(g2d, land, p, pol);
+				}
 
 				g2d.dispose();
 
