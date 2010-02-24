@@ -88,7 +88,7 @@ public class LandPainter {
 				
 				coloredLand.center = center;		
 				
-				java.awt.Point c = new java.awt.Point(maxX*2, maxY*2);
+				java.awt.Point c = new java.awt.Point(maxX*2, maxY);
 				
 				for (Point p : land.getPoints()) {
 					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
@@ -96,9 +96,9 @@ public class LandPainter {
 					int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
 					Polygon pol = getHexagon(_x - minX, _y - minY, 10);
 					
-					float d = maxX + maxY;
+					//float d = maxX + maxY;
 					
-					RadialGradientPaint gradient = new RadialGradientPaint(c, (float)Math.sqrt(d*d)*4/3, new float[]{0.25f, 0.95f}, new Color[]{Color.black, color});
+					RadialGradientPaint gradient = new RadialGradientPaint(c, (float)maxX*2, new float[]{0.15f, 0.9f}, new Color[]{Color.black, color});
 					
 					g2d.setPaint(gradient);
 					
