@@ -181,11 +181,11 @@ public class WorldJPanel extends JPanel {
 				if (this.points == null || this.arrowState > this.points.size() - 1) {
 					break;
 				}
-				try {
-					Thread.sleep(0);
-				} catch (InterruptedException ie) {
-					ie.printStackTrace();
-				}
+			}
+			try {
+				Thread.sleep(0);
+			} catch (InterruptedException ie) {
+				ie.printStackTrace();
 			}
 		}
 		t.stop();
