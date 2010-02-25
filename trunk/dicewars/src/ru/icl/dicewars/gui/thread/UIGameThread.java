@@ -72,7 +72,7 @@ public class UIGameThread extends Thread {
 				if (speed == 1){
 					WindowManager.getInstance().getWorldJPanel().drawArrow(pa.getFromLandId(), pa.getToLandId());
 				}
-				_sleep(400, speed);
+				_sleep(350, speed);
 				checkPause();
 				WindowManager.getInstance().getWorldJPanel().eraseArrow();
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
