@@ -614,8 +614,6 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     //Mkamalov: Client interface should be clear to end user.
 	private char getChar(Flag f) {
 		switch (f) {
-		case WHITE:
-			return 'W';
 		case BLUE:
 			return 'B';
 		case CYAN:
@@ -628,12 +626,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 			return 'O';
 		case RED:
 			return 'R';
-		case BROWN:
-			return 'B';
-		case CHARTREUSE:
-			return 'T';
 		case GRAY:
-			return 'A';
+			return 'T';
 		case YELLOW:
 			return 'Y';
 		}
