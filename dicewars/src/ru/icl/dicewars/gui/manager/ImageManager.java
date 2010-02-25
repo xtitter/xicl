@@ -379,7 +379,7 @@ public class ImageManager {
     	if (trophy == null) {
     		synchronized (trophySync) {
 				if (trophy == null) {
-					trophy = getImageFromResource("/resources/info/cup.png");
+					trophy = getImageFromResource("/resources/info/trophy32.png");
 				}
 			}
     	}
