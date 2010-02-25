@@ -2,6 +2,7 @@ package ru.icl.dicewars.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -232,12 +233,28 @@ public class GamePlayThread extends Thread{
 		Map<Player, Flag> playerFlagMap = new HashMap<Player,Flag>();
 		Map<Flag, Player> flagPlayerMap = new HashMap<Flag,Player>();
 		
-		int v = 0;
-		for (Flag flag : world.getFlags()){
-			//System.out.println(flag.toString() + ": " + players[v].getName());
-			playerFlagMap.put(players[v], flag);
-			flagPlayerMap.put(flag, players[v]);
-			v++;
+		final World w = new ImmutableWorldImpl(world);
+		
+		Set<Flag> availableFlags = new HashSet<Flag>(world.getFlags());
+		
+		for (int i = 0;i<playerCount;i++){
+			Set<Flag> immutableAvailableFlags = Collections.unmodifiableSet(new HashSet<Flag>(availableFlags));
+			try{
+				Flag flag = players[i].chooseFlag(w, immutableAvailableFlags);
+				playerFlagMap.put(players[i], flag);
+				flagPlayerMap.put(flag, players[i]);
+				availableFlags.remove(flag);
+			}catch (Exception e) {
+			}
+		}
+		
+		for (int i = 0;i<playerCount;i++){
+			if (!flagPlayerMap.values().contains(players[i])){
+				Flag flag = availableFlags.iterator().next();
+				playerFlagMap.put(players[i], flag);
+				flagPlayerMap.put(flag, players[i]);
+				availableFlags.remove(flag);
+			}
 		}
 		
 		addToActivityQueue(new SimpleFlagDistributedActivity(getFlagToNameMap(playerFlagMap)));
