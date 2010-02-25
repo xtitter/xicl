@@ -7,16 +7,21 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.gui.arrow.Arrow;
 import ru.icl.dicewars.gui.arrow.ArrowFactory;
+import ru.icl.dicewars.gui.arrow.BezierArrow;
 import ru.icl.dicewars.gui.arrow.ArrowFactory.ArrowType;
 import ru.icl.dicewars.gui.manager.ImageManager;
 
@@ -70,6 +75,9 @@ public class WorldJPanel extends JPanel {
 	private AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.75f);
 	
 	private boolean drawArrow = true;
+	private int arrowState = 0;
+	
+	private ArrayList<Point> points = null;
 	
 	public WorldJPanel() {
 		setPreferredSize(new Dimension(1350,930));
@@ -142,14 +150,45 @@ public class WorldJPanel extends JPanel {
 		repaint();
 	}
 	
-	public void enableDrawArraw(Integer fromLandId, Integer toLandId){
+	public void enableDrawArrow(Integer fromLandId, Integer toLandId){
 		synchronized (flag2) {
 			this.drawArrow = true;
 			this.arrowFromLandId = fromLandId.intValue();
 			this.arrowToLandId = toLandId.intValue();
-			this.doubleBuffer = null;	
+			this.doubleBuffer = null;
+			this.arrowState = 0;
 		}
 		repaint();
+	}
+	
+	public void animate() {
+		ActionListener al = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				synchronized (flag2) {
+					doubleBuffer = null;
+					arrowState++;
+				}
+				repaint();
+			}
+		};
+		Timer t = new Timer(10, al);
+		synchronized (flag2) {
+			t.start();
+		}
+		while (true) {
+			synchronized (flag2) {
+				if (this.points == null || this.arrowState > this.points.size() - 1) {
+					break;
+				}
+				try {
+					Thread.sleep(0);
+				} catch (InterruptedException ie) {
+					ie.printStackTrace();
+				}
+			}
+		}
+		t.stop();
 	}
 
 	@Override
@@ -235,18 +274,37 @@ public class WorldJPanel extends JPanel {
 				 * Draw bezier arrow
 				 */
 				if (p1 != null && p2 != null && drawArrow) {
-					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
-					arrow.setVisible(true);
-					arrow.setOpaque(false);
-					arrow.setBounds(0, 0, width, height);
-					arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
-					
-					BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-					Graphics2D arrowG2D = arrowImage.createGraphics();
-					//arrowG2D.drawLine(p1.x, p1.y, p2.x, p2.y);
-			        arrow.paintComponent(arrowG2D);
-			        
-			        g2d.drawImage(arrowImage, 0, 0, width, height, this);
+					if (this.arrowState == 0) {
+						Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+						arrow.setVisible(true);
+						arrow.setOpaque(false);
+						arrow.setBounds(0, 0, width, height);
+						arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
+						
+						BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+						Graphics2D arrowG2D = arrowImage.createGraphics();
+				        arrow.paintComponent(arrowG2D);
+				        
+				        this.points = ((BezierArrow)arrow).getAllPoints();
+				        //g2d.drawImage(arrowImage, 0, 0, width, height, this);
+					} else if (this.points != null) {
+						if (this.arrowState >= this.points.size())
+							this.arrowState = this.points.size() - 1;
+
+						p2 = this.points.get(this.arrowState);
+
+						Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+						arrow.setVisible(true);
+						arrow.setOpaque(false);
+						arrow.setBounds(0, 0, width, height);
+						arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
+
+						BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+						Graphics2D arrowG2D = arrowImage.createGraphics();
+						arrow.paintComponent(arrowG2D);
+
+						g2d.drawImage(arrowImage, 0, 0, width, height, this);
+					}
 				}
 
 				g2d.dispose();
