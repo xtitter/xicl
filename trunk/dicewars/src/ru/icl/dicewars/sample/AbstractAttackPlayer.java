@@ -14,6 +14,11 @@ public abstract class AbstractAttackPlayer implements Player{
 	}
 	
 	@Override
+	public Flag chooseFlag(World world, Set<Flag> availableFlags) {
+		return availableFlags.iterator().next();
+	}
+	
+	@Override
 	public void opponentAttack(Flag apponentFlag, Lead lead, World world) {
 	}
 

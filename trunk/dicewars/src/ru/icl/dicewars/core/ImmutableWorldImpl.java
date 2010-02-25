@@ -30,8 +30,8 @@ public class ImmutableWorldImpl implements World, Serializable {
 			throw new IllegalArgumentException();
 		if (world.getFlags() == null)
 			throw new IllegalArgumentException();
-		if (world.getMyFlag() == null)
-			throw new IllegalArgumentException();
+		/*if (world.getMyFlag() == null)
+			throw new IllegalArgumentException();*/
 		this.availableLeadCount = world.getAvailableLeadCount();
 		this.flags = Collections.unmodifiableList(new ArrayList<Flag>(world.getFlags()));
 		this.myFlag = world.getMyFlag();
