@@ -3,7 +3,9 @@ package ru.icl.dicewars.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
 import java.awt.Polygon;
 import java.awt.RadialGradientPaint;
 import java.awt.RenderingHints;
@@ -35,10 +37,10 @@ public class LandPainter {
 		int rowOffset = 0;
 		int correction = 4;
 		
-		int minX = 10000;
-		int minY = 10000;
-		int maxX = 0;
-		int maxY = 0;
+		int minX = Integer.MAX_VALUE;
+		int minY = Integer.MAX_VALUE;
+		int maxX = Integer.MIN_VALUE;
+		int maxY = Integer.MIN_VALUE;
 		for (Point p : land.getPoints()) {
 			rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 			int _x = WorldJPanel.X_OFFSET + p.getX()*19 + rowOffset;
@@ -88,7 +90,8 @@ public class LandPainter {
 				
 				coloredLand.center = center;		
 				
-				java.awt.Point c = new java.awt.Point(maxX*2, maxY);
+				java.awt.Point c1 = new java.awt.Point(0, minY / 2);
+				java.awt.Point c2 = new java.awt.Point(maxX * 27 / 10, maxY / 2);
 				
 				for (Point p : land.getPoints()) {
 					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
@@ -96,9 +99,11 @@ public class LandPainter {
 					int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
 					Polygon pol = getHexagon(_x - minX, _y - minY, 10);
 					
-					//float d = maxX + maxY;
+					//RadialGradientPaint gradient = new RadialGradientPaint(c, (float)maxX*2, new float[]{0.15f, 0.9f}, new Color[]{Color.black, color});
 					
-					RadialGradientPaint gradient = new RadialGradientPaint(c, (float)maxX*2, new float[]{0.15f, 0.9f}, new Color[]{Color.black, color});
+					//GradientPaint gradient = new GradientPaint(c1, color, c2, Color.BLACK);
+					
+					LinearGradientPaint gradient = new LinearGradientPaint(c2, c1, new float[]{0.1f, 1f}, new Color[]{Color.BLACK, color});
 					
 					g2d.setPaint(gradient);
 					
