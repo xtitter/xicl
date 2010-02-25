@@ -194,25 +194,24 @@ public class WorldJPanel extends JPanel {
 	    g.dispose();
 	}
 	
-	private Color getDiceColorByFlag(Flag f, int alfa){
+	private Color getDiceColorByFlag(Flag f, int alpha){
 		switch (f) {
-		case WHITE:
-			return Color.white;
 		case YELLOW:
-			return new Color(175, 175, 0, alfa);
+			return new Color(175, 175, 0, alpha);
 		case BLUE:
-			return new Color(0, 0, 255, alfa);
+			return new Color(0, 0, 255, alpha);
 		case CYAN:
-			return Color.cyan;
+			return new Color(100, 255, 255, alpha);
 		case GREEN:
-			return new Color(15, 70, 15, alfa);
+			return new Color(15, 70, 15, alpha);
 		case MAGENTA:
-			return Color.magenta;
+			return new Color(255, 100, 255, alpha);
 		case ORANGE:
-			return new Color(203, 90, 0, alfa);
+			return new Color(203, 90, 0, alpha);
 		case RED:
-			return new Color(255, 20, 20, alfa);
-
+			return new Color(255, 20, 20, alpha);
+		case GRAY: 
+			return new Color(150, 150, 150, alpha);
 		}
 		return Color.black;
 	}
