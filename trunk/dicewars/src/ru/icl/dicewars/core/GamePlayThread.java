@@ -241,9 +241,11 @@ public class GamePlayThread extends Thread{
 			Set<Flag> immutableAvailableFlags = Collections.unmodifiableSet(new HashSet<Flag>(availableFlags));
 			try{
 				Flag flag = players[i].chooseFlag(w, immutableAvailableFlags);
-				playerFlagMap.put(players[i], flag);
-				flagPlayerMap.put(flag, players[i]);
-				availableFlags.remove(flag);
+				if (!playerFlagMap.values().contains(flag)){
+					playerFlagMap.put(players[i], flag);
+					flagPlayerMap.put(flag, players[i]);
+					availableFlags.remove(flag);
+				}
 			}catch (Exception e) {
 			}
 		}
