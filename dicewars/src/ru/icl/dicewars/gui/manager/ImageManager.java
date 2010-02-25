@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -74,7 +71,50 @@ public class ImageManager {
 
         return resized;
     }*/
+	
+	public static Image getDice(int num, Flag flag) {
+		if (dices2 == null) {
+    		dices2 = new HashMap<Integer, Map<Flag,Image>>();
+    	}
+    	Integer index = Integer.valueOf(num);
+    	
+    	if (dices2.get(num) == null){
+    		dices2.put(num, new HashMap<Flag, Image>());
+    	}
+    	
+    	Map<Flag,Image> d = dices2.get(num);
+    	
+    	if (!d.containsKey(flag)) {
+    		String path = getPathByFlag(flag) + index + ".png";
+    		Image image = getImageFromResource(path, new Rectangle(0,0,62,75));
+    		d.put(flag, image);
+    	}
+    	
+    	return d.get(flag);
+	}
     
+	private static String getPathByFlag(Flag f) {
+		switch (f) {
+			case YELLOW:
+				return "/resources/dice/y";
+			case BLUE:
+				return "/resources/dice/u";
+			case CYAN:
+				return "/resources/dice/c";
+			case GREEN:
+				return "/resources/dice/g";
+			case MAGENTA:
+				return "/resources/dice/m";
+			case ORANGE:
+				return "/resources/dice/o";
+			case RED:
+				return "/resources/dice/r";
+			case GRAY:
+				return "/resources/dice/a";
+		}
+		return "/resources/dice/g";
+	}
+	
     public static Image getDice(int num, Color color) {
     	if (dices == null) {
     		dices = new HashMap<Integer, Map<Color,Image>>();
@@ -90,10 +130,8 @@ public class ImageManager {
     	if (!d.containsKey(color)) {
     		String path = "/resources/dice/g" + index + ".png";
     		Image image = getImageFromResource(path, new Rectangle(0,0,62,75));
-    		//Image image = ImageUtil.getImage(path);
     		Image coloredImage = ImageUtil.createColouredImage(image, color);
     		d.put(color, coloredImage);
-    		//d.put(color, image);
     	}
     	
     	return d.get(color);
@@ -349,6 +387,7 @@ public class ImageManager {
     }
     
     private static Map<Integer, Map<Color,Image>> dices;
+    private static Map<Integer, Map<Flag,Image>> dices2;
     
     private static Image pauseSpeedImage;
     private static Image pauseSpeedImageSelected;
