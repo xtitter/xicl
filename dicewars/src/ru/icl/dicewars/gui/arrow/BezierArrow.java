@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
@@ -35,7 +36,8 @@ public class BezierArrow extends LineArrowWithArrowHead {
 
 		//g2D.setColor(LineArrow.shadowColor);
 		g2D.setColor(super.color);
-		GradientPaint gradient = new GradientPaint(new java.awt.Point(x1,y1), Color.black, new java.awt.Point(x2,y2), super.color);
+		//GradientPaint gradient = new GradientPaint(new java.awt.Point(x1,y1), Color.black, new java.awt.Point(x2,y2), super.color);
+		LinearGradientPaint gradient = new LinearGradientPaint(new java.awt.Point(x1,y1), new java.awt.Point(x2,y2), new float[]{0.0f, 0.7f, 1f}, new Color[]{Color.black, super.color, super.color});
 		g2D.setPaint(gradient);
 		points.addPoint(x1, y1);
 		points.addPoint((int) ((x1 + x2) / 2.0 + 0.2 * Math.abs(y2 - y1)), (int) ((y1 + y2) / 2.0 + 0.2 * Math.abs(x2 - x1)));

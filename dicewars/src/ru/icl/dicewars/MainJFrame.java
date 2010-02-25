@@ -221,7 +221,7 @@ public class MainJFrame extends JFrame {
         setUndecorated(true);
         device.setFullScreenWindow(this);*/
         
-        setTitle("DiceWars (Version 0.0.2)");
+        setTitle("DiceWars (Version 0.5.0)");
         
         setIconImage(ImageManager.getDiceIconImage());
         
