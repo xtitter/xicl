@@ -216,11 +216,6 @@ public class MainJFrame extends JFrame {
 		Rectangle scrnRect = getGraphicsConfiguration().getBounds();
         setSize(scrnRect.width, scrnRect.height);
         
-        /*GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice device = environment.getDefaultScreenDevice();
-        setUndecorated(true);
-        device.setFullScreenWindow(this);*/
-        
         setTitle("DiceWars (Version 0.5.0)");
         
         setIconImage(ImageManager.getDiceIconImage());

@@ -27,6 +27,8 @@ import ru.icl.dicewars.gui.manager.ImageManager;
 
 public class WorldJPanel extends JPanel {
 
+	private static final BufferedImage EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+	
 	private FullWorld world;
 
 	private int width;
@@ -45,11 +47,15 @@ public class WorldJPanel extends JPanel {
 	public static final int MAX_Y = 55;
 	
 	private BufferedImage doubleBuffer = null;
+	private BufferedImage arrowDoubleBuffer = null;
+	private int arrowDoubleBufferOffsetX = 0;
+	private int arrowDoubleBufferOffsetY = 0;
 
 	//Bug with concurrent modification fix. This is slowest method. World object should be wrapped.
 	private Object flag = new Object();	
 	private Object flag2 = new Object(); 
-	private Object flag3 = new Object(); 
+	private Object flag3 = new Object();
+	private Object flag4 = new Object();
 	
 	private int attackingPlayerLandId = 0;
 	private int defendingPlayerLandId = 0;
@@ -74,8 +80,8 @@ public class WorldJPanel extends JPanel {
 					flag3.notifyAll();	
 				}
 			}else{
-				synchronized (flag2) {
-					doubleBuffer = null;
+				synchronized (flag4) {
+					arrowDoubleBuffer = null;
 					arrowState++;
 				}
 				repaint();
@@ -157,26 +163,25 @@ public class WorldJPanel extends JPanel {
 	}
 	
 	public void eraseArrow(){
-		synchronized (flag2) {
+		synchronized (flag4) {
 			this.drawArrow = false;
 			this.points = null;
 			this.arrowFromLandId = 0;
 			this.arrowToLandId = 0;
 			this.arrowState = 0;
-			this.doubleBuffer = null;
+			this.arrowDoubleBuffer = null;
 		}
 		repaint();
 	}
 	
 	public void drawArrow(Integer fromLandId, Integer toLandId){
-		synchronized (flag2) {
+		synchronized (flag4) {
 			this.drawArrow = true;
 			this.points = null;
 			this.arrowFromLandId = fromLandId.intValue();
 			this.arrowToLandId = toLandId.intValue();
-			this.doubleBuffer = null;
 			this.arrowState = 0;
-			this.doubleBuffer = null;
+			this.arrowDoubleBuffer = null;
 		}
 		
 		Set<FullLand> landsTmp;
@@ -202,7 +207,7 @@ public class WorldJPanel extends JPanel {
 		arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
         
         this.points = ((BezierArrow)arrow).getAllPoints();
-		
+		t.setDelay(500 / this.points.size());
         t.start();
 		synchronized (flag3) {
 			try{
@@ -246,8 +251,6 @@ public class WorldJPanel extends JPanel {
 				/*
 				 * Draw lands
 				 */
-				Point p1 = null; Point p2 = null;
-				
 				int offsetX = 2;
 				int offsetY = 5;
 				
@@ -265,11 +268,6 @@ public class WorldJPanel extends JPanel {
 							g2d.drawImage(doubleBuffer2, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
 							gd.dispose();
 						}
-						if (land.getLandId() == arrowFromLandId){
-							p1 = l.center;
-						}else if (land.getLandId() == arrowToLandId){
-							p2 = l.center;
-						}
 					}
 				}			
 			
@@ -286,6 +284,29 @@ public class WorldJPanel extends JPanel {
 					}
 				}
 				
+				g2d.dispose();
+			}
+			g.drawImage(this.doubleBuffer, 0, 0, this.doubleBuffer.getWidth(), this.doubleBuffer.getHeight(), this);
+		}
+		
+		synchronized (flag4) {
+			if (arrowDoubleBuffer == null){
+				
+				Point p1 = null; Point p2 = null;
+				
+				synchronized (flag) {
+					landsTmp = new HashSet<FullLand>(world.getFullLands());	
+				}
+				
+				for (FullLand land : landsTmp) {
+					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
+					if (land.getLandId() == arrowFromLandId){
+						p1 = l.center;
+					}else if (land.getLandId() == arrowToLandId){
+						p2 = l.center;
+					}
+				}
+				
 				/*
 				 * Draw bezier arrow
 				 */
@@ -296,20 +317,29 @@ public class WorldJPanel extends JPanel {
 					arrow.setVisible(true);
 					arrow.setOpaque(false);
 					arrow.setBounds(0, 0, width, height);
-					arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
+					
+					int minx = Math.min(p1.x, p2.x);
+					int miny = Math.min(p1.y, p2.y);
+					
+					arrow.setCoordinates(p1.x - minx + 25, p1.y - miny + 25, p2.x - minx + 25, p2.y - miny + 25);
 
-					BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-					Graphics2D arrowG2D = arrowImage.createGraphics();
-					arrow.paintComponent(arrowG2D);
-
-					g2d.drawImage(arrowImage, 0, 0, width, height, this);
-
+					this.arrowDoubleBuffer = new BufferedImage(Math.abs(p2.x - p1.x) + 50, Math.abs(p2.y - p1.y) + 50, BufferedImage.TYPE_INT_ARGB);
+					this.arrowDoubleBufferOffsetX = minx - 25;
+					this.arrowDoubleBufferOffsetY = miny - 25;
+					
+					Graphics2D g2d = (Graphics2D) arrowDoubleBuffer.getGraphics();
+					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+					arrow.paintComponent(g2d);
+					g2d.dispose();
+				}else{
+					this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;
+					this.arrowDoubleBufferOffsetX = 0;
+					this.arrowDoubleBufferOffsetY = 0;
 				}
-
-				g2d.dispose();
 			}
-			g.drawImage(this.doubleBuffer, 0, 0, width, height, this);
+			g.drawImage(this.arrowDoubleBuffer, this.arrowDoubleBufferOffsetX, this.arrowDoubleBufferOffsetY, this.arrowDoubleBuffer.getWidth(), this.arrowDoubleBuffer.getHeight(), this);
 		}
+		
 	    g.dispose();
 	}
 }
