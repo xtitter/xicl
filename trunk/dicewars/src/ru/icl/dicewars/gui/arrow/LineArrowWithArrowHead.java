@@ -1,13 +1,15 @@
 package ru.icl.dicewars.gui.arrow;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 
 public class LineArrowWithArrowHead extends LineArrow {
 
-	final static float arrowSize = 5.0f;
+	final static float arrowSize = 7.0f;
 	private boolean inverted = false;
 
 	protected LineArrowWithArrowHead(int from) {
@@ -15,7 +17,7 @@ public class LineArrowWithArrowHead extends LineArrow {
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2D = (Graphics2D) g;
 		if (inverted) {
@@ -46,12 +48,14 @@ public class LineArrowWithArrowHead extends LineArrow {
 		tmpPoly2.addPoint(x+1, y+2);
 		//Rectangle r2 = new Rectangle(x + xCor(i1, aDir - .5), y + yCor(i1, aDir - .5), x, y);
 		
-		g2d.setColor(LineArrow.shadowColor);
+		//g2d.setColor(LineArrow.shadowColor);
 		
-		g2d.drawPolygon(tmpPoly2);
-		g2d.fillPolygon(tmpPoly2);
+		//g2d.drawPolygon(tmpPoly2);
+		//g2d.fillPolygon(tmpPoly2);
 		
 		g2d.setColor(super.color);
+		GradientPaint gradient = new GradientPaint(new java.awt.Point(x1,y1), Color.black, new java.awt.Point(x2,y2), super.color);
+		g2d.setPaint(gradient);
 		
 		g2d.drawPolygon(tmpPoly);
 		g2d.fillPolygon(tmpPoly);

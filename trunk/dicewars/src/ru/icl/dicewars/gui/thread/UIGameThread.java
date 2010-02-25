@@ -66,6 +66,7 @@ public class UIGameThread extends Thread {
 				WindowManager.getInstance().getWorldJPanel().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
+				WindowManager.getInstance().getWorldJPanel().setSpeed(speed);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
 				WindowManager.getInstance().getWorldJPanel().repaint();
 				//if (!alreadyFrozen()) _sleep(700, speed);

@@ -25,7 +25,7 @@ public abstract class Arrow extends JPanel {
 	}
 
 	@Override
-	abstract protected void paintComponent(Graphics g);
+	abstract public void paintComponent(Graphics g);
 
 	public void setCoordinates(int x1, int y1, int x2, int y2) {
 		this.x1 = x1;
