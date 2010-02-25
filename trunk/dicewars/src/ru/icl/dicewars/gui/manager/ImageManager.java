@@ -15,7 +15,6 @@ import ru.icl.dicewars.gui.util.ImageUtil;
 public class ImageManager {
 	
 	private ImageManager(){
-		
 	}
 
 	private static Image getImageFromResource(String path) {
@@ -32,45 +31,6 @@ public class ImageManager {
         
         return resized;
     }
-
-    /*private static Image getImageFromResourceTransparent(String path, Color mask) {
-        BufferedImage image = null;
-        Image imageCardTransparent = null;
-
-        URL imageURL = ImageManager.class.getResource(path);
-
-        if (imageURL == null) {
-            return null;
-        }
-
-        try {
-            image = ImageIO.read(imageURL);
-            imageCardTransparent = TransparencyUtil.makeColorTransparent(image, mask);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return imageCardTransparent;
-    }
-
-    private static Image getImageFromResourceTransparent(String path, Color mask, Rectangle rec) {
-        BufferedImage image = null;
-        Image imageCardTransparent = null;
-        Image resized = null;
-
-        URL imageURL = ImageManager.class.getResource(path);
-
-        try {
-            image = ImageIO.read(imageURL);
-            imageCardTransparent = TransparencyUtil.makeColorTransparent(image, mask);
-
-            resized = imageCardTransparent.getScaledInstance(rec.width, rec.height, java.awt.Image.SCALE_SMOOTH);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return resized;
-    }*/
 	
 	public static Image getDice(int num, Flag flag) {
 		if (dices2 == null) {
@@ -85,7 +45,20 @@ public class ImageManager {
     	Map<Flag,Image> d = dices2.get(num);
     	
     	if (!d.containsKey(flag)) {
-    		String path = getPathByFlag(flag) + index + ".png";
+    		String fileName = null;
+    		switch (flag) {
+				case BLUE:	fileName = "blue";break;
+				case RED:	fileName = "red";break;
+				case CYAN:	fileName = "cyan";break;
+				case YELLOW:	fileName = "yellow";break;
+				case GREEN:	fileName = "green";break;
+				case ORANGE:	fileName = "orange";break;
+				case GRAY:	fileName = "gray";break;
+				case MAGENTA: fileName = "magenta";break;
+				default:
+					throw new IllegalStateException();
+			}
+    		String path = "/resources/dice/" + fileName + index + ".png";
     		Image image = getImageFromResource(path, new Rectangle(0,0,62,75));
     		d.put(flag, image);
     	}
@@ -93,28 +66,6 @@ public class ImageManager {
     	return d.get(flag);
 	}
     
-	private static String getPathByFlag(Flag f) {
-		switch (f) {
-			case YELLOW:
-				return "/resources/dice/y";
-			case BLUE:
-				return "/resources/dice/u";
-			case CYAN:
-				return "/resources/dice/c";
-			case GREEN:
-				return "/resources/dice/g";
-			case MAGENTA:
-				return "/resources/dice/m";
-			case ORANGE:
-				return "/resources/dice/o";
-			case RED:
-				return "/resources/dice/r";
-			case GRAY:
-				return "/resources/dice/a";
-		}
-		return "/resources/dice/g";
-	}
-	
     public static Image getDice(int num, Color color) {
     	if (dices == null) {
     		dices = new HashMap<Integer, Map<Color,Image>>();
@@ -356,19 +307,24 @@ public class ImageManager {
     	Map<Integer, Image> map = avatars.get(flag);
     	
     	if (!map.containsKey(Integer.valueOf(emotion))){
-    		String flagName = null;
+    		String fileName = null;
     		
     		switch (flag) {
-				case BLUE:	flagName = "blue";break;
-				case RED:	flagName = "red";break;
-				case CYAN:	flagName = "cyan";break;
-				case YELLOW:	flagName = "yellow";break;
-				case GREEN:	flagName = "green";break;
-				case ORANGE:	flagName = "orange";break;
+				case BLUE:	fileName = "blue";break;
+				case RED:	fileName = "red";break;
+				case CYAN:	fileName = "cyan";break;
+				case YELLOW:	fileName = "yellow";break;
+				case GREEN:	fileName = "green";break;
+				case ORANGE:	fileName = "orange";break;
+				case GRAY:	fileName = "gray";break;
+				case MAGENTA: fileName = "magenta";break;
 				default:
-					flagName = "blue";break;
+					throw new IllegalStateException();
 			}
-    		Image avatar = getImageFromResource("/resources/avatars/"+flagName+"_" + String.valueOf(emotion) + ".png", new Rectangle(0,0,64,64));
+    		
+			Image avatar = getImageFromResource("/resources/avatars/"
+					+ fileName + String.valueOf(emotion) + ".png",
+					new Rectangle(0, 0, 64, 64));
     		map.put(emotion, avatar);
     	}
     	

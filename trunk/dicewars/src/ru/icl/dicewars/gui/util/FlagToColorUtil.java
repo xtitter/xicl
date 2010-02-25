@@ -7,9 +7,8 @@ import ru.icl.dicewars.client.Flag;
 public class FlagToColorUtil {
 	private FlagToColorUtil() {
 	}
-	
+
 	public static Color getColorByFlag(Flag f, int alpha) {
-		//return new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
 		switch (f) {
 		case YELLOW:
 			return new Color(255, 255, 0, alpha);
@@ -26,7 +25,7 @@ public class FlagToColorUtil {
 		case RED:
 			return new Color(255, 30, 30, alpha);
 		case GRAY:
-		    return new Color(150, 150, 150, alpha);
+			return new Color(150, 150, 150, alpha);
 		}
 		return Color.black;
 	}
