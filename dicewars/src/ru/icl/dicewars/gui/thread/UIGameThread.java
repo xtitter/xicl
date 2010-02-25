@@ -66,7 +66,6 @@ public class UIGameThread extends Thread {
 				WindowManager.getInstance().getWorldJPanel().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
-				WindowManager.getInstance().getWorldJPanel().disableDrawArraw();
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
 				_sleep(700, speed);
 				checkPause();
@@ -74,12 +73,11 @@ public class UIGameThread extends Thread {
 				_sleep(250, speed);
 				checkPause();
 				if (speed == 1){
-					WindowManager.getInstance().getWorldJPanel().enableDrawArrow(pa.getFromLandId(), pa.getToLandId());
-					WindowManager.getInstance().getWorldJPanel().animate();
+					WindowManager.getInstance().getWorldJPanel().drawArrow(pa.getFromLandId(), pa.getToLandId());
 				}
-				_sleep(750, speed);
+				_sleep(400, speed);
 				checkPause();
-				WindowManager.getInstance().getWorldJPanel().disableDrawArraw();
+				WindowManager.getInstance().getWorldJPanel().eraseArrow();
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
 				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(0);
 				_sleep(300, speed);
@@ -135,6 +133,7 @@ public class UIGameThread extends Thread {
 	public void kill() {
 		this.t = false;
 		synchronized (this) {
+			WindowManager.getInstance().getWorldJPanel().stopDrawArrow();
 			this.notifyAll();
 		}
 	}

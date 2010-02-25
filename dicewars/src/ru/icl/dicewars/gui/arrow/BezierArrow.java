@@ -9,22 +9,35 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import javax.sql.rowset.spi.SyncResolver;
-
 import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class BezierArrow extends LineArrowWithArrowHead {
-
+	private static final long serialVersionUID = 1L;
+	
 	final static float arrowSize = 5.0f;
-	private boolean inverted = false;
 	final static BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+	
 	private BezierLine points;
 	private Object sync = new Object();
+	private boolean inverted = false;
 	
 	protected BezierArrow(int from) {
 		super(from);
 	}
 
+	@Override
+	public void setCoordinates(int x1, int y1, int x2, int y2) {
+		super.setCoordinates(x1, y1, x2, y2);
+		points = new BezierLine();
+		points.addPoint(x1, y1);
+		points.addPoint((int) ((x1 + x2) / 2.0 + 0.2 * Math.abs(y2 - y1)), (int) ((y1 + y2) / 2.0 + 0.2 * Math.abs(x2 - x1)));
+		points.addPoint(x2, y2);
+		points.addPoint(x2, y2);
+
+		points.done();
+		points.showLine = false;
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 
@@ -36,19 +49,14 @@ public class BezierArrow extends LineArrowWithArrowHead {
 			Graphics2D g2D = (Graphics2D) doubleBuffer.getGraphics();
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2D.setStroke(dashed);
-				
-			points = new BezierLine();
 	
 			g2D.setColor(super.color);
-			LinearGradientPaint gradient = new LinearGradientPaint(new java.awt.Point(x1,y1), new java.awt.Point(x2,y2), new float[]{0.0f, 0.7f, 1f}, new Color[]{Color.black, super.color, super.color});
-			g2D.setPaint(gradient);
-			points.addPoint(x1, y1);
-			points.addPoint((int) ((x1 + x2) / 2.0 + 0.2 * Math.abs(y2 - y1)), (int) ((y1 + y2) / 2.0 + 0.2 * Math.abs(x2 - x1)));
-			points.addPoint(x2, y2);
-			points.addPoint(x2, y2);
-	
-			points.done();
-			points.showLine = false;
+			
+			if (x1 != x2 || y1 != y2){
+				LinearGradientPaint gradient = new LinearGradientPaint(new java.awt.Point(x1,y1), new java.awt.Point(x2,y2), new float[]{0.0f, 0.7f, 1f}, new Color[]{Color.black, super.color, super.color});
+				g2D.setPaint(gradient);
+			}
+			
 			points.draw(g2D);
 	
 			if (inverted) {
@@ -78,6 +86,10 @@ public class BezierArrow extends LineArrowWithArrowHead {
 		return null;
 	}
 
+	public void setInverted(boolean inverted) {
+		this.inverted = inverted;
+	}
+	
 	class Point {
 		int x, y;
 
@@ -452,10 +464,4 @@ public class BezierArrow extends LineArrowWithArrowHead {
 			}
 		}
 	}
-
-	public void setInverted(boolean inverted) {
-		this.inverted = inverted;
-	}
-
-	private static final long serialVersionUID = 1L;
 }

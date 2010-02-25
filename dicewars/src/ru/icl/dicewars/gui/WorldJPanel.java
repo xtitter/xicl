@@ -65,6 +65,7 @@ public class WorldJPanel extends JPanel {
 	//Bug with concurrent modification fix. This is slowest method. World object should be wrapped.
 	private Object flag = new Object();	
 	private Object flag2 = new Object(); 
+	private Object flag3 = new Object(); 
 	
 	private int attackingPlayerLandId = 0;
 	private int defendingPlayerLandId = 0;
@@ -78,6 +79,25 @@ public class WorldJPanel extends JPanel {
 	private int arrowState = 0;
 	
 	private ArrayList<Point> points = null;
+	
+	private final ActionListener actionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (WorldJPanel.this.points == null || WorldJPanel.this.arrowState >= WorldJPanel.this.points.size() - 1){
+				synchronized (flag3) {
+					flag3.notifyAll();	
+				}
+			}else{
+				synchronized (flag2) {
+					doubleBuffer = null;
+					arrowState++;
+				}
+				repaint();
+			}
+		}
+	};
+
+	private Timer t = new Timer(1, actionListener);
 	
 	public WorldJPanel() {
 		setPreferredSize(new Dimension(1350,930));
@@ -140,57 +160,70 @@ public class WorldJPanel extends JPanel {
 		repaint();
 	}
 	
-	public void disableDrawArraw(){
+	public void stopDrawArrow(){
+		synchronized (flag3) {
+			flag3.notifyAll();
+		}
+		t.stop();
+	}
+	
+	public void eraseArrow(){
 		synchronized (flag2) {
 			this.drawArrow = false;
+			this.points = null;
 			this.arrowFromLandId = 0;
 			this.arrowToLandId = 0;
-			this.doubleBuffer = null;	
+			this.arrowState = 0;
+			this.doubleBuffer = null;
 		}
 		repaint();
 	}
 	
-	public void enableDrawArrow(Integer fromLandId, Integer toLandId){
+	public void drawArrow(Integer fromLandId, Integer toLandId){
 		synchronized (flag2) {
 			this.drawArrow = true;
+			this.points = null;
 			this.arrowFromLandId = fromLandId.intValue();
 			this.arrowToLandId = toLandId.intValue();
 			this.doubleBuffer = null;
 			this.arrowState = 0;
+			this.doubleBuffer = null;
 		}
-		repaint();
-	}
-	
-	public void animate() {
-		ActionListener al = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				synchronized (flag2) {
-					doubleBuffer = null;
-					arrowState++;
-				}
-				repaint();
-			}
-		};
-		Timer t = new Timer(10, al);
-		synchronized (flag2) {
-			t.start();
+		
+		Set<FullLand> landsTmp;
+		
+		synchronized (flag) {
+			landsTmp = new HashSet<FullLand>(world.getFullLands());	
 		}
-		while (true) {
-			synchronized (flag2) {
-				if (this.points == null || this.arrowState > this.points.size() - 1) {
-					break;
-				}
+		
+		Point p1 = null; Point p2 = null;		
+		for (FullLand land : landsTmp) {
+			ColoredLand l = LandFactory.getLand(land.getLandId(), land.getFlag());
+			if (land.getLandId() == arrowFromLandId){
+				p1 = l.center;
+			}else if (land.getLandId() == arrowToLandId){
+				p2 = l.center;
 			}
-			try {
-				Thread.sleep(0);
-			} catch (InterruptedException ie) {
-				ie.printStackTrace();
+		}	
+		
+		Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+		arrow.setVisible(true);
+		arrow.setOpaque(false);
+		arrow.setBounds(0, 0, width, height);
+		arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
+        
+        this.points = ((BezierArrow)arrow).getAllPoints();
+		
+        t.start();
+		synchronized (flag3) {
+			try{
+				flag3.wait();
+			}catch (InterruptedException e) {
 			}
 		}
 		t.stop();
 	}
-
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -273,38 +306,21 @@ public class WorldJPanel extends JPanel {
 				/**
 				 * Draw bezier arrow
 				 */
-				if (p1 != null && p2 != null && drawArrow) {
-					if (this.arrowState == 0) {
-						Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
-						arrow.setVisible(true);
-						arrow.setOpaque(false);
-						arrow.setBounds(0, 0, width, height);
-						arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
-						
-						BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-						Graphics2D arrowG2D = arrowImage.createGraphics();
-				        arrow.paintComponent(arrowG2D);
-				        
-				        this.points = ((BezierArrow)arrow).getAllPoints();
-				        //g2d.drawImage(arrowImage, 0, 0, width, height, this);
-					} else if (this.points != null) {
-						if (this.arrowState >= this.points.size())
-							this.arrowState = this.points.size() - 1;
+				if (p1 != null && p2 != null && drawArrow && this.points != null && this.arrowState <= this.points.size() - 1) {
+					p2 = this.points.get(this.arrowState);
 
-						p2 = this.points.get(this.arrowState);
+					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+					arrow.setVisible(true);
+					arrow.setOpaque(false);
+					arrow.setBounds(0, 0, width, height);
+					arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
 
-						Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
-						arrow.setVisible(true);
-						arrow.setOpaque(false);
-						arrow.setBounds(0, 0, width, height);
-						arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
+					BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					Graphics2D arrowG2D = arrowImage.createGraphics();
+					arrow.paintComponent(arrowG2D);
 
-						BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-						Graphics2D arrowG2D = arrowImage.createGraphics();
-						arrow.paintComponent(arrowG2D);
+					g2d.drawImage(arrowImage, 0, 0, width, height, this);
 
-						g2d.drawImage(arrowImage, 0, 0, width, height, this);
-					}
 				}
 
 				g2d.dispose();
