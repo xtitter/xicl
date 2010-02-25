@@ -29,19 +29,6 @@ public class WorldJPanel extends JPanel {
 
 	private FullWorld world;
 
-	/*@SuppressWarnings("serial")
-	HashSet<Flag> predefinedDices = new HashSet<Flag>(){{
-		add(Flag.BLUE);
-		add(Flag.RED);
-		add(Flag.GREEN);
-		add(Flag.YELLOW);
-		add(Flag.CYAN);
-		add(Flag.ORANGE);
-		add(Flag.MAGENTA);
-		add(Flag.GRAY);
-	}
-	};*/
-	
 	private int width;
 	private int height;
 	private static final long serialVersionUID = -3234906592754761865L;
@@ -56,9 +43,6 @@ public class WorldJPanel extends JPanel {
 	public static final int MIN_Y = -1;
 	public static final int MAX_X = 68;
 	public static final int MAX_Y = 55;
-	
-	//private static Font diceFont = new Font("Calibri", Font.BOLD, (int) (30 /** aspectRatio*/));;
-	//private static Font idFont = new Font("Calibri", Font.BOLD, (int) (12 /** aspectRatio*/));
 	
 	private BufferedImage doubleBuffer = null;
 
@@ -77,6 +61,8 @@ public class WorldJPanel extends JPanel {
 	
 	private boolean drawArrow = true;
 	private int arrowState = 0;
+	
+	private LandFactory landFactory = new LandFactory();
 	
 	private ArrayList<Point> points = null;
 	
@@ -106,6 +92,9 @@ public class WorldJPanel extends JPanel {
 	public void update(FullWorld world) {
 		synchronized (flag2) {
 			this.world = world;
+			landFactory = new LandFactory();
+			landFactory.buildTheWorld(world);
+			landFactory.buildBackground(world);
 			width = getWidth();
 			height = getHeight();
 			this.doubleBuffer = null;	
@@ -198,7 +187,7 @@ public class WorldJPanel extends JPanel {
 		
 		Point p1 = null; Point p2 = null;		
 		for (FullLand land : landsTmp) {
-			ColoredLand l = LandFactory.getLand(land.getLandId(), land.getFlag());
+			ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
 			if (land.getLandId() == arrowFromLandId){
 				p1 = l.center;
 			}else if (land.getLandId() == arrowToLandId){
@@ -246,15 +235,15 @@ public class WorldJPanel extends JPanel {
 			
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				
-				/**
+				/*
 				 * Draw white-gray background
 				 */
-				ColoredLand l = LandFactory.getBackground();
+				ColoredLand l = landFactory.getBackground();
 				if (l != null) {
 					g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
 				}
 				
-				/**
+				/*
 				 * Draw lands
 				 */
 				Point p1 = null; Point p2 = null;
@@ -264,7 +253,7 @@ public class WorldJPanel extends JPanel {
 				
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
-					l = LandFactory.getLand(land.getLandId(), land.getFlag());
+					l = landFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
 						if (!battle) {
 							g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
@@ -284,26 +273,20 @@ public class WorldJPanel extends JPanel {
 					}
 				}			
 			
-				/**
+				/*
 				 * Draw dices on the map
 				 */
 				for (FullLand land : landsTmp) {
-					//boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
-					l = LandFactory.getLand(land.getLandId(), land.getFlag());
+					l = landFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
-						Image diceImage = null;
-						//if (predefinedDices.contains(land.getFlag())) {
-							diceImage = ImageManager.getDice(land.getDiceCount(), land.getFlag());
-						/*} else {
-							diceImage = ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag(), battle ? 130 : 255 ));
-						}*/
+						Image diceImage = ImageManager.getDice(land.getDiceCount(), land.getFlag());
 						if (diceImage != null){
 							g2d.drawImage(diceImage, l.center.x + DICE_X_OFFSET, l.center.y + DICE_Y_OFFSET, this);
 						}
 					}
 				}
 				
-				/**
+				/*
 				 * Draw bezier arrow
 				 */
 				if (p1 != null && p2 != null && drawArrow && this.points != null && this.arrowState <= this.points.size() - 1) {
@@ -329,26 +312,4 @@ public class WorldJPanel extends JPanel {
 		}
 	    g.dispose();
 	}
-	
-	/*private Color getDiceColorByFlag(Flag f, int alpha){
-		switch (f) {
-		case YELLOW:
-			return new Color(175, 175, 0, alpha);
-		case BLUE:
-			return new Color(0, 0, 255, alpha);
-		case CYAN:
-			return new Color(100, 255, 255, alpha);
-		case GREEN:
-			return new Color(15, 70, 15, alpha);
-		case MAGENTA:
-			return new Color(255, 100, 255, alpha);
-		case ORANGE:
-			return new Color(203, 90, 0, alpha);
-		case RED:
-			return new Color(255, 20, 20, alpha);
-		case GRAY: 
-			return new Color(150, 150, 150, alpha);
-		}
-		return Color.black;
-	}*/
 }

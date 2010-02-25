@@ -18,54 +18,62 @@ import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.Point;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
-public class LandPainter {
+class LandPainter {
 
 	private static final long serialVersionUID = 1854613245059250352L;
 	
-	private HashMap<Flag,ColoredLand> coloredLands = new HashMap<Flag, ColoredLand>();
-	private ColoredLand background;
+	private static final int MIN_X = WorldJPanel.MIN_X;
+	private static final int MIN_Y = WorldJPanel.MIN_Y;
+	private static final int MAX_X = WorldJPanel.MAX_X;
+	private static final int MAX_Y = WorldJPanel.MAX_Y;
+	
 	final static BasicStroke stroke = new BasicStroke(2.0f);
 	
-	private static final int MIN_X = -1;
-	private static final int MIN_Y = -1;
-	private static final int MAX_X = 68;
-	private static final int MAX_Y = 55;
+	private HashMap<Flag, ColoredLand> coloredLands = new HashMap<Flag, ColoredLand>();
+	private ColoredLand background;
 
-	public LandPainter(FullLand land, List<Flag> flags) {
+	LandPainter(FullLand land, List<Flag> flags) {
 		int rowOffset = 0;
 		int correction = 4;
-		
+
 		int minX = Integer.MAX_VALUE;
 		int minY = Integer.MAX_VALUE;
 		int maxX = Integer.MIN_VALUE;
 		int maxY = Integer.MIN_VALUE;
+		
 		for (Point p : land.getPoints()) {
 			rowOffset = p.getY() % 2 == 0 ? 9 : 0;
-			int _x = WorldJPanel.X_OFFSET + p.getX()*19 + rowOffset;
-			int _y = WorldJPanel.Y_OFFSET + p.getY()*(20 - correction);
-			if (_x < minX) minX = _x;
-			if (_y < minY) minY = _y;
-			if (_x > maxX) maxX = _x;
-			if (_y > maxY) maxY = _y;
+			int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
+			int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
+			if (_x < minX)
+				minX = _x;
+			if (_y < minY)
+				minY = _y;
+			if (_x > maxX)
+				maxX = _x;
+			if (_y > maxY)
+				maxY = _y;
 		}
-		
+
 		minX -= 10;
 		minY -= 10;
 		maxX -= minX;
 		maxY -= minY;
-		
+
 		if (maxX > 0 && maxY > 0) {
 			int size = land.getPoints().size();
 			java.awt.Point center = null;
 			for (Flag flag : flags) {
 				ColoredLand coloredLand = new ColoredLand();
-				coloredLand.image = new BufferedImage(maxX + 20, maxY + 20, BufferedImage.TYPE_INT_ARGB);
+				coloredLand.image = new BufferedImage(maxX + 20, maxY + 20,
+						BufferedImage.TYPE_INT_ARGB);
 				coloredLand.size = new Dimension(maxX + 20, maxY + 20);
 				coloredLand.x = minX;
 				coloredLand.y = minY;
 				Graphics2D g2d = (Graphics2D) coloredLand.image.getGraphics();
 
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
 
 				Color color = FlagToColorUtil.getColorByFlag(flag, 165);
 				g2d.setColor(color);
@@ -73,40 +81,40 @@ public class LandPainter {
 
 				int x = 0;
 				int y = 0;
-				
+
 				for (Point p : land.getPoints()) {
 					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 					int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
-					int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
+					int _y = WorldJPanel.Y_OFFSET + p.getY()
+							* (20 - correction);
 					x += _x;
 					y += _y;
 				}
-				
+
 				if (center == null && size > 0) {
 					center = new java.awt.Point(x / size, y / size);
 				}
-				
-				coloredLand.center = center;		
-				
+
+				coloredLand.center = center;
+
 				java.awt.Point c1 = new java.awt.Point(0, minY / 2);
 				java.awt.Point c2 = new java.awt.Point(maxX * 27 / 10, maxY / 2);
-				
+
 				for (Point p : land.getPoints()) {
 					rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 					int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
-					int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
+					int _y = WorldJPanel.Y_OFFSET + p.getY()
+							* (20 - correction);
 					Polygon pol = getHexagon(_x - minX, _y - minY, 10);
-					
-					//RadialGradientPaint gradient = new RadialGradientPaint(c, (float)maxX*2, new float[]{0.15f, 0.9f}, new Color[]{Color.black, color});
-					
-					//GradientPaint gradient = new GradientPaint(c1, color, c2, Color.BLACK);
-					
-					LinearGradientPaint gradient = new LinearGradientPaint(c2, c1, new float[]{0.1f, 1f}, new Color[]{Color.BLACK, color});
-					
+
+					LinearGradientPaint gradient = new LinearGradientPaint(c2,
+							c1, new float[] { 0.1f, 1f }, new Color[] {
+									Color.BLACK, color });
+
 					g2d.setPaint(gradient);
-					
+
 					g2d.fillPolygon(pol);
-					
+
 					drawBorder(g2d, land, p, pol);
 				}
 
@@ -115,42 +123,50 @@ public class LandPainter {
 				coloredLands.put(flag, coloredLand);
 			}
 		} else {
-			System.err.println("not proper land, land id:" + String.valueOf(land.getLandId()) + ", maxX:" + maxX + ", maxY:" + maxY);
+			System.err.println("not proper land, land id:"
+					+ String.valueOf(land.getLandId()) + ", maxX:" + maxX
+					+ ", maxY:" + maxY);
 		}
 	}
-	
-	public LandPainter(FullLand land, Color color) {
+
+	LandPainter(FullLand land, Color color) {
 		int rowOffset = 0;
 		int correction = 4;
-		
+
 		int minX = 10000;
 		int minY = 10000;
 		int maxX = 0;
 		int maxY = 0;
 		for (Point p : land.getPoints()) {
 			rowOffset = p.getY() % 2 == 0 ? 9 : 0;
-			int _x = WorldJPanel.X_OFFSET + p.getX()*19 + rowOffset;
-			int _y = WorldJPanel.Y_OFFSET + p.getY()*(20 - correction);
-			if (_x < minX) minX = _x;
-			if (_y < minY) minY = _y;
-			if (_x > maxX) maxX = _x;
-			if (_y > maxY) maxY = _y;
+			int _x = WorldJPanel.X_OFFSET + p.getX() * 19 + rowOffset;
+			int _y = WorldJPanel.Y_OFFSET + p.getY() * (20 - correction);
+			if (_x < minX)
+				minX = _x;
+			if (_y < minY)
+				minY = _y;
+			if (_x > maxX)
+				maxX = _x;
+			if (_y > maxY)
+				maxY = _y;
 		}
-		
+
 		minX -= 10;
 		minY -= 10;
 		maxX -= minX;
 		maxY -= minY;
-		
+
 		if (maxX > 0 && maxY > 0) {
 			background = new ColoredLand();
-			background.image = new BufferedImage(maxX + 20, maxY + 20, BufferedImage.TYPE_INT_ARGB);
+			background.image = new BufferedImage(maxX + 20, maxY + 20,
+					BufferedImage.TYPE_INT_ARGB);
 			background.size = new Dimension(maxX + 20, maxY + 20);
 			background.x = minX;
 			background.y = minY;
 			Graphics2D g2d = (Graphics2D) background.image.getGraphics();
 
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
 
 			g2d.setColor(color);
 			g2d.setStroke(stroke);
@@ -166,52 +182,59 @@ public class LandPainter {
 
 			g2d.dispose();
 		} else {
-			System.err.println("not proper land, land id:" + String.valueOf(land.getLandId()) + ", maxX:" + maxX + ", maxY:" + maxY);
+			System.err.println("not proper land, land id:"
+					+ String.valueOf(land.getLandId()) + ", maxX:" + maxX
+					+ ", maxY:" + maxY);
 		}
 	}
-	
+
 	private Polygon getHexagon(int x, int y, int h) {
 		Polygon hexagon = new Polygon();
 
 		double a;
 		for (int i = 0; i < 6; i++) {
 			a = Math.PI / 3.0 * i;
-			hexagon.addPoint(x + (int) (Math.round(Math.sin(a) * h)), y + (int) (Math.round(Math.cos(a) * h * 1)));
+			hexagon.addPoint(x + (int) (Math.round(Math.sin(a) * h)), y
+					+ (int) (Math.round(Math.cos(a) * h * 1)));
 		}
-		hexagon.ypoints[3] = 2*y - hexagon.ypoints[0];
+		hexagon.ypoints[3] = 2 * y - hexagon.ypoints[0];
 		return hexagon;
 	}
-	
+
 	private void drawBorder(Graphics2D g2d, FullLand land, Point p, Polygon pol) {
 		Color color = g2d.getColor();
 		g2d.setColor(Color.black);
 
 		Set<Integer> skip = new HashSet<Integer>();
-		Point p1 = new Point(p.getX()+1,p.getY());
+		Point p1 = new Point(p.getX() + 1, p.getY());
 		if (p.getX() == MAX_X || land.getPoints().contains(p1)) {
 			skip.add(2);
 		}
-		p1 = new Point(p.getX()-1,p.getY());
+		p1 = new Point(p.getX() - 1, p.getY());
 		if (p.getX() == MIN_X || land.getPoints().contains(p1)) {
 			skip.add(5);
 		}
-		p1 = new Point(p.getX() + (p.getY() % 2 != 0 ? 0 : 1),p.getY()-1);
-		if (p.getX() == MAX_X || p.getY() == MIN_Y || land.getPoints().contains(p1)) {
+		p1 = new Point(p.getX() + (p.getY() % 2 != 0 ? 0 : 1), p.getY() - 1);
+		if (p.getX() == MAX_X || p.getY() == MIN_Y
+				|| land.getPoints().contains(p1)) {
 			skip.add(3);
 		}
-		p1 = new Point(p.getX() + (p.getY() % 2 != 0 ? 0 : 1),p.getY()+1);
-		if (p.getX() == MAX_X || p.getY() == MAX_Y || land.getPoints().contains(p1)) {
+		p1 = new Point(p.getX() + (p.getY() % 2 != 0 ? 0 : 1), p.getY() + 1);
+		if (p.getX() == MAX_X || p.getY() == MAX_Y
+				|| land.getPoints().contains(p1)) {
 			skip.add(1);
 		}
-		p1 = new Point(p.getX() - (p.getY() % 2 == 0 ? 0 : 1),p.getY()-1);
-		if (p.getX() == MIN_X || p.getY() == MIN_Y || land.getPoints().contains(p1)) {
+		p1 = new Point(p.getX() - (p.getY() % 2 == 0 ? 0 : 1), p.getY() - 1);
+		if (p.getX() == MIN_X || p.getY() == MIN_Y
+				|| land.getPoints().contains(p1)) {
 			skip.add(4);
 		}
-		p1 = new Point(p.getX() - (p.getY() % 2 == 0 ? 0 : 1),p.getY()+1);
-		if (p.getX() == MIN_X || p.getY() == MAX_Y || land.getPoints().contains(p1)) {
+		p1 = new Point(p.getX() - (p.getY() % 2 == 0 ? 0 : 1), p.getY() + 1);
+		if (p.getX() == MIN_X || p.getY() == MAX_Y
+				|| land.getPoints().contains(p1)) {
 			skip.add(6);
 		}
-		
+
 		int x1, x2, y1, y2;
 		x1 = pol.xpoints[0];
 		y1 = pol.ypoints[0];
@@ -232,12 +255,12 @@ public class LandPainter {
 		}
 		g2d.setColor(color);
 	}
-	
-	public ColoredLand getLand(Flag flag) {
+
+	ColoredLand getLand(Flag flag) {
 		return coloredLands.get(flag);
 	}
-	
-	public ColoredLand getBackground() {
+
+	ColoredLand getBackground() {
 		return background;
 	}
 }

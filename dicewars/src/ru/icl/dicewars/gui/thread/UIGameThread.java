@@ -13,7 +13,6 @@ import ru.icl.dicewars.core.activity.MaxConnectedLandsCountChangedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.TotalDiceCountChangedActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
-import ru.icl.dicewars.gui.LandFactory;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class UIGameThread extends Thread {
@@ -55,8 +54,6 @@ public class UIGameThread extends Thread {
 			DiceWarsActivity activity = gamePlayThread.pollFromActivityQueue();
 			if (activity instanceof WorldCreatedActivity) {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
-				LandFactory.buildTheWorld(world);
-				LandFactory.buildBackground(world);
 				WindowManager.getInstance().getWorldJPanel().update(world);
 			} else if (activity instanceof FlagDistributedActivity){
 				FlagDistributedActivity fda = (FlagDistributedActivity) activity;
