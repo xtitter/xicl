@@ -74,7 +74,8 @@ public class UIGameThread extends Thread {
 				_sleep(250, speed);
 				checkPause();
 				if (speed == 1){
-					WindowManager.getInstance().getWorldJPanel().enableDrawArraw(pa.getFromLandId(), pa.getToLandId());
+					WindowManager.getInstance().getWorldJPanel().enableDrawArrow(pa.getFromLandId(), pa.getToLandId());
+					WindowManager.getInstance().getWorldJPanel().animate();
 				}
 				_sleep(750, speed);
 				checkPause();

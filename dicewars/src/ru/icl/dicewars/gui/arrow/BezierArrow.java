@@ -2,12 +2,14 @@ package ru.icl.dicewars.gui.arrow;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LinearGradientPaint;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import javax.sql.rowset.spi.SyncResolver;
 
 import ru.icl.dicewars.gui.manager.WindowManager;
 
@@ -16,6 +18,8 @@ public class BezierArrow extends LineArrowWithArrowHead {
 	final static float arrowSize = 5.0f;
 	private boolean inverted = false;
 	final static BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+	private BezierLine points;
+	private Object sync = new Object();
 	
 	protected BezierArrow(int from) {
 		super(from);
@@ -27,79 +31,51 @@ public class BezierArrow extends LineArrowWithArrowHead {
 		int w = WindowManager.getInstance().getScreenWidth();
 		int h = WindowManager.getInstance().getScreenHeight();
 		
-		BufferedImage doubleBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2D = (Graphics2D) doubleBuffer.getGraphics();
-		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2D.setStroke(dashed);
+		synchronized (sync) {
+			BufferedImage doubleBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2D = (Graphics2D) doubleBuffer.getGraphics();
+			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2D.setStroke(dashed);
+				
+			points = new BezierLine();
+	
+			g2D.setColor(super.color);
+			LinearGradientPaint gradient = new LinearGradientPaint(new java.awt.Point(x1,y1), new java.awt.Point(x2,y2), new float[]{0.0f, 0.7f, 1f}, new Color[]{Color.black, super.color, super.color});
+			g2D.setPaint(gradient);
+			points.addPoint(x1, y1);
+			points.addPoint((int) ((x1 + x2) / 2.0 + 0.2 * Math.abs(y2 - y1)), (int) ((y1 + y2) / 2.0 + 0.2 * Math.abs(x2 - x1)));
+			points.addPoint(x2, y2);
+			points.addPoint(x2, y2);
+	
+			points.done();
+			points.showLine = false;
+			points.draw(g2D);
+	
+			if (inverted) {
+				Point p = points.getSecondPoint();
+				if (p == null) {
+					p = new Point(x1, x2);
+				}
+				drawArrowHead(g2D, p.x, p.y, x1, y1);
+			} else {
+				Point p = points.getNextToLastPoint();
+				if (p == null) {
+					p = new Point(x1, x2);
+				}
+				drawArrowHead(g2D, p.x, p.y, x2, y2);
+			}
 			
-		BezierLine points = new BezierLine();
-
-		//g2D.setColor(LineArrow.shadowColor);
-		g2D.setColor(super.color);
-		//GradientPaint gradient = new GradientPaint(new java.awt.Point(x1,y1), Color.black, new java.awt.Point(x2,y2), super.color);
-		LinearGradientPaint gradient = new LinearGradientPaint(new java.awt.Point(x1,y1), new java.awt.Point(x2,y2), new float[]{0.0f, 0.7f, 1f}, new Color[]{Color.black, super.color, super.color});
-		g2D.setPaint(gradient);
-		points.addPoint(x1, y1);
-		points.addPoint((int) ((x1 + x2) / 2.0 + 0.2 * Math.abs(y2 - y1)), (int) ((y1 + y2) / 2.0 + 0.2 * Math.abs(x2 - x1)));
-		points.addPoint(x2, y2);
-		points.addPoint(x2, y2);
-
-		points.done();
-		points.showLine = false;
-		points.draw(g2D);
-		
-		/*g2D.setColor(super.color);
-		points.updateFirst(x1 + 1, y1 + 2);
-		points.createFinal();
-		points.draw(g2D);*/
-
-		if (inverted) {
-			Point p = points.getSecondPoint();
-			if (p == null) {
-				p = new Point(x1, x2);
-			}
-			drawArrowHead(g2D, p.x, p.y, x1, y1);
-		} else {
-			Point p = points.getNextToLastPoint();
-			if (p == null) {
-				p = new Point(x1, x2);
-			}
-			drawArrowHead(g2D, p.x, p.y, x2, y2);
+			g.drawImage(doubleBuffer, 0, 0, w, h, this);
 		}
-
-		/*g2D.setColor(super.color);
-		points.updateFirst(x1 + 1, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 + 2, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 + 3, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 + 4, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 + 5, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 - 1, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 - 2, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 - 3, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 - 4, y1);
-		points.createFinal();
-		points.draw(g2D);
-		points.updateFirst(x1 - 5, y1);
-		points.createFinal();
-		points.draw(g2D);*/
-		
-		g.drawImage(doubleBuffer, 0, 0, w, h, this);
+	}
+	
+	public ArrayList<java.awt.Point> getAllPoints() {
+		synchronized (sync) {
+			if (points != null) {
+				return points.getAllPoints();
+			}
+		}
+		return null;
 	}
 
 	class Point {
@@ -424,6 +400,7 @@ public class BezierArrow extends LineArrowWithArrowHead {
 			return createFinal();
 		}
 
+		@Override
 		void draw(Graphics g) {
 			Graphics2D g2D = (Graphics2D) g;
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -453,6 +430,23 @@ public class BezierArrow extends LineArrowWithArrowHead {
 		public Point getSecondPoint() {
 			if (ready) {
 				return new Point(bpt[1].x, bpt[1].y);
+			} else {
+				return null;
+			}
+		}
+		
+		public ArrayList<java.awt.Point> getAllPoints() {
+			if (ready) {
+				ArrayList<java.awt.Point> points = new ArrayList<java.awt.Point>();
+				for (int i = 0; i < bnum - 1; i++) {
+					points.add(new java.awt.Point(bpt[i].x, bpt[i].y));
+					/*for (int j = 1; j <= 10; j++) {
+						points.add(new java.awt.Point(bpt[i].x + Math.abs(bpt[i].x - bpt[i+1].x)*j/10, bpt[i].y + Math.abs(bpt[i].y - bpt[i+1].y)*j/10));
+					}*/
+					points.add(new java.awt.Point((bpt[i].x + bpt[i+1].x)/2, (bpt[i].y + bpt[i+1].y)/2));
+				}
+				points.add(new java.awt.Point(bpt[bnum-1].x, bpt[bnum-1].y));
+				return points;
 			} else {
 				return null;
 			}
