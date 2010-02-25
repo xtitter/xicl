@@ -33,16 +33,18 @@ public class ImageManager {
     }
 	
 	public static Image getDice(int num, Flag flag) {
-		if (dices2 == null) {
-    		dices2 = new HashMap<Integer, Map<Flag,Image>>();
+		if (num < 1 || num > 8) throw new IllegalArgumentException(); 
+				
+		if (dices == null) {
+    		dices = new HashMap<Integer, Map<Flag,Image>>();
     	}
     	Integer index = Integer.valueOf(num);
     	
-    	if (dices2.get(num) == null){
-    		dices2.put(num, new HashMap<Flag, Image>());
+    	if (dices.get(num) == null){
+    		dices.put(num, new HashMap<Flag, Image>());
     	}
     	
-    	Map<Flag,Image> d = dices2.get(num);
+    	Map<Flag,Image> d = dices.get(num);
     	
     	if (!d.containsKey(flag)) {
     		String fileName = null;
@@ -65,28 +67,6 @@ public class ImageManager {
     	
     	return d.get(flag);
 	}
-    
-    public static Image getDice(int num, Color color) {
-    	if (dices == null) {
-    		dices = new HashMap<Integer, Map<Color,Image>>();
-    	}
-    	Integer index = Integer.valueOf(num);
-    	
-    	if (dices.get(num) == null){
-    		dices.put(num, new HashMap<Color, Image>());
-    	}
-    	
-    	Map<Color,Image> d = dices.get(num);
-    	
-    	if (!d.containsKey(color)) {
-    		String path = "/resources/dice/g" + index + ".png";
-    		Image image = getImageFromResource(path, new Rectangle(0,0,62,75));
-    		Image coloredImage = ImageUtil.createColouredImage(image, color);
-    		d.put(color, coloredImage);
-    	}
-    	
-    	return d.get(color);
-    }
     
     public static Image getPauseSpeedImage() {
     	if (pauseSpeedImage == null) {
@@ -342,8 +322,7 @@ public class ImageManager {
     	return trophy;
     }
     
-    private static Map<Integer, Map<Color,Image>> dices;
-    private static Map<Integer, Map<Flag,Image>> dices2;
+    private static Map<Integer, Map<Flag,Image>> dices;
     
     private static Image pauseSpeedImage;
     private static Image pauseSpeedImageSelected;
