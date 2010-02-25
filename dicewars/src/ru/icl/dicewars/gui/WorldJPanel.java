@@ -1,7 +1,6 @@
 package ru.icl.dicewars.gui;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,7 +13,6 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
-import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.gui.arrow.Arrow;
@@ -22,12 +20,11 @@ import ru.icl.dicewars.gui.arrow.ArrowFactory;
 import ru.icl.dicewars.gui.arrow.ArrowFactory.ArrowType;
 import ru.icl.dicewars.gui.manager.ImageManager;
 
-
 public class WorldJPanel extends JPanel {
 
 	private FullWorld world;
 
-	@SuppressWarnings("serial")
+	/*@SuppressWarnings("serial")
 	HashSet<Flag> predefinedDices = new HashSet<Flag>(){{
 		add(Flag.BLUE);
 		add(Flag.RED);
@@ -38,7 +35,7 @@ public class WorldJPanel extends JPanel {
 		add(Flag.MAGENTA);
 		add(Flag.GRAY);
 	}
-	};
+	};*/
 	
 	private int width;
 	private int height;
@@ -64,20 +61,37 @@ public class WorldJPanel extends JPanel {
 	private Object flag = new Object();	
 	private Object flag2 = new Object(); 
 	
-	private int attackingPlayer = 0;
-	private int defendingPlayer = 0;
+	private int attackingPlayerLandId = 0;
+	private int defendingPlayerLandId = 0;
 	
-	private int speed = 1;
+	private AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.75f);
+	
+	private boolean drawArrow = true;
 	
 	public WorldJPanel() {
 		setPreferredSize(new Dimension(1350,930));
 	}
 	
 	public void update(FullWorld world) {
-		this.world = world;
+		synchronized (flag2) {
+			this.world = world;
+			width = getWidth();
+			height = getHeight();
+			this.doubleBuffer = null;	
+		}
+		repaint();
+	}
+	
+	public void updateAttackingPlayer(int attackingPlayerLandId) {
+		this.attackingPlayerLandId = attackingPlayerLandId;
+		synchronized (flag2) {
+			this.doubleBuffer = null;	
+		}
+		repaint();
+	}
 
-		width = getWidth();
-		height = getHeight();
+	public void updateDefendingPlayerLandId(int defendingPlayerLandId) {
+		this.defendingPlayerLandId = defendingPlayerLandId;
 		synchronized (flag2) {
 			this.doubleBuffer = null;	
 		}
@@ -85,7 +99,7 @@ public class WorldJPanel extends JPanel {
 	}
 	
 	public void update(FullLand land) {
-		defendingPlayer = 0;
+		defendingPlayerLandId = 0;
 		width = getWidth();
 		height = getHeight();
 		FullLand l2 = null;
@@ -125,8 +139,8 @@ public class WorldJPanel extends JPanel {
 		synchronized (flag2) {
 			if (this.doubleBuffer == null){
 
-				final int defendingLandId = defendingPlayer;
-				final int attackingLandId = attackingPlayer;
+				final int defendingLandId = defendingPlayerLandId;
+				final int attackingLandId = attackingPlayerLandId;
 
 				synchronized (flag) {
 					landsTmp = new HashSet<FullLand>(world.getFullLands());	
@@ -149,6 +163,10 @@ public class WorldJPanel extends JPanel {
 				 * Draw lands
 				 */
 				Point p1 = null; Point p2 = null;
+				
+				int offsetX = 2;
+				int offsetY = 5;
+				
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					l = LandFactory.getLand(land.getLandId(), land.getFlag());
@@ -156,16 +174,12 @@ public class WorldJPanel extends JPanel {
 						if (!battle) {
 							g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
 						} else {
-							int offsetX = 2;
-							int offsetY = 5;
-							
 							BufferedImage doubleBuffer2 = new BufferedImage(l.size.width, l.size.height, BufferedImage.TYPE_INT_ARGB);
 							Graphics2D gd = (Graphics2D) doubleBuffer2.getGraphics();
-							gd.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.7f));
+							gd.setComposite(alphaComposite); 
 							gd.drawImage(l.image, 0, 0, l.size.width, l.size.height, this);
 							g2d.drawImage(doubleBuffer2, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
 							gd.dispose();
-							
 							if (p1 == null) p1 = l.center; else p2 = l.center;
 						}
 					}
@@ -175,24 +189,25 @@ public class WorldJPanel extends JPanel {
 				 * Draw dices on the map
 				 */
 				for (FullLand land : landsTmp) {
-					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
+					//boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					l = LandFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
 						Image diceImage = null;
-						if (predefinedDices.contains(land.getFlag())) {
+						//if (predefinedDices.contains(land.getFlag())) {
 							diceImage = ImageManager.getDice(land.getDiceCount(), land.getFlag());
-						} else {
+						/*} else {
 							diceImage = ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag(), battle ? 130 : 255 ));
-						}
-						if (diceImage != null)
+						}*/
+						if (diceImage != null){
 							g2d.drawImage(diceImage, l.center.x + DICE_X_OFFSET, l.center.y + DICE_Y_OFFSET, this);
+						}
 					}
 				}
 				
 				/**
 				 * Draw bezier arrow
 				 */
-				if (p1 != null && p2 != null && speed == 1) {
+				if (p1 != null && p2 != null && isDrawArrow()) {
 					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
 					arrow.setVisible(true);
 					arrow.setOpaque(false);
@@ -214,7 +229,7 @@ public class WorldJPanel extends JPanel {
 	    g.dispose();
 	}
 	
-	private Color getDiceColorByFlag(Flag f, int alpha){
+	/*private Color getDiceColorByFlag(Flag f, int alpha){
 		switch (f) {
 		case YELLOW:
 			return new Color(175, 175, 0, alpha);
@@ -234,36 +249,21 @@ public class WorldJPanel extends JPanel {
 			return new Color(150, 150, 150, alpha);
 		}
 		return Color.black;
+	}*/
+
+	int getAttackingPlayer() {
+		return attackingPlayerLandId;
+	}
+	
+	void setAttackingPlayer(int attackingPlayer) {
+		this.attackingPlayerLandId = attackingPlayer;
 	}
 
-	public FullWorld getRecentWorld() {
-		return world;
+	public void setDrawArrow(boolean drawArrow) {
+		this.drawArrow = drawArrow;
 	}
 	
-	public void updateDefendingPlayer(int defendingPlayer) {
-		setDefendingPlayer(defendingPlayer);
-		synchronized (flag2) {
-			this.doubleBuffer = null;	
-		}
-	}
-	
-	public void setDefendingPlayer(int defendingPlayer) {
-		this.defendingPlayer = defendingPlayer;
-	}
-	
-
-	public void updateAttackingPlayer(int attackingPlayer) {
-		setAttackingPlayer(attackingPlayer);
-		synchronized (flag2) {
-			this.doubleBuffer = null;	
-		}
-	}
-	
-	public void setAttackingPlayer(int attackingPlayer) {
-		this.attackingPlayer = attackingPlayer;
-	}
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
+	public boolean isDrawArrow() {
+		return drawArrow;
 	}
 }

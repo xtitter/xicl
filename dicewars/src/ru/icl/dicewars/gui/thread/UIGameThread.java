@@ -66,24 +66,15 @@ public class UIGameThread extends Thread {
 				WindowManager.getInstance().getWorldJPanel().update(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
-				WindowManager.getInstance().getWorldJPanel().setSpeed(speed);
+				WindowManager.getInstance().getWorldJPanel().setDrawArrow(speed == 1);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
-				WindowManager.getInstance().getWorldJPanel().repaint();
-				//if (!alreadyFrozen()) _sleep(700, speed);
 				_sleep(700, speed);
 				checkPause();
-				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(pa.getToLandId());
-				//Arrow arrow = WindowManager.getManager().getArrow(pa, ArrowType.BEZIER);
-				//WindowManager.getManager().getJLayeredPane().add(arrow, JLayeredPane.MODAL_LAYER, 1);
-				WindowManager.getInstance().getWorldJPanel().repaint();
-				//if (!alreadyFrozen()) _sleep(1000, speed);
+				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(pa.getToLandId());
 				_sleep(1000, speed);
 				checkPause();
-				//WindowManager.getManager().getJLayeredPane().remove(arrow);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
-				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayer(0);
-				WindowManager.getInstance().getWorldJPanel().repaint();
-				//if (!alreadyFrozen()) _sleep(300, speed);
+				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(0);
 				_sleep(300, speed);
 				checkPause();
 			} else if (activity instanceof DiceCountInReserveChangedActivity) {
@@ -114,16 +105,6 @@ public class UIGameThread extends Thread {
 			_sleep(10);
 		}
 	}
-	
-	/*private boolean alreadyFrozen() {
-		boolean frozen = false;
-		while (WindowManager.getInstance().isFrozen()) {
-			frozen = true;
-			WindowManager.getInstance().fire();
-			_sleep(1000);
-		}
-		return frozen;
-	}*/
 	
 	private void _sleep(long time) {
 		try {
