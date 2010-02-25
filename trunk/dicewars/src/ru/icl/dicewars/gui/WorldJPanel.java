@@ -64,6 +64,9 @@ public class WorldJPanel extends JPanel {
 	private int attackingPlayerLandId = 0;
 	private int defendingPlayerLandId = 0;
 	
+	private int arrowFromLandId = 0;
+	private int arrowToLandId = 0;
+	
 	private AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.75f);
 	
 	private boolean drawArrow = true;
@@ -128,6 +131,26 @@ public class WorldJPanel extends JPanel {
 		}
 		repaint();
 	}
+	
+	public void disableDrawArraw(){
+		synchronized (flag2) {
+			this.drawArrow = false;
+			this.arrowFromLandId = 0;
+			this.arrowToLandId = 0;
+			this.doubleBuffer = null;	
+		}
+		repaint();
+	}
+	
+	public void enableDrawArraw(Integer fromLandId, Integer toLandId){
+		synchronized (flag2) {
+			this.drawArrow = true;
+			this.arrowFromLandId = fromLandId.intValue();
+			this.arrowToLandId = toLandId.intValue();
+			this.doubleBuffer = null;	
+		}
+		repaint();
+	}
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -180,7 +203,11 @@ public class WorldJPanel extends JPanel {
 							gd.drawImage(l.image, 0, 0, l.size.width, l.size.height, this);
 							g2d.drawImage(doubleBuffer2, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
 							gd.dispose();
-							if (p1 == null) p1 = l.center; else p2 = l.center;
+						}
+						if (land.getLandId() == arrowFromLandId){
+							p1 = l.center;
+						}else if (land.getLandId() == arrowToLandId){
+							p2 = l.center;
 						}
 					}
 				}			
@@ -207,7 +234,7 @@ public class WorldJPanel extends JPanel {
 				/**
 				 * Draw bezier arrow
 				 */
-				if (p1 != null && p2 != null && isDrawArrow()) {
+				if (p1 != null && p2 != null && drawArrow) {
 					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
 					arrow.setVisible(true);
 					arrow.setOpaque(false);
@@ -250,20 +277,4 @@ public class WorldJPanel extends JPanel {
 		}
 		return Color.black;
 	}*/
-
-	int getAttackingPlayer() {
-		return attackingPlayerLandId;
-	}
-	
-	void setAttackingPlayer(int attackingPlayer) {
-		this.attackingPlayerLandId = attackingPlayer;
-	}
-
-	public void setDrawArrow(boolean drawArrow) {
-		this.drawArrow = drawArrow;
-	}
-	
-	public boolean isDrawArrow() {
-		return drawArrow;
-	}
 }
