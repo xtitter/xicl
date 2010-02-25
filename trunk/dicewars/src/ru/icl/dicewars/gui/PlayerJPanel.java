@@ -40,7 +40,6 @@ public class PlayerJPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
 		g.setColor(FlagToColorUtil.getColorByFlag(flag, alpha));
 		g.fillRect(radius, radius, getWidth() - radius*2, getHeight() - radius*2);
 		
@@ -61,7 +60,7 @@ public class PlayerJPanel extends JPanel {
 		
 		Image avatar = null;	
 		if (winner) {
-			g.drawImage(ImageManager.getTrophy(), 147, 2, 48, 48, this);
+			g.drawImage(ImageManager.getTrophy(), 147, 20, 32, 32, this);
 			avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
 		}
 		if (winnerTotalDiceCount / 2 > totalDiceCount){
