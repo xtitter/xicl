@@ -1,5 +1,8 @@
 package ru.icl.dicewars.gui.arrow;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -11,23 +14,29 @@ public class BezierArrow extends LineArrowWithArrowHead {
 
 	final static float arrowSize = 5.0f;
 	private boolean inverted = false;
-
+	final static BasicStroke dashed = new BasicStroke(5.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+	
 	protected BezierArrow(int from) {
 		super(from);
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) {
 
 		int w = WindowManager.getInstance().getScreenWidth();
 		int h = WindowManager.getInstance().getScreenHeight();
+		
 		BufferedImage doubleBuffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2D = (Graphics2D) doubleBuffer.getGraphics();
-        g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2D.setColor(super.color);
-
+		Graphics2D g2D = (Graphics2D) doubleBuffer.getGraphics();
+		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2D.setStroke(dashed);
+			
 		BezierLine points = new BezierLine();
 
+		//g2D.setColor(LineArrow.shadowColor);
+		g2D.setColor(super.color);
+		GradientPaint gradient = new GradientPaint(new java.awt.Point(x1,y1), Color.black, new java.awt.Point(x2,y2), super.color);
+		g2D.setPaint(gradient);
 		points.addPoint(x1, y1);
 		points.addPoint((int) ((x1 + x2) / 2.0 + 0.2 * Math.abs(y2 - y1)), (int) ((y1 + y2) / 2.0 + 0.2 * Math.abs(x2 - x1)));
 		points.addPoint(x2, y2);
@@ -37,6 +46,11 @@ public class BezierArrow extends LineArrowWithArrowHead {
 		points.showLine = false;
 		points.draw(g2D);
 		
+		/*g2D.setColor(super.color);
+		points.updateFirst(x1 + 1, y1 + 2);
+		points.createFinal();
+		points.draw(g2D);*/
+
 		if (inverted) {
 			Point p = points.getSecondPoint();
 			if (p == null) {
@@ -50,38 +64,38 @@ public class BezierArrow extends LineArrowWithArrowHead {
 			}
 			drawArrowHead(g2D, p.x, p.y, x2, y2);
 		}
-		
-		g2D.setColor(super.color);
-		points.updateFirst(x1+1, y1);
+
+		/*g2D.setColor(super.color);
+		points.updateFirst(x1 + 1, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1+2, y1);
+		points.updateFirst(x1 + 2, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1+3, y1);
+		points.updateFirst(x1 + 3, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1+4, y1);
+		points.updateFirst(x1 + 4, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1+5, y1);
+		points.updateFirst(x1 + 5, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1-1, y1);
+		points.updateFirst(x1 - 1, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1-2, y1);
+		points.updateFirst(x1 - 2, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1-3, y1);
+		points.updateFirst(x1 - 3, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1-4, y1);
+		points.updateFirst(x1 - 4, y1);
 		points.createFinal();
 		points.draw(g2D);
-		points.updateFirst(x1-5, y1);
+		points.updateFirst(x1 - 5, y1);
 		points.createFinal();
-		points.draw(g2D);
+		points.draw(g2D);*/
 		
 		g.drawImage(doubleBuffer, 0, 0, w, h, this);
 	}

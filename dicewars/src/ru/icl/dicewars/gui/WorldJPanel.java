@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
@@ -50,6 +51,8 @@ public class WorldJPanel extends JPanel {
 	
 	private int attackingPlayer = 0;
 	private int defendingPlayer = 0;
+	
+	private int speed = 1;
 	
 	public WorldJPanel() {
 		setPreferredSize(new Dimension(1350,930));
@@ -130,6 +133,7 @@ public class WorldJPanel extends JPanel {
 				/**
 				 * Draw lands
 				 */
+				Point p1 = null; Point p2 = null;
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					l = LandFactory.getLand(land.getLandId(), land.getFlag());
@@ -145,7 +149,9 @@ public class WorldJPanel extends JPanel {
 							gd.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.7f));
 							gd.drawImage(l.image, 0, 0, l.size.width, l.size.height, this);
 							g2d.drawImage(doubleBuffer2, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
-							gd.dispose();							
+							gd.dispose();
+							
+							if (p1 == null) p1 = l.center; else p2 = l.center;
 						}
 					}
 				}
@@ -163,6 +169,24 @@ public class WorldJPanel extends JPanel {
 					}
 				}
 				
+				/**
+				 * Draw bezier arrow
+				 */
+				if (p1 != null && p2 != null && speed == 1) {
+					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+					arrow.setVisible(true);
+					arrow.setOpaque(false);
+					arrow.setBounds(0, 0, width, height);
+					arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
+					
+					BufferedImage arrowImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					Graphics2D arrowG2D = arrowImage.createGraphics();
+					//arrowG2D.drawLine(p1.x, p1.y, p2.x, p2.y);
+			        arrow.paintComponent(arrowG2D);
+			        
+			        g2d.drawImage(arrowImage, 0, 0, width, height, this);
+				}
+
 				g2d.dispose();
 			}
 			g.drawImage(this.doubleBuffer, 0, 0, width, height, this);
@@ -220,4 +244,7 @@ public class WorldJPanel extends JPanel {
 		this.attackingPlayer = attackingPlayer;
 	}
 
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
 }
