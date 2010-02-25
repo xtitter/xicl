@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -21,10 +22,24 @@ import ru.icl.dicewars.gui.arrow.ArrowFactory;
 import ru.icl.dicewars.gui.arrow.ArrowFactory.ArrowType;
 import ru.icl.dicewars.gui.manager.ImageManager;
 
+
 public class WorldJPanel extends JPanel {
 
 	private FullWorld world;
 
+	@SuppressWarnings("serial")
+	HashSet<Flag> predefinedDices = new HashSet<Flag>(){{
+		add(Flag.BLUE);
+		add(Flag.RED);
+		add(Flag.GREEN);
+		add(Flag.YELLOW);
+		add(Flag.CYAN);
+		add(Flag.ORANGE);
+		add(Flag.MAGENTA);
+		add(Flag.GRAY);
+	}
+	};
+	
 	private int width;
 	private int height;
 	private static final long serialVersionUID = -3234906592754761865L;
@@ -154,8 +169,8 @@ public class WorldJPanel extends JPanel {
 							if (p1 == null) p1 = l.center; else p2 = l.center;
 						}
 					}
-				}
-				
+				}			
+			
 				/**
 				 * Draw dices on the map
 				 */
@@ -163,9 +178,14 @@ public class WorldJPanel extends JPanel {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
 					l = LandFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
-						g2d.drawImage(ImageManager.getDice(land.getDiceCount(), 
-								getDiceColorByFlag(land.getFlag(), battle ? 130 : 255 )), 
-								l.center.x + DICE_X_OFFSET, l.center.y + DICE_Y_OFFSET, this);
+						Image diceImage = null;
+						if (predefinedDices.contains(land.getFlag())) {
+							diceImage = ImageManager.getDice(land.getDiceCount(), land.getFlag());
+						} else {
+							diceImage = ImageManager.getDice(land.getDiceCount(), getDiceColorByFlag(land.getFlag(), battle ? 130 : 255 ));
+						}
+						if (diceImage != null)
+							g2d.drawImage(diceImage, l.center.x + DICE_X_OFFSET, l.center.y + DICE_Y_OFFSET, this);
 					}
 				}
 				
