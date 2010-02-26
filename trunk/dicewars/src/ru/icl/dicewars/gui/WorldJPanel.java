@@ -60,12 +60,8 @@ public class WorldJPanel extends JPanel {
 	private int attackingPlayerLandId = 0;
 	private int defendingPlayerLandId = 0;
 	
-	private int arrowFromLandId = 0;
-	private int arrowToLandId = 0;
-	
 	private AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.75f);
 	
-	private boolean drawArrow = true;
 	private int arrowState = 0;
 	
 	private LandFactory landFactory = new LandFactory();
@@ -156,57 +152,56 @@ public class WorldJPanel extends JPanel {
 	}
 	
 	public void stopDrawArrow(){
+		t.stop();
 		synchronized (flag3) {
+			eraseArrow();
 			flag3.notifyAll();
 		}
-		t.stop();
 	}
 	
 	public void eraseArrow(){
 		synchronized (flag4) {
-			this.drawArrow = false;
 			this.points = null;
-			this.arrowFromLandId = 0;
-			this.arrowToLandId = 0;
 			this.arrowState = 0;
-			this.arrowDoubleBuffer = null;
+			this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;
 		}
 		repaint();
 	}
 	
 	public void drawArrow(Integer fromLandId, Integer toLandId){
 		synchronized (flag4) {
-			this.drawArrow = true;
 			this.points = null;
-			this.arrowFromLandId = fromLandId.intValue();
-			this.arrowToLandId = toLandId.intValue();
 			this.arrowState = 0;
 			this.arrowDoubleBuffer = null;
-		}
-		
-		Set<FullLand> landsTmp;
-		
-		synchronized (flag) {
-			landsTmp = new HashSet<FullLand>(world.getFullLands());	
-		}
-		
-		Point p1 = null; Point p2 = null;		
-		for (FullLand land : landsTmp) {
-			ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
-			if (land.getLandId() == arrowFromLandId){
-				p1 = l.center;
-			}else if (land.getLandId() == arrowToLandId){
-				p2 = l.center;
+
+			Set<FullLand> landsTmp;
+
+			synchronized (flag) {
+				landsTmp = new HashSet<FullLand>(world.getFullLands());
 			}
-		}	
-		
-		Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
-		arrow.setVisible(true);
-		arrow.setOpaque(false);
-		arrow.setBounds(0, 0, width, height);
-		arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
-        
-        this.points = ((BezierArrow)arrow).getAllPoints();
+
+			Point p1 = null;
+			Point p2 = null;
+			final int arrowFromLandId = fromLandId.intValue();
+			final int arrowToLandId = toLandId.intValue();
+			for (FullLand land : landsTmp) {
+				ColoredLand l = landFactory.getLand(land.getLandId(), land
+						.getFlag());
+				if (land.getLandId() == arrowFromLandId) {
+					p1 = l.center;
+				} else if (land.getLandId() == arrowToLandId) {
+					p2 = l.center;
+				}
+			}
+
+			Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+			arrow.setVisible(true);
+			arrow.setOpaque(false);
+			arrow.setBounds(0, 0, width, height);
+			arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
+
+			this.points = ((BezierArrow) arrow).getAllPoints();
+		}
 		t.setDelay(500 / this.points.size());
         t.start();
 		synchronized (flag3) {
@@ -291,29 +286,14 @@ public class WorldJPanel extends JPanel {
 		
 		synchronized (flag4) {
 			if (arrowDoubleBuffer == null){
-				
-				Point p1 = null; Point p2 = null;
-				
-				synchronized (flag) {
-					landsTmp = new HashSet<FullLand>(world.getFullLands());	
-				}
-				
-				for (FullLand land : landsTmp) {
-					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
-					if (land.getLandId() == arrowFromLandId){
-						p1 = l.center;
-					}else if (land.getLandId() == arrowToLandId){
-						p2 = l.center;
-					}
-				}
-				
 				/*
 				 * Draw bezier arrow
 				 */
-				if (p1 != null && p2 != null && drawArrow && this.points != null && this.arrowState <= this.points.size() - 1) {
-					p2 = this.points.get(this.arrowState);
+				if (this.points != null && this.arrowState <= this.points.size() - 1 && this.arrowState > 0 && this.points.size() > 1) {
+					Point p1 = this.points.get(0);
+					Point p2 = this.points.get(this.arrowState);
 
-					Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
+					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
 					arrow.setVisible(true);
 					arrow.setOpaque(false);
 					arrow.setBounds(0, 0, width, height);
