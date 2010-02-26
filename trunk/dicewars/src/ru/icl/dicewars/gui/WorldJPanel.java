@@ -200,7 +200,7 @@ public class WorldJPanel extends JPanel {
 			}
 		}	
 		
-		Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+		Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
 		arrow.setVisible(true);
 		arrow.setOpaque(false);
 		arrow.setBounds(0, 0, width, height);
@@ -313,7 +313,7 @@ public class WorldJPanel extends JPanel {
 				if (p1 != null && p2 != null && drawArrow && this.points != null && this.arrowState <= this.points.size() - 1) {
 					p2 = this.points.get(this.arrowState);
 
-					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+					Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
 					arrow.setVisible(true);
 					arrow.setOpaque(false);
 					arrow.setBounds(0, 0, width, height);

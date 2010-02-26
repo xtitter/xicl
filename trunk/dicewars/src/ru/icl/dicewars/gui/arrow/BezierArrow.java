@@ -21,8 +21,8 @@ public class BezierArrow extends LineArrowWithArrowHead {
 	private Object sync = new Object();
 	private boolean inverted = false;
 	
-	protected BezierArrow(int from) {
-		super(from);
+	protected BezierArrow() {
+		super();
 	}
 
 	@Override
