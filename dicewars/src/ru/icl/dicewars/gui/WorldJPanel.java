@@ -195,9 +195,6 @@ public class WorldJPanel extends JPanel {
 			}
 
 			Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
-			arrow.setVisible(true);
-			arrow.setOpaque(false);
-			arrow.setBounds(0, 0, width, height);
 			arrow.setCoordinates(p1.x, p1.y, p2.x, p2.y);
 
 			this.points = ((BezierArrow) arrow).getAllPoints();
@@ -294,9 +291,6 @@ public class WorldJPanel extends JPanel {
 					Point p2 = this.points.get(this.arrowState);
 
 					Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
-					arrow.setVisible(true);
-					arrow.setOpaque(false);
-					arrow.setBounds(0, 0, width, height);
 					
 					int minx = Math.min(p1.x, p2.x);
 					int miny = Math.min(p1.y, p2.y);
@@ -309,7 +303,7 @@ public class WorldJPanel extends JPanel {
 					
 					Graphics2D g2d = (Graphics2D) arrowDoubleBuffer.getGraphics();
 					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-					arrow.paintComponent(g2d);
+					arrow.   paint(g2d);
 					g2d.dispose();
 				}else{
 					this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;

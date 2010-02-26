@@ -4,36 +4,53 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.Rectangle;
+import java.awt.Stroke;
 
 public class LineArrow extends Arrow {
 
 	final static float dash[] = { 12.0f };
-	final static BasicStroke dashed = new BasicStroke(3.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
+	final static BasicStroke dashed = new BasicStroke(3.0f,
+			BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
 	final static Color defaultColor = Color.red;
-	protected final static Color shadowColor = new Color(0,0,0,150);
-	
-	public Color color;
-	
-	protected LineArrow() {
+	final static Color shadowColor = new Color(0, 0, 0, 150);
+
+	Color color = defaultColor;
+
+	LineArrow() {
 		super();
-		color = defaultColor;
 	}
 
-	@Override
-	public void paintComponent(Graphics g) {
-		Graphics2D g2D = (Graphics2D) g;
-		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2D.setStroke(dashed);
-		g2D.setColor(shadowColor);
-		g2D.drawLine(x1+1, y1+2, x2+1, y2+2);
-		g2D.setColor(color);
-		g2D.drawLine(x1, y1, x2, y2);
+	LineArrow(int x1, int y1, int x2, int y2) {
+		super(x1, y1, x2, y2);
 	}
-	
+
+	LineArrow(Rectangle rec) {
+		super(rec);
+	}
+
+	public void paint(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		
+		final Stroke oldStroke = g2d.getStroke();
+		final Color oldColor = g2d.getColor();
+		
+		g2d.setStroke(dashed);
+		g2d.setColor(shadowColor);
+		g2d.drawLine(x1 + 1, y1 + 2, x2 + 1, y2 + 2);
+		g2d.setColor(color);
+		g2d.drawLine(x1, y1, x2, y2);
+		
+		g2d.setColor(oldColor);
+		g2d.setStroke(oldStroke);
+	}
+
 	public void setColor(Color color) {
 		this.color = color;
-		repaint();
+	}
+	
+	public Color getColor() {
+		return color;
 	}
 
 	private static final long serialVersionUID = 1L;

@@ -1,8 +1,8 @@
 package ru.icl.dicewars.gui.arrow;
 
-
 public class ArrowFactory {
-
+	private static final long serialVersionUID = 1L;
+	
 	public enum ArrowType {
 		LINE,
 		WITH_ARROWHEAD,
@@ -18,6 +18,4 @@ public class ArrowFactory {
 			return new LineArrow();
 		}
 	}
-
-	private static final long serialVersionUID = 1L;
 }
