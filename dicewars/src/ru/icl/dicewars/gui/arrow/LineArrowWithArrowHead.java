@@ -12,8 +12,8 @@ public class LineArrowWithArrowHead extends LineArrow {
 	final static float arrowSize = 7.0f;
 	private boolean inverted = false;
 
-	protected LineArrowWithArrowHead(int from) {
-		super(from);
+	protected LineArrowWithArrowHead() {
+		super();
 	}
 
 	@Override

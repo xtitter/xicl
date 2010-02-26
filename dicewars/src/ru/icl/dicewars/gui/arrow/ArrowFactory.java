@@ -9,13 +9,13 @@ public class ArrowFactory {
 		BEZIER
 	};
 	
-	public static Arrow getArrow(int from, ArrowType arrowType) {
+	public static Arrow getArrow(ArrowType arrowType) {
 		if (arrowType.equals(ArrowType.WITH_ARROWHEAD)){
-			return new LineArrowWithArrowHead(from);
+			return new LineArrowWithArrowHead();
 		} else if (arrowType.equals(ArrowType.BEZIER)){ 
-			return new BezierArrow(from);
+			return new BezierArrow();
 		} else {
-			return new LineArrow(from);
+			return new LineArrow();
 		}
 	}
 

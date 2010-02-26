@@ -15,8 +15,8 @@ public class LineArrow extends Arrow {
 	
 	public Color color;
 	
-	protected LineArrow(int from) {
-		super(from);
+	protected LineArrow() {
+		super();
 		color = defaultColor;
 	}
 
