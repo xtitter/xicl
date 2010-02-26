@@ -1,6 +1,5 @@
 package ru.icl.dicewars.gui.manager;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.HashMap;
@@ -70,112 +69,112 @@ public class ImageManager {
     
     public static Image getPauseSpeedImage() {
     	if (pauseSpeedImage == null) {
-    		pauseSpeedImage = getImageFromResource("/resources/speed/pause.png");
+    		pauseSpeedImage = getImageFromResource("/resources/speed/pause.png", new Rectangle(32,32));
     	}
     	return pauseSpeedImage;
     }
     
     public static Image getPauseSpeedImageSelected() {
     	if (pauseSpeedImageSelected == null) {
-    		pauseSpeedImageSelected = getImageFromResource("/resources/speed/pause_s.png");
+    		pauseSpeedImageSelected = getImageFromResource("/resources/speed/pause_s.png", new Rectangle(32,32));
     	}
     	return pauseSpeedImageSelected;
     }
     
     public static Image getPauseSpeedImageHovered() {
     	if (pauseSpeedImageHovered == null) {
-    		pauseSpeedImageHovered = getImageFromResource("/resources/speed/pause_h.png");
+    		pauseSpeedImageHovered = getImageFromResource("/resources/speed/pause_h.png", new Rectangle(32,32));
     	}
     	return pauseSpeedImageHovered;
     }
     
     public static Image getPauseSpeedImageHoveredSelected() {
     	if (pauseSpeedImageHoveredSelected == null) {
-    		pauseSpeedImageHoveredSelected = getImageFromResource("/resources/speed/pause_sh.png");
+    		pauseSpeedImageHoveredSelected = getImageFromResource("/resources/speed/pause_sh.png", new Rectangle(32,32));
     	}
     	return pauseSpeedImageHoveredSelected;
     }
 
     public static Image getPlaySpeedImage() {
     	if (playSpeedImage == null) {
-    		playSpeedImage = getImageFromResource("/resources/speed/play.png");
+    		playSpeedImage = getImageFromResource("/resources/speed/play.png", new Rectangle(32,32));
     	}
     	return playSpeedImage;
     }
     
     public static Image getPlaySpeedImageSelected() {
     	if (playSpeedImageSelected == null) {
-    		playSpeedImageSelected = getImageFromResource("/resources/speed/play_s.png");
+    		playSpeedImageSelected = getImageFromResource("/resources/speed/play_s.png", new Rectangle(32,32));
     	}
     	return playSpeedImageSelected;
     }
     
     public static Image getPlaySpeedImageHovered() {
     	if (playSpeedImageHovered == null) {
-    		playSpeedImageHovered = getImageFromResource("/resources/speed/play_h.png");
+    		playSpeedImageHovered = getImageFromResource("/resources/speed/play_h.png", new Rectangle(32,32));
     	}
     	return playSpeedImageHovered;
     }
     
     public static Image getPlaySpeedImageHoveredSelected() {
     	if (playSpeedImageHoveredSelected == null) {
-    		playSpeedImageHoveredSelected = getImageFromResource("/resources/speed/play_sh.png");
+    		playSpeedImageHoveredSelected = getImageFromResource("/resources/speed/play_sh.png", new Rectangle(32,32));
     	}
     	return playSpeedImageHoveredSelected;
     }
     
     public static Image getForwardSpeedImage() {
     	if (forwardSpeedImage == null) {
-    		forwardSpeedImage = getImageFromResource("/resources/speed/forward.png");
+    		forwardSpeedImage = getImageFromResource("/resources/speed/forward.png", new Rectangle(32,32));
     	}
     	return forwardSpeedImage;
     }
     
     public static Image getForwardSpeedImageSelected() {
     	if (forwardSpeedImageSelected == null) {
-    		forwardSpeedImageSelected = getImageFromResource("/resources/speed/forward_s.png");
+    		forwardSpeedImageSelected = getImageFromResource("/resources/speed/forward_s.png", new Rectangle(32,32));
     	}
     	return forwardSpeedImageSelected;
     }
     
     public static Image getForwardSpeedImageHovered() {
     	if (forwardSpeedImageHovered == null) {
-    		forwardSpeedImageHovered = getImageFromResource("/resources/speed/forward_h.png");
+    		forwardSpeedImageHovered = getImageFromResource("/resources/speed/forward_h.png", new Rectangle(32,32));
     	}
     	return forwardSpeedImageHovered;
     }
     
     public static Image getForwardSpeedImageHoveredSelected() {
     	if (forwardSpeedImageHoveredSelected == null) {
-    		forwardSpeedImageHoveredSelected = getImageFromResource("/resources/speed/forward_sh.png");
+    		forwardSpeedImageHoveredSelected = getImageFromResource("/resources/speed/forward_sh.png", new Rectangle(32,32));
     	}
     	return forwardSpeedImageHoveredSelected;
     }
     
     public static Image getFastForwardSpeedImage() {
     	if (fastForwardSpeedImage == null) {
-    		fastForwardSpeedImage = getImageFromResource("/resources/speed/fastforward.png");
+    		fastForwardSpeedImage = getImageFromResource("/resources/speed/fastforward.png", new Rectangle(32,32));
     	}
     	return fastForwardSpeedImage;
     }
     
     public static Image getFastForwardSpeedImageSelected() {
     	if (fastForwardSpeedImageSelected == null) {
-    		fastForwardSpeedImageSelected = getImageFromResource("/resources/speed/fastforward_s.png");
+    		fastForwardSpeedImageSelected = getImageFromResource("/resources/speed/fastforward_s.png", new Rectangle(32,32));
     	}
     	return fastForwardSpeedImageSelected;
     }
     
     public static Image getFastForwardSpeedImageHovered() {
     	if (fastForwardSpeedImageHovered == null) {
-    		fastForwardSpeedImageHovered = getImageFromResource("/resources/speed/fastforward_h.png");
+    		fastForwardSpeedImageHovered = getImageFromResource("/resources/speed/fastforward_h.png", new Rectangle(32,32));
     	}
     	return fastForwardSpeedImageHovered;
     }
     
     public static Image getFastForwardSpeedImageHoveredSelected() {
     	if (fastForwardSpeedImageHoveredSelected == null) {
-    		fastForwardSpeedImageHoveredSelected = getImageFromResource("/resources/speed/fastforward_sh.png");
+    		fastForwardSpeedImageHoveredSelected = getImageFromResource("/resources/speed/fastforward_sh.png", new Rectangle(32,32));
     	}
     	return fastForwardSpeedImageHoveredSelected;
     }
@@ -271,6 +270,17 @@ public class ImageManager {
 		}
 		return okIcon;
 	}
+    
+    public static Icon getWarningIcon() {
+		if (warningIcon == null) {
+			String path = "/resources/icon/warning.png";
+			Image image = getImageFromResource(path);
+			if (image != null) {
+				warningIcon = new ImageIcon(image);
+			}
+		}
+		return warningIcon;
+	}
 	
     public static Image getPlayersImage(){
 		if (playersImage == null){
@@ -355,6 +365,7 @@ public class ImageManager {
     private static Icon downArrowIcon;
     private static Icon okIcon;
     private static Icon cancelIcon;
+    private static Icon warningIcon;
     private static Image playersImage;
 
     private static Object trophySync = new Object();

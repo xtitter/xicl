@@ -1,5 +1,6 @@
 package ru.icl.dicewars.gui.thread;
 
+import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.GamePlayThread;
@@ -16,10 +17,16 @@ import ru.icl.dicewars.core.activity.WorldCreatedActivity;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class UIGameThread extends Thread {
-
+	
 	boolean t = true;
 	
 	volatile int speed = 1;
+	
+	Configuration configuration;
+
+	public UIGameThread(Configuration configuration) {
+		this.configuration = configuration;
+	}
 	
 	public void setSpeed(int speed) {
 		if (speed >= 0){
@@ -47,7 +54,7 @@ public class UIGameThread extends Thread {
 	
 	@Override
 	public void run() {
-		GamePlayThread gamePlayThread = new GamePlayThread(new SimpleConfigurationImpl());
+		GamePlayThread gamePlayThread = new GamePlayThread(configuration);
 		gamePlayThread.start();
 		
 		while (t) {
