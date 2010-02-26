@@ -24,6 +24,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.MatteBorder;
 
 import ru.icl.dicewars.core.Configuration;
+import ru.icl.dicewars.core.ConfigurationLoader;
 import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.gui.InfoJPanel;
 import ru.icl.dicewars.gui.PlayersJDialog;
@@ -215,7 +216,9 @@ public final class MainJFrame extends JFrame {
 	
 	public void startNewGame(){
 		stopGame();
-		Configuration configuration = new SimpleConfigurationImpl();
+		ConfigurationLoader configurationLoader = ConfigurationLoader.getInstance();
+		configurationLoader.load();
+		Configuration configuration = new SimpleConfigurationImpl(configurationLoader.getPlayerClasses(), configurationLoader.getMaxDiceCountInReserve());
 		if (configuration.getPlayersCount() > MAX_PLAYER_COUNT || configuration.getPlayersCount() < 2){
 			JOptionPane.showMessageDialog(this, "Game sittings are invalid. Please, configure you sittings. Choose 2-8 players to play against each other.", "Sittings are invalid", JOptionPane.WARNING_MESSAGE, ImageManager.getWarningIcon());
 		}else{
