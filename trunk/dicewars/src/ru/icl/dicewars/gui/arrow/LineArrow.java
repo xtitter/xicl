@@ -8,7 +8,8 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 
 public class LineArrow extends Arrow {
-
+	private static final long serialVersionUID = 1L;
+	
 	final static float dash[] = { 12.0f };
 	final static BasicStroke dashed = new BasicStroke(3.0f,
 			BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
@@ -52,6 +53,4 @@ public class LineArrow extends Arrow {
 	public Color getColor() {
 		return color;
 	}
-
-	private static final long serialVersionUID = 1L;
 }

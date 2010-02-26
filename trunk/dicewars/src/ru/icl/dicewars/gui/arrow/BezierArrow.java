@@ -66,7 +66,7 @@ public class BezierArrow extends LineArrowWithArrowHead {
 
 		points.paint(g2d);
 
-		if (inverted) {
+		if (isInverted()) {
 			Point p = points.getSecondPoint();
 			if (p == null) {
 				p = new Point(x1, x2);
