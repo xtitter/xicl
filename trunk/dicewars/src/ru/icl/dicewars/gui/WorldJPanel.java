@@ -303,7 +303,7 @@ public class WorldJPanel extends JPanel {
 					
 					Graphics2D g2d = (Graphics2D) arrowDoubleBuffer.getGraphics();
 					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-					arrow.   paint(g2d);
+					arrow.paint(g2d);
 					g2d.dispose();
 				}else{
 					this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;

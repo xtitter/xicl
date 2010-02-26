@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
-import ru.icl.dicewars.client.Lead;
+import ru.icl.dicewars.client.Attack;
 import ru.icl.dicewars.client.Player;
 import ru.icl.dicewars.client.World;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
@@ -273,17 +273,17 @@ public class GamePlayThread extends Thread{
 		}
 		
 		/* Start the game */
-		int leadNumber = 1;
+		int turnNumber = 1;
 		while (!hasWinner(world) && t) {
 			for (int i = 0; i < playerCount; i++) {
 				Flag playerFlag = playerFlagMap.get(players[i]);
 				world.setMyFlag(playerFlag);
 			
 				if (!world.getFlags().contains(playerFlag)) continue;
-				boolean canLead = true;
+				boolean canAttack = true;
 				int stepNumber = 1;
-				while (canLead && t){
-					world.setAvailableLeadCount(leadNumber-stepNumber+1);
+				while (canAttack && t){
+					world.setAvailableAttackCount(turnNumber-stepNumber+1);
 					final World immutableWorld = new ImmutableWorldImpl(world);
 					try{
 						SortedSet<Land> lands  = new TreeSet<Land>(new Comparator<Land>(){
@@ -296,15 +296,15 @@ public class GamePlayThread extends Thread{
 						lands.addAll(world.getLands());
 
 						//*TODO should be run in another thread 
-						Lead lead = players[i].attack(immutableWorld);
+						Attack attack = players[i].attack(immutableWorld);
 						
-						if (lead != null)
-							addToActivityQueue(new SimplePlayerAttackActivity(playerFlag, lead));
-						if (lead == null) {
-							canLead = false; 
+						if (attack != null)
+							addToActivityQueue(new SimplePlayerAttackActivity(playerFlag, attack));
+						if (attack == null) {
+							canAttack = false; 
 						}else{
-							int fromLandId = lead.getFromLandId();
-							int toLandId = lead.getToLandId();
+							int fromLandId = attack.getFromLandId();
+							int toLandId = attack.getToLandId();
 							boolean successAttacked = false;
 							for (FullLand land : world.getFullLands()){
 								if (!successAttacked && land.getLandId() == fromLandId && land.getFlag().equals(playerFlag) && land.getDiceCount() > 1){
@@ -353,7 +353,7 @@ public class GamePlayThread extends Thread{
 									Flag f = playerFlagMap.get(players[j]);
 									if (!f.equals(playerFlag) && world.isExistsLandByFlag(f)){
 										try{
-											players[j].opponentAttack(f, lead, immutableWorld);
+											players[j].opponentAttack(f, attack, immutableWorld);
 										}catch (Exception e) {
 										}
 									}
@@ -361,17 +361,17 @@ public class GamePlayThread extends Thread{
 							}
 						}
 					}catch (Exception e) {
-						canLead = false;
+						canAttack = false;
 						e.printStackTrace();
 					}
 					stepNumber++;
-					canLead = canLead && (leadNumber >= stepNumber);
+					canAttack = canAttack && (turnNumber >= stepNumber);
 				}
 				
 				grantWorldByFlag(world, playerFlag);
 				
 			}
-			leadNumber++;
+			turnNumber++;
 		}
 		
 		//Add activity that the game is ended.

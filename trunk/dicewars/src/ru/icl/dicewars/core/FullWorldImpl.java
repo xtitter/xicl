@@ -18,17 +18,17 @@ public class FullWorldImpl implements FullWorld, Serializable {
 	private static final long serialVersionUID = -7073748047091860751L;
 
 	private Flag myFlag;
-	private int availableLeadCount;
+	private int availableAttackCount;
 	private List<Flag> flags = new ArrayList<Flag>();
 	private Set<FullLand> fullLands = new HashSet<FullLand>();
 	private Map<Flag, Integer> diceReserve = new HashMap<Flag, Integer>();
 
 	public FullWorldImpl(final FullWorld fullWorld){
-		if (fullWorld.getAvailableLeadCount() < 0) throw new IllegalArgumentException();
+		if (fullWorld.getAvailableAttackCount() < 0) throw new IllegalArgumentException();
 		if (fullWorld.getFlags() == null) throw new IllegalArgumentException();
 		if (fullWorld.getLands() == null) throw new IllegalArgumentException();
 		
-		this.availableLeadCount = fullWorld.getAvailableLeadCount();
+		this.availableAttackCount = fullWorld.getAvailableAttackCount();
 		this.myFlag = fullWorld.getMyFlag();
 		this.flags = new ArrayList<Flag>(fullWorld.getFlags());
 		
@@ -78,15 +78,15 @@ public class FullWorldImpl implements FullWorld, Serializable {
 		this.fullLands = fullLands;
 	}
 	
-	public FullWorldImpl(int availableLeadCount, Set<FullLand> fullLands,
+	public FullWorldImpl(int availableAttackCount, Set<FullLand> fullLands,
 			List<Flag> flags, Map<Flag, Integer> diceReserve) {
-		if (availableLeadCount < 0)
+		if (availableAttackCount < 0)
 			throw new IllegalArgumentException();
 		if (fullLands == null)
 			throw new IllegalArgumentException();
 		if (flags == null)
 			throw new IllegalArgumentException();
-		this.availableLeadCount = availableLeadCount;
+		this.availableAttackCount = availableAttackCount;
 		this.fullLands = fullLands;
 		this.diceReserve = diceReserve;
 		this.flags = flags;
@@ -98,8 +98,8 @@ public class FullWorldImpl implements FullWorld, Serializable {
 	}
 
 	@Override
-	public int getAvailableLeadCount() {
-		return availableLeadCount;
+	public int getAvailableAttackCount() {
+		return availableAttackCount;
 	}
 
 	@Override
@@ -129,10 +129,10 @@ public class FullWorldImpl implements FullWorld, Serializable {
 	}
 
 	@Override
-	public void setAvailableLeadCount(int availableLeadCount) {
-		if (availableLeadCount < 0)
+	public void setAvailableAttackCount(int availableAttackCount) {
+		if (availableAttackCount < 0)
 			throw new IllegalArgumentException();
-		this.availableLeadCount = availableLeadCount;
+		this.availableAttackCount = availableAttackCount;
 	}
 
 	@Override
