@@ -1,6 +1,6 @@
 package ru.icl.dicewars.client;
 
-public interface Lead {
+public interface Attack {
 	int getFromLandId();
 
 	int getToLandId();

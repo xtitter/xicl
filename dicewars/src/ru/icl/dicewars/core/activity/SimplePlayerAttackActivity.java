@@ -1,16 +1,16 @@
 package ru.icl.dicewars.core.activity;
 
 import ru.icl.dicewars.client.Flag;
-import ru.icl.dicewars.client.Lead;
+import ru.icl.dicewars.client.Attack;
 
 public class SimplePlayerAttackActivity implements PlayerAttackActivity{
 	private Flag flag;
-	private Lead lead;
-	public SimplePlayerAttackActivity(Flag flag, Lead lead) {
+	private Attack attack;
+	public SimplePlayerAttackActivity(Flag flag, Attack attack) {
 		if (flag == null) throw new IllegalArgumentException();
-		if (lead == null) throw new IllegalArgumentException();
+		if (attack == null) throw new IllegalArgumentException();
 		this.flag = flag;
-		this.lead = lead;
+		this.attack = attack;
 	}
 	
 	@Override
@@ -20,11 +20,11 @@ public class SimplePlayerAttackActivity implements PlayerAttackActivity{
 	
 	@Override
 	public int getFromLandId(){
-		return lead.getFromLandId();
+		return attack.getFromLandId();
 	}
 	
 	@Override
 	public int getToLandId(){
-		return lead.getToLandId();
+		return attack.getToLandId();
 	}
 }

@@ -12,5 +12,5 @@ public interface World {
 
 	public int getDiceCountInReserve(Flag flag);
 
-	public int getAvailableLeadCount();
+	public int getAvailableAttackCount();
 }

@@ -11,7 +11,7 @@ public interface FullWorld extends World {
 
 	public void setMyFlag(Flag myFlag);
 
-	public void setAvailableLeadCount(int availableLeadCount);
+	public void setAvailableAttackCount(int availableAttackCount);
 
 	public void setFlags(List<Flag> flags);
 

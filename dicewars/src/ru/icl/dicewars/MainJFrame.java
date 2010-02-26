@@ -102,7 +102,6 @@ public class MainJFrame extends JFrame {
     Command fastForwardSpeedCommand = new Command() {
         @Override
         public void execute() {
-        	System.out.println("very fast speed");
         	pauseSpeed.setSelected(false);
         	pauseSpeed.repaint();
         	fastForwardSpeed.setSelected(true);

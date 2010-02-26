@@ -18,13 +18,13 @@ public class ImmutableWorldImpl implements World, Serializable {
 	private static final long serialVersionUID = -2029686366926012131L;
 
 	private Flag myFlag;
-	private Integer availableLeadCount;
+	private Integer availableAttackCount;
 	private List<Flag> flags = new ArrayList<Flag>();
 	private Set<Land> lands = new HashSet<Land>();
 	private Map<Flag, Integer> diceReserve = new HashMap<Flag, Integer>();
 
 	public ImmutableWorldImpl(final World world) {
-		if (world.getAvailableLeadCount() < 0)
+		if (world.getAvailableAttackCount() < 0)
 			throw new IllegalArgumentException();
 		if (world.getLands() == null)
 			throw new IllegalArgumentException();
@@ -32,7 +32,7 @@ public class ImmutableWorldImpl implements World, Serializable {
 			throw new IllegalArgumentException();
 		/*if (world.getMyFlag() == null)
 			throw new IllegalArgumentException();*/
-		this.availableLeadCount = world.getAvailableLeadCount();
+		this.availableAttackCount = world.getAvailableAttackCount();
 		this.flags = Collections.unmodifiableList(new ArrayList<Flag>(world.getFlags()));
 		this.myFlag = world.getMyFlag();
 		
@@ -93,8 +93,8 @@ public class ImmutableWorldImpl implements World, Serializable {
 	}
 
 	@Override
-	public int getAvailableLeadCount() {
-		return availableLeadCount;
+	public int getAvailableAttackCount() {
+		return availableAttackCount;
 	}
 
 	@Override
