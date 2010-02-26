@@ -30,6 +30,10 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
+import ru.icl.dicewars.client.Player;
+import ru.icl.dicewars.core.Configuration;
+import ru.icl.dicewars.core.ConfigurationLoader;
+import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.gui.manager.ImageManager;
 
 public final class PlayersJDialog extends JDialog {
@@ -99,12 +103,18 @@ public final class PlayersJDialog extends JDialog {
 	}
 	
 	public void update(){
-		String[] listData = { "Apple", "Orange", "Cherry", "Blue Berry",
-				"Banana", "Red Plum", "Watermelon" };
-
-		for (int counter = 0; counter < listData.length; counter++) {
-			checkBoxItems.add(new CheckBoxItem());
-			items.add(listData[counter]);
+		ConfigurationLoader.getInstance().load();
+		
+		Class<Player>[] playerClasses = ConfigurationLoader.getInstance().getAllPlayerClasses();
+		
+		checkBoxItems.clear();
+		items.clear();
+		
+		for (int counter = 0; counter < playerClasses.length; counter++) {
+			CheckBoxItem checkBoxItem = new CheckBoxItem();
+			checkBoxItem.setChecked(true);
+			checkBoxItems.add(checkBoxItem);
+			items.add(playerClasses[counter].getCanonicalName());
 		}
 	}
 	
