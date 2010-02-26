@@ -194,7 +194,7 @@ public class WorldJPanel extends JPanel {
 				}
 			}
 
-			Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+			Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
 			arrow.setVisible(true);
 			arrow.setOpaque(false);
 			arrow.setBounds(0, 0, width, height);
@@ -216,7 +216,7 @@ public class WorldJPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (world == null)
+		if (world == null || width == 0 || height == 0)
 			return;
 		Set<FullLand> landsTmp;
 
@@ -293,7 +293,7 @@ public class WorldJPanel extends JPanel {
 					Point p1 = this.points.get(0);
 					Point p2 = this.points.get(this.arrowState);
 
-					Arrow arrow = ArrowFactory.getArrow(0, ArrowType.BEZIER);
+					Arrow arrow = ArrowFactory.getArrow(ArrowType.BEZIER);
 					arrow.setVisible(true);
 					arrow.setOpaque(false);
 					arrow.setBounds(0, 0, width, height);
