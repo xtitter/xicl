@@ -12,13 +12,16 @@ import ru.icl.dicewars.gui.component.RoundedBorder;
 import ru.icl.dicewars.gui.manager.ImageManager;
 import ru.icl.dicewars.gui.util.FlagToColorUtil;
 
-public class PlayerJPanel extends JPanel {
+public final class PlayerJPanel extends JPanel {
 
-	private static final long serialVersionUID = 8066379108638626622L;
+	private final static long serialVersionUID = 8066379108638626622L;
 
-	private Flag flag;
-	private Color color;
-	private String playerName;
+	private final static int radius = 12; 
+	private final static int alpha = 90; 
+
+	private final Flag flag;
+	private final Color color;
+	private final String playerName;
 	private int totalDiceCount = -1;
 
 	private int areaCount = 0;
@@ -27,9 +30,6 @@ public class PlayerJPanel extends JPanel {
 	private int rank = 0;
 	private boolean winner = false;
 		
-	private final static int radius = 12; 
-	private final static int alpha = 90; 
-	
 	public PlayerJPanel(Flag flag, String playerName) {
 		this.color = FlagToColorUtil.getColorByFlag(flag, alpha);
 		this.flag = flag;

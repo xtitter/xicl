@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.core.activity.FlagDistributedActivity;
 
-public class InfoJPanel extends JPanel {
+public final class InfoJPanel extends JPanel {
 
 	private static final long serialVersionUID = -222523072240558572L;
 
@@ -16,8 +16,8 @@ public class InfoJPanel extends JPanel {
 	private static final int HEIGHT = 80;
 	
 	private Map<Flag, PlayerJPanel> playerJPanelMap = new HashMap<Flag, PlayerJPanel>();
-	private Flag winner;
-	private int winnerCount;
+	private Flag winnerFlag;
+	private int winnerTotalDiceCount;
 	
 	public InfoJPanel() {
 		setLayout(null);
@@ -36,8 +36,8 @@ public class InfoJPanel extends JPanel {
 			add(player);
 			yoffset += HEIGHT + 10;
 		}
-		winner = null;
-		winnerCount = 0;
+		winnerFlag = null;
+		winnerTotalDiceCount = 0;
 		revalidate();
 		repaint();
 	}
@@ -52,43 +52,43 @@ public class InfoJPanel extends JPanel {
 	public void updateDiceCount(Flag flag, int totalDiceCount) {
 		if (playerJPanelMap.containsKey(flag)) {
 			playerJPanelMap.get(flag).setTotalDiceCount(totalDiceCount);
-			if (winner != null) {
-				if (!flag.equals(winner)) {
-					if (totalDiceCount > winnerCount) {
-						winnerCount = totalDiceCount;
-						changeWinnerTo(winner, flag);
+			if (winnerFlag != null) {
+				if (!flag.equals(winnerFlag)) {
+					if (totalDiceCount > winnerTotalDiceCount) {
+						winnerTotalDiceCount = totalDiceCount;
+						changeWinnerTo(winnerFlag, flag);
 						for (PlayerJPanel playerJPanel : playerJPanelMap.values()){
-							playerJPanel.setWinnerTotalDiceCount(winnerCount);
+							playerJPanel.setWinnerTotalDiceCount(winnerTotalDiceCount);
 							playerJPanel.repaint();
 						}
 					}	
-				} else if (totalDiceCount > winnerCount) {
-					winnerCount = totalDiceCount;
+				} else if (totalDiceCount > winnerTotalDiceCount) {
+					winnerTotalDiceCount = totalDiceCount;
 					for (PlayerJPanel playerJPanel : playerJPanelMap.values()){
-						playerJPanel.setWinnerTotalDiceCount(winnerCount);
+						playerJPanel.setWinnerTotalDiceCount(winnerTotalDiceCount);
 						playerJPanel.repaint();
 					}
 				} else { // check if another player became a winner
-					winnerCount = totalDiceCount;
-					Flag previousWinner = winner;
+					winnerTotalDiceCount = totalDiceCount;
+					Flag previousWinner = winnerFlag;
 					for (PlayerJPanel player : playerJPanelMap.values()) {
-						if (!player.getFlag().equals(winner) && player.getTotalDiceCount() > winnerCount) {
-							winner = player.getFlag();
-							winnerCount = player.getTotalDiceCount(); 
+						if (!player.getFlag().equals(winnerFlag) && player.getTotalDiceCount() > winnerTotalDiceCount) {
+							winnerFlag = player.getFlag();
+							winnerTotalDiceCount = player.getTotalDiceCount(); 
 						}
 					}
 					// winner has been changed
-					if (!previousWinner.equals(winner)) {
-						changeWinnerTo(previousWinner, winner);
+					if (!previousWinner.equals(winnerFlag)) {
+						changeWinnerTo(previousWinner, winnerFlag);
 						for (PlayerJPanel playerJPanel : playerJPanelMap.values()){
-							playerJPanel.setWinnerTotalDiceCount(winnerCount);
+							playerJPanel.setWinnerTotalDiceCount(winnerTotalDiceCount);
 							playerJPanel.repaint();
 						}
 					}
 				}
 			} else {
-				winner = flag;
-				winnerCount = totalDiceCount;
+				winnerFlag = flag;
+				winnerTotalDiceCount = totalDiceCount;
 				playerJPanelMap.get(flag).setWinner(true);
 			}
 			playerJPanelMap.get(flag).repaint();
@@ -100,7 +100,7 @@ public class InfoJPanel extends JPanel {
 		playerJPanelMap.get(from).repaint();
 		playerJPanelMap.get(to).setWinner(true);
 		playerJPanelMap.get(to).repaint();
-		winner = to;
+		winnerFlag = to;
 	}
 	
 	public void updateAreaCount(Flag flag, int count) {
@@ -109,46 +109,4 @@ public class InfoJPanel extends JPanel {
 			playerJPanelMap.get(flag).repaint();
 		}
 	}
-	
-	/*public void updateDiceCount(Map<Flag, Integer> diceOverallCount) {
-		for (Flag flag : diceOverallCount.keySet()) {
-			if (players.containsKey(flag)) {
-				players.get(flag).setDiceOverallCount(diceOverallCount.get(flag));
-				players.get(flag).repaint();
-			}
-		}
-		
-		/*Flag toremove = null;
-		for (PlayerJPanel player : players.values()) {
-			if (!diceOverallCount.containsKey(player.getFlag())) {
-				toremove = player.getFlag();
-				break;
-			}
-		}
-		if (toremove != null) {
-			PlayerJPanel player = players.remove(toremove);
-			player.setBorder(BorderFactory.createEtchedBorder( FlagToColorUtil.getColorByFlag(player.getFlag(), 100), Color.gray));
-			player.setOutOfTheGame(true);
-			player.setDiceOverallCount(0);
-			player.setRank(diceOverallCount.size());
-			player.repaint();
-		}*/
-	//}
-	
-	/*public void sortPlayers() {
-		ArrayList<PlayerPanel> list = new ArrayList<PlayerPanel>();
-		list.addAll(players.values());
-		Collections.sort(list, new Comparator<PlayerPanel>() {
-			@Override
-			public int compare(PlayerPanel arg0, PlayerPanel arg1) {
-				return Integer.valueOf(arg1.getDiceOverallCount()).compareTo(Integer.valueOf(arg0.getDiceOverallCount()));
-			}
-		});
-		int yoffset = 10;
-		for (PlayerPanel player : list) {
-			player.setBounds(10, yoffset, WIDTH, HEIGHT);
-			yoffset += HEIGHT + 10;
-		}
-		revalidate();
-	}*/
 }

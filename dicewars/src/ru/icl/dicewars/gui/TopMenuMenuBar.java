@@ -3,7 +3,6 @@ package ru.icl.dicewars.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -11,39 +10,41 @@ import javax.swing.JMenuItem;
 import ru.icl.dicewars.gui.manager.ImageManager;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
-public class TopMenuMenuBar extends JMenuBar {
+public final class TopMenuMenuBar extends JMenuBar {
 	private static final long serialVersionUID = 1921209489464172404L;
 
-	JMenu fileMenu = new JMenu("File");
-	JMenu settingsMenu = new JMenu("Settings");
+	private final JMenu fileMenu = new JMenu("File");
+	private final JMenu settingsMenu = new JMenu("Settings");
 
-	ActionListener exitActionListener = new ActionListener() {
+	private final ActionListener exitActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			WindowManager.getInstance().getMainFrame().close();
 		}
 	};
 
-	ActionListener startNewGameActionListener = new ActionListener() {
+	private final ActionListener startNewGameActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			WindowManager.getInstance().getMainFrame().startNewGame();
 		}
 	};
 
-	ActionListener stopGameActionListener = new ActionListener() {
+	private final ActionListener stopGameActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			WindowManager.getInstance().getMainFrame().stopGame();
 		}
 	};
 	
-	ActionListener playersActionListener = new ActionListener() {
+	private final ActionListener playersActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
    			PlayersJDialog playersJDialog = WindowManager.getInstance().getPlayersJDialog();
-   			playersJDialog.setVisible(true);
+   			WindowManager.getInstance().getMainFrame().setEnabled(false);
+   			playersJDialog.update();
    			playersJDialog.setEnabled(true);
+   			playersJDialog.setVisible(true);
    			playersJDialog.toFront();
 		}
 	};
