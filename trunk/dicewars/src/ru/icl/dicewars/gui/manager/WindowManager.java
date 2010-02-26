@@ -100,7 +100,7 @@ public class WindowManager {
 		if (playersJDialog == null){
 			synchronized (playersJDialogFlag) {
 				if (playersJDialog == null){
-					playersJDialog = new PlayersJDialog();
+					playersJDialog = new PlayersJDialog(getMainFrame());
 				}
 			}
 		}

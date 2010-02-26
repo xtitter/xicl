@@ -3,6 +3,7 @@ package ru.icl.dicewars.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -31,23 +32,24 @@ import javax.swing.UIManager;
 
 import ru.icl.dicewars.gui.manager.ImageManager;
 
-public class PlayersJDialog extends JDialog {
+public final class PlayersJDialog extends JDialog {
 	private static final long serialVersionUID = 6714237633991568095L;
 
-	final List<CheckBoxItem> checkBoxItems = new ArrayList<CheckBoxItem>();
-	final List<String> items = new ArrayList<String>();
+	private final List<CheckBoxItem> checkBoxItems = new ArrayList<CheckBoxItem>();
+	private final List<String> items = new ArrayList<String>();
 	
-	final JList listCheckBox;
-	final JList listDescription;
+	private final JList listCheckBox;
+	private final JList listDescription;
 	
-	WindowListener windowListener = new WindowAdapter() {
+	private final Window owner;
+	
+	private final WindowListener windowListener = new WindowAdapter() {
 		public void windowClosing(WindowEvent w) {
-  			PlayersJDialog.this.setVisible(false);
-  			PlayersJDialog.this.setEnabled(false);
+  			PlayersJDialog.this.close();
 		}
 	};
 	
-	ActionListener upButtonActionListener = new ActionListener() {
+	private final ActionListener upButtonActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int selectedIndex = listDescription.getSelectedIndex();
@@ -63,7 +65,7 @@ public class PlayersJDialog extends JDialog {
 		}
 	}; 
 	
-	ActionListener downButtonActionListener = new ActionListener() {
+	private final ActionListener downButtonActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			int selectedIndex = listDescription.getSelectedIndex();
@@ -79,17 +81,24 @@ public class PlayersJDialog extends JDialog {
 		}
 	}; 
 	
-	ActionListener cancelButtonActionListener = new ActionListener() {
+	private final ActionListener cancelButtonActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-  			PlayersJDialog.this.setVisible(false);
-  			PlayersJDialog.this.setEnabled(false);
+  			PlayersJDialog.this.close();
 		}
 	};
+
+	private void close(){
+		setVisible(false);
+		setEnabled(false);
+		
+		if (owner != null){
+			this.owner.setEnabled(true);
+			this.owner.toFront();
+		}
+	}
 	
-	public PlayersJDialog() {
-		setTitle("Players");
-		setIconImage(ImageManager.getPlayersImage());
+	public void update(){
 		String[] listData = { "Apple", "Orange", "Cherry", "Blue Berry",
 				"Banana", "Red Plum", "Watermelon" };
 
@@ -97,6 +106,13 @@ public class PlayersJDialog extends JDialog {
 			checkBoxItems.add(new CheckBoxItem());
 			items.add(listData[counter]);
 		}
+	}
+	
+	public PlayersJDialog(Window owner) {
+		this.owner = owner;
+		
+		setTitle("Players");
+		setIconImage(ImageManager.getPlayersImage());
 		
 		// This listbox holds only the checkboxes
 		listCheckBox = new JList(buildCheckBoxItemsListModel());
@@ -192,7 +208,7 @@ public class PlayersJDialog extends JDialog {
 		setResizable(false);
 		setVisible(false);
 		setEnabled(false);
-		setAlwaysOnTop(true);
+		//setAlwaysOnTop(true);
 		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(windowListener);

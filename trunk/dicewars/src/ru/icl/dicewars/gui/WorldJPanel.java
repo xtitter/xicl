@@ -25,15 +25,15 @@ import ru.icl.dicewars.gui.arrow.BezierArrow;
 import ru.icl.dicewars.gui.arrow.ArrowFactory.ArrowType;
 import ru.icl.dicewars.gui.manager.ImageManager;
 
-public class WorldJPanel extends JPanel {
-
+public final class WorldJPanel extends JPanel {
+	private static final long serialVersionUID = -3234906592754761865L;
+	
 	private static final BufferedImage EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 	
 	private FullWorld world;
 
 	private int width;
 	private int height;
-	private static final long serialVersionUID = -3234906592754761865L;
 
 	public static final int X_OFFSET = 35;
 	public static final int Y_OFFSET = 30;
@@ -52,10 +52,10 @@ public class WorldJPanel extends JPanel {
 	private int arrowDoubleBufferOffsetY = 0;
 
 	//Bug with concurrent modification fix. This is slowest method. World object should be wrapped.
-	private Object flag = new Object();	
-	private Object flag2 = new Object(); 
-	private Object flag3 = new Object();
-	private Object flag4 = new Object();
+	private final Object flag = new Object();	
+	private final Object flag2 = new Object(); 
+	private final Object flag3 = new Object();
+	private final Object flag4 = new Object();
 	
 	private int attackingPlayerLandId = 0;
 	private int defendingPlayerLandId = 0;
