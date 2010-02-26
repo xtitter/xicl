@@ -41,11 +41,10 @@ public class TopMenuMenuBar extends JMenuBar {
 	ActionListener playersActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-   			PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
-   			playersJFrame.setVisible(true);
-   			playersJFrame.setEnabled(true);
-   			playersJFrame.setState(JFrame.NORMAL);
-   			playersJFrame.toFront();
+   			PlayersJDialog playersJDialog = WindowManager.getInstance().getPlayersJDialog();
+   			playersJDialog.setVisible(true);
+   			playersJDialog.setEnabled(true);
+   			playersJDialog.toFront();
 		}
 	};
 

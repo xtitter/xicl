@@ -20,7 +20,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,7 +31,7 @@ import javax.swing.UIManager;
 
 import ru.icl.dicewars.gui.manager.ImageManager;
 
-public class PlayersJFrame extends JFrame {
+public class PlayersJDialog extends JDialog {
 	private static final long serialVersionUID = 6714237633991568095L;
 
 	final List<CheckBoxItem> checkBoxItems = new ArrayList<CheckBoxItem>();
@@ -42,8 +42,8 @@ public class PlayersJFrame extends JFrame {
 	
 	WindowListener windowListener = new WindowAdapter() {
 		public void windowClosing(WindowEvent w) {
-  			PlayersJFrame.this.setVisible(false);
-  			PlayersJFrame.this.setEnabled(false);
+  			PlayersJDialog.this.setVisible(false);
+  			PlayersJDialog.this.setEnabled(false);
 		}
 	};
 	
@@ -82,13 +82,13 @@ public class PlayersJFrame extends JFrame {
 	ActionListener cancelButtonActionListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-  			PlayersJFrame.this.setVisible(false);
-  			PlayersJFrame.this.setEnabled(false);
+  			PlayersJDialog.this.setVisible(false);
+  			PlayersJDialog.this.setEnabled(false);
 		}
 	};
 	
-	public PlayersJFrame() {
-		super("Players");
+	public PlayersJDialog() {
+		setTitle("Players");
 		setIconImage(ImageManager.getPlayersImage());
 		String[] listData = { "Apple", "Orange", "Cherry", "Blue Berry",
 				"Banana", "Red Plum", "Watermelon" };
@@ -98,12 +98,6 @@ public class PlayersJFrame extends JFrame {
 			items.add(listData[counter]);
 		}
 		
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			System.out.println("Unable to find System Look and Feel");
-		}
-
 		// This listbox holds only the checkboxes
 		listCheckBox = new JList(buildCheckBoxItemsListModel());
 
@@ -178,21 +172,21 @@ public class PlayersJFrame extends JFrame {
 		downButton.addActionListener(downButtonActionListener);
 		buttonPane.add(downButton);
 
-		JPanel endPagePane = new JPanel();
-		BoxLayout endPagePaneBoxLayout = new BoxLayout(endPagePane, BoxLayout.LINE_AXIS);
-		endPagePane.setLayout(endPagePaneBoxLayout);
-		endPagePane.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 4));
+		JPanel endPagePanel = new JPanel();
+		BoxLayout endPagePaneBoxLayout = new BoxLayout(endPagePanel, BoxLayout.LINE_AXIS);
+		endPagePanel.setLayout(endPagePaneBoxLayout);
+		endPagePanel.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 4));
 		
 		JButton okButton = new JButton("Ok");
 		okButton.setIcon(ImageManager.getOkIcon());
-		endPagePane.add(okButton);
-		endPagePane.add(Box.createRigidArea(new Dimension(5, 0)));
+		endPagePanel.add(okButton);
+		endPagePanel.add(Box.createRigidArea(new Dimension(5, 0)));
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setIcon(ImageManager.getCancelIcon());
 		cancelButton.addActionListener(cancelButtonActionListener);
-		endPagePane.add(cancelButton);
+		endPagePanel.add(cancelButton);
 		
-		getContentPane().add(endPagePane, BorderLayout.PAGE_END);
+		getContentPane().add(endPagePanel, BorderLayout.PAGE_END);
 		
 		setSize(450, 250);
 		setResizable(false);

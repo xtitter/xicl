@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -22,8 +23,10 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.MatteBorder;
 
+import ru.icl.dicewars.core.Configuration;
+import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.gui.InfoJPanel;
-import ru.icl.dicewars.gui.PlayersJFrame;
+import ru.icl.dicewars.gui.PlayersJDialog;
 import ru.icl.dicewars.gui.TopMenuMenuBar;
 import ru.icl.dicewars.gui.WorldJPanel;
 import ru.icl.dicewars.gui.component.Command;
@@ -34,6 +37,8 @@ import ru.icl.dicewars.gui.thread.UIGameThread;
 
 public class MainJFrame extends JFrame {
 	private static final long serialVersionUID = -6592937624280635427L;
+	
+	private static final int MAX_PLAYER_COUNT = 8;
 	
     JPanel contentPane;
     JLayeredPane jLayeredPane;
@@ -131,19 +136,19 @@ public class MainJFrame extends JFrame {
 	        infoJPanel.setBounds(screenWidth - 220, 30, 200, screenHeight - 120);
 	        infoJPanel.revalidate();
 	        
-	        Rectangle buttonSize = new Rectangle(48, 48);
-	        int x = (screenWidth - 220) / 2 - buttonSize.width * 2 - 15 - 30;
+	        Rectangle buttonSize = new Rectangle(32, 32);
+	        int x = (screenWidth - 220) / 2 - buttonSize.width * 2 - 12 - 24;
 	        int y = (int)(screenHeight - 150);
-	        x += buttonSize.width + 30; 
+	        x += buttonSize.width + 24; 
 	        pauseSpeed.setLocation(x, y);
 	        pauseSpeed.repaint();
-	        x += buttonSize.width + 30;
+	        x += buttonSize.width + 24;
 	        playSpeed.setLocation(x, y);
 	        playSpeed.repaint();
-	        x += buttonSize.width + 30; 
+	        x += buttonSize.width + 24; 
 	        forwardSpeed.setLocation(x, y);
 	        forwardSpeed.repaint();
-	        x += buttonSize.width + 30; 
+	        x += buttonSize.width + 24; 
 	        fastForwardSpeed.setLocation(x, y);
 	        fastForwardSpeed.repaint();
 		}
@@ -185,15 +190,17 @@ public class MainJFrame extends JFrame {
 	
 	public void close(){
 		stopGame();
+
+		PlayersJDialog playersJDialog = WindowManager.getInstance().getPlayersJDialog();
+		playersJDialog.setVisible(false);
+		playersJDialog.dispose();
+		
 		setVisible(false);
-		PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
-		playersJFrame.setVisible(false);
-		playersJFrame.dispose();
 		dispose();
 	}
 	
-	private void startGame(){
-		uiGameThread = new UIGameThread(); 
+	private void startGame(Configuration configuration){
+		uiGameThread = new UIGameThread(configuration); 
 		uiGameThread.start();
 		pauseSpeed.setSelected(false);
     	pauseSpeed.repaint();
@@ -208,14 +215,19 @@ public class MainJFrame extends JFrame {
 	
 	public void startNewGame(){
 		stopGame();
-		startGame();
+		Configuration configuration = new SimpleConfigurationImpl();
+		if (configuration.getPlayersCount() > MAX_PLAYER_COUNT || configuration.getPlayersCount() < 2){
+			JOptionPane.showMessageDialog(this, "Game sittings are invalid. Please, configure you sittings. Choose 2-8 players to play against each other.", "Sittings are invalid", JOptionPane.WARNING_MESSAGE, ImageManager.getWarningIcon());
+		}else{
+			startGame(configuration);
+		}
 	}
     
 	public MainJFrame() {
 		Rectangle scrnRect = getGraphicsConfiguration().getBounds();
         setSize(scrnRect.width, scrnRect.height);
         
-        setTitle("DiceWars (Version 0.5.0)");
+        setTitle("DiceWars (Version 0.5)");
         
         setIconImage(ImageManager.getDiceIconImage());
         
@@ -256,8 +268,8 @@ public class MainJFrame extends JFrame {
 
         addComponentListener(resizeListener);
 		
-        Rectangle buttonSize = new Rectangle(48, 48);
-        Rectangle imageSize = new Rectangle(48, 48);
+        Rectangle buttonSize = new Rectangle(32, 32);
+        Rectangle imageSize = new Rectangle(32, 32);
         
         pauseSpeed = new HoverButton("",
         		ImageManager.getPauseSpeedImage(),
@@ -266,7 +278,7 @@ public class MainJFrame extends JFrame {
         		ImageManager.getPauseSpeedImageHoveredSelected(),
         		ImageManager.getPauseSpeedImage(),
                 imageSize);
-        int x = (scrnRect.width - 220) / 2 - buttonSize.width * 2 - 15 - 30;
+        int x = (scrnRect.width - 220) / 2 - buttonSize.width * 2 - 12 - 24;
         int y = (int)(scrnRect.height - 150);
         pauseSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         pauseSpeed.setEnabled(true);
@@ -281,7 +293,7 @@ public class MainJFrame extends JFrame {
         		ImageManager.getPlaySpeedImage(),
                 imageSize);
         jLayeredPane.add(playSpeed, JLayeredPane.MODAL_LAYER);
-        x = x + buttonSize.width + 30; 
+        x = x + buttonSize.width + 24; 
         playSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         playSpeed.setEnabled(true);
         playSpeed.setSelected(true);
@@ -295,7 +307,7 @@ public class MainJFrame extends JFrame {
         		ImageManager.getForwardSpeedImage(),
                 imageSize);
         jLayeredPane.add(forwardSpeed, JLayeredPane.MODAL_LAYER);
-        x = x + buttonSize.width + 30;
+        x = x + buttonSize.width + 24;
         forwardSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         forwardSpeed.setEnabled(true);
         forwardSpeed.setObserver(forwardSpeedCommand);
@@ -308,7 +320,7 @@ public class MainJFrame extends JFrame {
         		ImageManager.getFastForwardSpeedImage(),
                 imageSize);
         jLayeredPane.add(fastForwardSpeed, JLayeredPane.MODAL_LAYER);
-        x = x + buttonSize.width + 30;
+        x = x + buttonSize.width + 24;
         fastForwardSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         fastForwardSpeed.setEnabled(true);
         fastForwardSpeed.setObserver(fastForwardSpeedCommand);
@@ -322,8 +334,8 @@ public class MainJFrame extends JFrame {
 	
 	private static void createAndShowGUI() {
 		MainJFrame mainJFrame = WindowManager.getInstance().getMainFrame();
-		PlayersJFrame playersJFrame = WindowManager.getInstance().getPlayersJFrame();
-		playersJFrame.setLocationRelativeTo(mainJFrame);
+		PlayersJDialog playersJDialog = WindowManager.getInstance().getPlayersJDialog();
+		playersJDialog.setLocationRelativeTo(mainJFrame);
 		
 		try {
             UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -333,7 +345,7 @@ public class MainJFrame extends JFrame {
 				}
 			}
             SwingUtilities.updateComponentTreeUI(mainJFrame);
-            SwingUtilities.updateComponentTreeUI(playersJFrame);
+            SwingUtilities.updateComponentTreeUI(playersJDialog);
         } catch (Exception e) {
         }
 

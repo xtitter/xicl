@@ -117,6 +117,9 @@ public class SimpleConfigurationImpl implements Configuration {
 		
 		try{
 			this.maxDiceCountInReserve = Integer.valueOf(properties.getProperty(MAX_DICE_COUNT_IN_RESERVE_PROPERTY_NAME));
+			if (this.maxDiceCountInReserve < 0){
+				this.maxDiceCountInReserve = 0;
+			}
 		}catch (NumberFormatException e) {
 		}
 	}
