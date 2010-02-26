@@ -35,22 +35,22 @@ import ru.icl.dicewars.gui.manager.ImageManager;
 import ru.icl.dicewars.gui.manager.WindowManager;
 import ru.icl.dicewars.gui.thread.UIGameThread;
 
-public class MainJFrame extends JFrame {
+public final class MainJFrame extends JFrame {
 	private static final long serialVersionUID = -6592937624280635427L;
 	
 	private static final int MAX_PLAYER_COUNT = 8;
 	
-    JPanel contentPane;
-    JLayeredPane jLayeredPane;
-    JMenuBar jMenuBar;
-    UIGameThread uiGameThread;
+	private final JPanel contentPane;
+    private final JLayeredPane jLayeredPane;
+    private final JMenuBar jMenuBar;
+    private UIGameThread uiGameThread;
     
-    HoverButton pauseSpeed;
-    HoverButton playSpeed;
-    HoverButton fastForwardSpeed;
-    HoverButton forwardSpeed;
+    private final HoverButton pauseSpeed;
+    private final HoverButton playSpeed;
+    private final HoverButton fastForwardSpeed;
+    private final HoverButton forwardSpeed;
     
-    Command pauseSpeedCommand = new Command() {
+    private final Command pauseSpeedCommand = new Command() {
         @Override
         public void execute() {
         	pauseSpeed.setSelected(true);
@@ -68,7 +68,7 @@ public class MainJFrame extends JFrame {
         private static final long serialVersionUID = 1L;
     };        
 
-    Command playSpeedCommand = new Command() {
+    private final Command playSpeedCommand = new Command() {
         @Override
         public void execute() {
         	pauseSpeed.setSelected(false);
@@ -86,7 +86,7 @@ public class MainJFrame extends JFrame {
         private static final long serialVersionUID = 1L;
     };        
     
-    Command forwardSpeedCommand = new Command() {
+    private final Command forwardSpeedCommand = new Command() {
         @Override
         public void execute() {
         	pauseSpeed.setSelected(false);
@@ -104,7 +104,7 @@ public class MainJFrame extends JFrame {
         private static final long serialVersionUID = 1L;
     };
     
-    Command fastForwardSpeedCommand = new Command() {
+    private final Command fastForwardSpeedCommand = new Command() {
         @Override
         public void execute() {
         	pauseSpeed.setSelected(false);
@@ -122,7 +122,7 @@ public class MainJFrame extends JFrame {
         private static final long serialVersionUID = 1L;
     };
     
-    ComponentAdapter resizeListener = new ComponentAdapter(){
+    private final ComponentAdapter resizeListener = new ComponentAdapter(){
 		@Override
 		public void componentResized(ComponentEvent e) {
 			final int screenWidth = WindowManager.getInstance().getScreenWidth();
@@ -160,7 +160,7 @@ public class MainJFrame extends JFrame {
 		}
 	};*/
 	
-	WindowListener windowListener = new WindowAdapter() {
+    private final WindowListener windowListener = new WindowAdapter() {
 		public void windowClosing(WindowEvent w) {
 			close();
 		}
