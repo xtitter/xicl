@@ -150,13 +150,14 @@ public class ConfigurationLoader {
 		} catch (NumberFormatException e) {
 		}
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	private Class<Player>[] loadPlayerClasses(String[] classNames) {
 		List<Class<Player>> playersList = new ArrayList<Class<Player>>();
 		File dir = new File(playerScanDir);
 		ClassLoader classLoader = null;
 		try{
-			classLoader = new URLClassLoader(new URL[]{dir.toURL()});
+			classLoader = new URLClassLoader(new URL[]{dir.toURI().toURL()});
 		}catch (MalformedURLException e) {
 			throw new IllegalStateException(e);
 		}
