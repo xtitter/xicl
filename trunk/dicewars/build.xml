@@ -1,45 +1,66 @@
 <project name="dicewars" basedir="." default="zip">
 
-    <property name="src.dir"     value="src"/>
-    <property name="build.dir"   value="build"/>
-    <property name="classes.dir" value="${build.dir}/classes"/>
-    <property name="jar.dir"     value="${build.dir}/jar"/>
+	<property name="src.dir"     value="src"/>
+	<property name="build.dir"   value="build"/>
+	<property name="classes.dir" value="${build.dir}/classes"/>
+	<property name="jar.dir"     value="${build.dir}/jar"/>
 	<property name="lib.dir"     value="lib"/>
 	<property name="tools.dir"   value="tools"/>
 
-    <property name="main-class"  value="ru.icl.dicewars.DiceWars"/>
+	<!-- <property name="main-class"  value="ru.icl.dicewars.MainJFrame"/> -->
 
-  	<path id="classpath">
-        <fileset dir="${lib.dir}" includes="**/*.jar"/>
-    </path>
-	
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar" excludes="proguard.jar"/>
+	</path>
+
+	<taskdef resource="proguard/ant/task.properties"
+	         classpath="${lib.dir}/proguard.jar" />
+
 	<target name="clean">
-        <delete dir="${build.dir}"/>
-    </target>
+		<delete dir="${build.dir}"/>
+	</target>
 
-    <target name="compile">
-        <mkdir dir="${classes.dir}"/>
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true"/>
-    </target>
+	<target name="compile">
+		<mkdir dir="${classes.dir}"/>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true"/>
+	</target>
 
-    <target name="jar" depends="compile">
-        <mkdir dir="${jar.dir}"/>
-        <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}" excludes="**/client/**">
-        	<fileset dir="${src.dir}" includes="resources/**,/*.properties"/>
-            <manifest>
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}"/>
+		<jar destfile="${jar.dir}/${ant.project.name}-notobfuscated.jar" basedir="${classes.dir}" excludes="**/client/**">
+			<fileset dir="${src.dir}" includes="resources/**,/*.properties"/>
+			<!--<manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
-            </manifest>
-        </jar>
-    	<jar destfile="${jar.dir}/${ant.project.name}-client.jar" basedir="${classes.dir}" includes="**/client/**"/>
-    </target>
+            </manifest>-->
+		</jar>
+		<jar destfile="${jar.dir}/${ant.project.name}-client.jar" basedir="${classes.dir}" includes="**/client/**"/>
+		<proguard>
+    	  -libraryjars "${java.home}/lib/rt.jar";${toString:classpath};${jar.dir}/${ant.project.name}-client.jar
+    	  -injars      ${jar.dir}/${ant.project.name}-notobfuscated.jar
+    	  -outjars     ${jar.dir}/${ant.project.name}.jar
+			
+		  -flattenpackagehierarchy
+		  -overloadaggressively
+			
+    	  -keepclasseswithmembers class * {
+    	      public static void main(java.lang.String[]);
+    	  }
+			
+		  -keepclassmembers class ru.icl.dicewars.core.ImmutableLandImpl {
+			  private java.util.Set neighbouringLands;
+		  }
+    		
+	      -keep public class * extends ru.icl.dicewars.client.Player
+    	</proguard>
+	</target>
 
 	<target name="dist" depends="jar">
-		<mkdir dir="${build.dir}/${ant.project.name}"/>
+		<mkdir dir="${build.dir}/${ant.project.name}" />
 		<copy todir="${build.dir}/${ant.project.name}">
-			<fileset dir="${jar.dir}"/>
+			<fileset dir="${jar.dir}" excludes="${ant.project.name}-notobfuscated.jar"/>
 			<fileset dir="./" includes="/*.properties"/>
 			<fileset dir="${tools.dir}"/>
-			<fileset dir="${lib.dir}"/>
+			<fileset dir="${lib.dir}" includes="**/*.jar" excludes="proguard.jar"/>
 		</copy>
 	</target>
 
