@@ -69,7 +69,7 @@ public final class PlayerJPanel extends JPanel {
 		if (winnerTotalDiceCount / 4 > totalDiceCount){
 			avatar = ImageManager.getAvatar(flag, Emotion.EVIL.value());
 		}
-		if (totalDiceCount == 0){
+		if (areaCount == 0){
 			avatar = ImageManager.getAvatar(flag, Emotion.SAD.value());
 		}
 		if (avatar == null || totalDiceCount == -1){
