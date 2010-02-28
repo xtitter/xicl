@@ -2,6 +2,7 @@ package ru.icl.dicewars.core;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.objectweb.asm.ClassReader;
@@ -24,23 +26,32 @@ import ru.icl.dicewars.core.exception.InvalidPlayerClassLoadingException;
 import ru.icl.dicewars.util.ClassUtil;
 
 public class ConfigurationLoader {
+	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
+	
 	private final static String[] CONFIG_FILE_LOCATIONS = new String[] { "configuration.properties" };
 
-	private final static String DEFAULT_PLAYER_PROPERTY_NAME = "default_players";
+	private final static String DEFAULT_PLAYERS_PROPERTY_NAME = "default_players";
 
 	private final static String PLAYERS_SCAN_DIR_PROPERTY_NAME = "players_scan_dir";
+	
+	private final static String PLAYERS_CONF_FILENAME_PROPERTY_NAME = "players_conf_filename";
 
 	private final static String MAX_DICE_COUNT_IN_RESERVE_PROPERTY_NAME = "max_dice_in_reserve";
 
 	private final static String DEFAULT_PLAYER_SCAN_DIR = "players";
+	
+	private final static String DEFAULT_PLAYERS_CONF_FILENAME = "players.conf";
 
 	private static final int DEFAULT_MAX_DICE_COUNT_IN_RESERVE = 64;
 
 	private static ConfigurationLoader configurationLoader = null;
 
 	private static final Object sync = new Object();
+	private static final Object sync2 = new Object();
 
 	private int maxDiceCountInReserve = DEFAULT_MAX_DICE_COUNT_IN_RESERVE;
+	
+	private String playersConfFileName = DEFAULT_PLAYERS_CONF_FILENAME;
 
 	private String playerScanDir = DEFAULT_PLAYER_SCAN_DIR;
 
@@ -62,6 +73,36 @@ public class ConfigurationLoader {
 		return configurationLoader;
 	}
 
+	public boolean storePlayersConf(Class<Player>[] classes, Boolean[] isActive){
+		if (classes == null || isActive == null){
+			throw new IllegalArgumentException();
+		}
+		if (classes.length != isActive.length){
+			throw new IllegalArgumentException();
+		}
+		
+		synchronized (sync2) {
+			File file = new File(playersConfFileName);
+			FileWriter fileWriter = null;
+			try{
+				fileWriter = new FileWriter(file);
+				for (int i = 0;i<classes.length;i++){
+					fileWriter.write(classes[i].getCanonicalName() + "," + isActive[i].toString() + LINE_SEPARATOR);
+				}
+				return true;
+			}catch (IOException e) {
+				return false;
+			}finally{
+				if (fileWriter != null)
+				try{
+					fileWriter.close();
+				}catch (IOException e2) {
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
 	public void load() {
 		Properties properties = new Properties();
 		for (int i = 0; i < CONFIG_FILE_LOCATIONS.length; i++) {
@@ -82,11 +123,19 @@ public class ConfigurationLoader {
 			}
 		}
 
-		String players = properties.getProperty(DEFAULT_PLAYER_PROPERTY_NAME);
-		String[] defaultPlayerClassNames = players.split(",");
+		String players = properties.getProperty(DEFAULT_PLAYERS_PROPERTY_NAME);
+		
+		String[] defaultPlayerClassNames;
+		if (players != null){
+			defaultPlayerClassNames = players.split(",");
+		}else{
+			defaultPlayerClassNames = new String[]{};
+		}
+		
+		playerScanDir = properties.getProperty(PLAYERS_SCAN_DIR_PROPERTY_NAME, DEFAULT_PLAYER_SCAN_DIR);
 
-		playerScanDir = properties.getProperty(PLAYERS_SCAN_DIR_PROPERTY_NAME);
-
+		playersConfFileName = properties.getProperty(PLAYERS_CONF_FILENAME_PROPERTY_NAME, DEFAULT_PLAYERS_CONF_FILENAME);
+		
 		File dir = new File(playerScanDir);
 
 		Set<String> classNames = new HashSet<String>();
@@ -137,9 +186,45 @@ public class ConfigurationLoader {
 
 		Class<Player>[] allPlayerClasses = loadPlayerClasses(classNames
 				.toArray(new String[] {}));
+		
+		List<Class<Player>> allPlayerClassesSorted = new ArrayList<Class<Player>>();
+		List<Class<Player>> playerClasses = new ArrayList<Class<Player>>();
+		
+		File file = new File(playersConfFileName);
+		
+		Set<Class<Player>> marker = new HashSet<Class<Player>>();
+		
+		try{
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNextLine()){
+				String line = scanner.nextLine();
+				String[] tmp = line.split(",");
+				
+				if (tmp.length != 2) throw new IllegalStateException();
+				
+				for (Class<Player> clazz : allPlayerClasses){
+					if (clazz != null && tmp[0].trim().equals(clazz.getCanonicalName())){
+						allPlayerClassesSorted.add(clazz);
+						marker.add(clazz);
+						if ("true".toUpperCase().equals(tmp[1].trim().toUpperCase())){
+							playerClasses.add(clazz);
+						}
+						break;
+					}
+				}
+			}
+		}catch (IOException e) {
+		}
+		
+		for (Class<Player> clazz : allPlayerClasses){
+			if (!marker.contains(clazz)){
+				allPlayerClassesSorted.add(clazz);
+				playerClasses.add(clazz);
+			}
+		}
 
-		this.allPlayerClasses = allPlayerClasses;
-		this.playerClasses = allPlayerClasses;
+		this.allPlayerClasses = allPlayerClassesSorted.toArray(new Class[]{});
+		this.playerClasses = playerClasses.toArray(new Class[]{});
 
 		try {
 			this.maxDiceCountInReserve = Integer.valueOf(properties
