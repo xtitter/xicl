@@ -31,16 +31,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
 import ru.icl.dicewars.client.Player;
-import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.ConfigurationLoader;
-import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.gui.manager.ImageManager;
 
 public final class PlayersJDialog extends JDialog {
 	private static final long serialVersionUID = 6714237633991568095L;
 
 	private final List<CheckBoxItem> checkBoxItems = new ArrayList<CheckBoxItem>();
-	private final List<String> items = new ArrayList<String>();
+	private final List<Class<Player>> items = new ArrayList<Class<Player>>();
 	
 	private final JList listCheckBox;
 	private final JList listDescription;
@@ -91,6 +89,26 @@ public final class PlayersJDialog extends JDialog {
   			PlayersJDialog.this.close();
 		}
 	};
+	
+	private final ActionListener okButtonActionListener = new ActionListener() {
+		@Override
+		@SuppressWarnings("unchecked")
+		public void actionPerformed(ActionEvent e) {
+			List<Boolean> isActive = new ArrayList<Boolean>();
+			for (CheckBoxItem checkBoxItem : checkBoxItems){
+				isActive.add(checkBoxItem.isChecked());
+			}
+			
+			List<Class<Player>> classes = new ArrayList<Class<Player>>();
+			for (Class<Player> clazz : items){
+				classes.add(clazz);
+			}
+
+			ConfigurationLoader.getInstance().storePlayersConf(classes.toArray(new Class[]{}), isActive.toArray(new Boolean[]{}));
+			
+			PlayersJDialog.this.close();
+		}
+	};
 
 	private void close(){
 		setVisible(false);
@@ -103,18 +121,27 @@ public final class PlayersJDialog extends JDialog {
 	}
 	
 	public void update(){
-		ConfigurationLoader.getInstance().load();
+		synchronized (ConfigurationLoader.getInstance()) {
+			ConfigurationLoader.getInstance().load();
+
+			Class<Player>[] playerClasses = ConfigurationLoader.getInstance().getPlayerClasses();
+			Class<Player>[] allPlayerClasses = ConfigurationLoader.getInstance().getAllPlayerClasses();
 		
-		Class<Player>[] playerClasses = ConfigurationLoader.getInstance().getAllPlayerClasses();
+			checkBoxItems.clear();
+			items.clear();
 		
-		checkBoxItems.clear();
-		items.clear();
-		
-		for (int counter = 0; counter < playerClasses.length; counter++) {
-			CheckBoxItem checkBoxItem = new CheckBoxItem();
-			checkBoxItem.setChecked(true);
-			checkBoxItems.add(checkBoxItem);
-			items.add(playerClasses[counter].getCanonicalName());
+			for (int i = 0; i < allPlayerClasses.length; i++) {
+				CheckBoxItem checkBoxItem = new CheckBoxItem();
+				boolean f = false;
+				for (int j = 0;j<playerClasses.length;j++)
+					if (playerClasses[j].getCanonicalName().equals(allPlayerClasses[i].getCanonicalName())){
+						f = true;
+						break;
+					}
+				checkBoxItem.setChecked(f);
+				checkBoxItems.add(checkBoxItem);
+				items.add(allPlayerClasses[i]);
+			}
 		}
 	}
 	
@@ -205,6 +232,7 @@ public final class PlayersJDialog extends JDialog {
 		
 		JButton okButton = new JButton("Ok");
 		okButton.setIcon(ImageManager.getOkIcon());
+		okButton.addActionListener(okButtonActionListener);
 		endPagePanel.add(okButton);
 		endPagePanel.add(Box.createRigidArea(new Dimension(5, 0)));
 		JButton cancelButton = new JButton("Cancel");
@@ -249,7 +277,7 @@ public final class PlayersJDialog extends JDialog {
 			
 			@Override
 			public Object getElementAt(int index) {
-				return items.get(index);
+				return items.get(index).getCanonicalName();
 			}
 		};
 	}

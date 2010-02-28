@@ -217,12 +217,24 @@ public final class MainJFrame extends JFrame {
 	public void startNewGame(){
 		stopGame();
 		ConfigurationLoader configurationLoader = ConfigurationLoader.getInstance();
-		configurationLoader.load();
-		Configuration configuration = new SimpleConfigurationImpl(configurationLoader.getPlayerClasses(), configurationLoader.getMaxDiceCountInReserve());
-		if (configuration.getPlayersCount() > MAX_PLAYER_COUNT || configuration.getPlayersCount() < 2){
-			JOptionPane.showMessageDialog(this, "Game sittings are invalid. Please, configure you sittings. Choose 2-8 players to play against each other.", "Sittings are invalid", JOptionPane.WARNING_MESSAGE, ImageManager.getWarningIcon());
-		}else{
-			startGame(configuration);
+		synchronized (ConfigurationLoader.getInstance()) {
+			configurationLoader.load();
+			int playerCount = configurationLoader.getPlayerClasses().length;
+
+			if (playerCount > MAX_PLAYER_COUNT || playerCount < 2) {
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Game sittings are invalid. Please, configure you sittings. Choose 2-8 players to play against each other.",
+								"Sittings are invalid",
+								JOptionPane.WARNING_MESSAGE, ImageManager
+										.getWarningIcon());
+			} else {
+				Configuration configuration = new SimpleConfigurationImpl(
+						configurationLoader.getPlayerClasses(),
+						configurationLoader.getMaxDiceCountInReserve());
+				startGame(configuration);
+			}
 		}
 	}
     
