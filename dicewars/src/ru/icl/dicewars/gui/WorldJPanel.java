@@ -1,7 +1,9 @@
 package ru.icl.dicewars.gui;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -50,7 +52,9 @@ public final class WorldJPanel extends JPanel {
 	private BufferedImage arrowDoubleBuffer = null;
 	private int arrowDoubleBufferOffsetX = 0;
 	private int arrowDoubleBufferOffsetY = 0;
-
+	
+    private static final Font landIdFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+	
 	//Bug with concurrent modification fix. This is slowest method. World object should be wrapped.
 	private final Object flag = new Object();	
 	private final Object flag2 = new Object(); 
@@ -264,15 +268,21 @@ public final class WorldJPanel extends JPanel {
 				}			
 			
 				/*
-				 * Draw dices on the map
+				 * Draw dices and land id on the map
 				 */
 				for (FullLand land : landsTmp) {
 					l = landFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
+						// Displaying dices
 						Image diceImage = ImageManager.getDice(land.getDiceCount(), land.getFlag());
 						if (diceImage != null){
 							g2d.drawImage(diceImage, l.center.x + DICE_X_OFFSET, l.center.y + DICE_Y_OFFSET, this);
 						}
+
+						// Displaying land ids
+                        g2d.setColor(Color.WHITE);
+                        g2d.setFont(landIdFont);
+                        g2d.drawString(String.valueOf(land.getLandId()), (int)l.center.x+10, (int)l.center.y+8);
 					}
 				}
 				
