@@ -4,7 +4,6 @@ import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.GamePlayThread;
-import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.core.activity.DiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.FlagDistributedActivity;
