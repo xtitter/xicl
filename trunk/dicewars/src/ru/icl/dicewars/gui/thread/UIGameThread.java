@@ -60,13 +60,13 @@ public class UIGameThread extends Thread {
 			DiceWarsActivity activity = gamePlayThread.pollFromActivityQueue();
 			if (activity instanceof WorldCreatedActivity) {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
-				WindowManager.getInstance().getWorldJPanel().update(world);
+				WindowManager.getInstance().getWorldJPanel().updateWorld(world);
 			} else if (activity instanceof FlagDistributedActivity){
 				FlagDistributedActivity fda = (FlagDistributedActivity) activity;
 				WindowManager.getInstance().getInfoJPanel().initPlayers(fda);
 			} else if (activity instanceof LandUpdatedActivity) {
 				FullLand land = ((LandUpdatedActivity) activity).getFullLand();
-				WindowManager.getInstance().getWorldJPanel().update(land);
+				WindowManager.getInstance().getWorldJPanel().updateLand(land);
 			} else if (activity instanceof SimplePlayerAttackActivity) {
 				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
 				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
