@@ -182,6 +182,10 @@ public final class MainJFrame extends JFrame {
 			}catch (InterruptedException e) {
 			}
 		}
+		
+		WindowManager.getInstance().getWorldJPanel().updateWorld(null);
+		WindowManager.getInstance().getInfoJPanel().clearPlayers();
+		
 		speedButtonSetVisible(false);
 	}
 	
@@ -225,8 +229,8 @@ public final class MainJFrame extends JFrame {
 				JOptionPane
 						.showMessageDialog(
 								this,
-								"Game sittings are invalid. Please, configure you sittings. Choose 2-8 players to play against each other.",
-								"Sittings are invalid",
+								"Game settings are invalid. Please, configure you settings. Choose 2-8 players to play against each other.",
+								"Settings are invalid",
 								JOptionPane.WARNING_MESSAGE, ImageManager
 										.getWarningIcon());
 			} else {

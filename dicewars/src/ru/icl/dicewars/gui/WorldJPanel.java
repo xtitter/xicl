@@ -95,20 +95,25 @@ public final class WorldJPanel extends JPanel {
 		setPreferredSize(new Dimension(1350,930));
 	}
 	
-	public void update(FullWorld world) {
+	public void updateWorld(FullWorld world) {
 		synchronized (flag2) {
 			this.world = world;
-			landFactory = new LandFactory();
-			landFactory.buildTheWorld(world);
-			landFactory.buildBackground(world);
-			width = getWidth();
-			height = getHeight();
+			if (world!=null){
+				landFactory = new LandFactory();
+				landFactory.buildTheWorld(world);
+				landFactory.buildBackground(world);
+				width = getWidth();
+				height = getHeight();
+			}
 			this.doubleBuffer = null;	
 		}
 		repaint();
 	}
 	
 	public void updateAttackingPlayer(int attackingPlayerLandId) {
+		if (world == null || width == 0 || height == 0)
+			throw new IllegalStateException();
+
 		this.attackingPlayerLandId = attackingPlayerLandId;
 		synchronized (flag2) {
 			this.doubleBuffer = null;	
@@ -117,6 +122,9 @@ public final class WorldJPanel extends JPanel {
 	}
 
 	public void updateDefendingPlayerLandId(int defendingPlayerLandId) {
+		if (world == null || width == 0 || height == 0)
+			throw new IllegalStateException();
+
 		this.defendingPlayerLandId = defendingPlayerLandId;
 		synchronized (flag2) {
 			this.doubleBuffer = null;	
@@ -124,7 +132,10 @@ public final class WorldJPanel extends JPanel {
 		repaint();
 	}
 	
-	public void update(FullLand land) {
+	public void updateLand(FullLand land) {
+		if (world == null || width == 0 || height == 0)
+			throw new IllegalStateException();
+		
 		defendingPlayerLandId = 0;
 		width = getWidth();
 		height = getHeight();
@@ -173,6 +184,9 @@ public final class WorldJPanel extends JPanel {
 	}
 	
 	public void drawArrow(Integer fromLandId, Integer toLandId){
+		if (world == null || width == 0 || height == 0)
+			throw new IllegalStateException();
+		
 		synchronized (flag4) {
 			this.points = null;
 			this.arrowState = 0;

@@ -42,6 +42,17 @@ public final class InfoJPanel extends JPanel {
 		repaint();
 	}
 	
+	public void clearPlayers(){
+		for (PlayerJPanel playerPanel : playerJPanelMap.values()){
+			this.remove(playerPanel);
+		}
+		playerJPanelMap.clear();
+		winnerFlag = null;
+		winnerTotalDiceCount = 0;
+		revalidate();
+		repaint();
+	}
+	
 	public void updateReserve(Flag flag, int diceCount) {
 		if (playerJPanelMap.containsKey(flag)) {
 			playerJPanelMap.get(flag).setReserveCount(diceCount);
