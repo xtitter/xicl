@@ -44,7 +44,6 @@ public final class PlayerJPanel extends JPanel {
 		this.flag = flag;
 		Color color = FlagToColorUtil.getColorByFlag(flag, alpha);
 		setBorder(new RoundedBorder(color, color, color, radius, 0));
-		repaint();
 	}
 	
 	@Override
@@ -56,16 +55,6 @@ public final class PlayerJPanel extends JPanel {
 			g.setColor(Color.LIGHT_GRAY);
 		}
 		g.fillRect(radius, radius, getWidth() - radius*2, getHeight() - radius*2);
-		
-		g.setColor(Color.black);
-		Font oldFont = g.getFont();
-		Font playerNameFont = new Font("playerNameFont", Font.BOLD, 12);
-		g.setFont(playerNameFont);
-		g.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
-		g.setFont(oldFont);
-		g.drawString("Dice count: " + String.valueOf(Math.max(totalDiceCount,0)), 67, 41);
-		g.drawString("Dice per turn: " + String.valueOf(areaCount), 67, 55);
-		g.drawString("Reserve: " + String.valueOf(reserveCount), 67, 69);
 	}
 	
 	@Override
@@ -91,6 +80,16 @@ public final class PlayerJPanel extends JPanel {
 			}
 			if (avatar != null) g.drawImage(avatar, radius - 12, radius - 4, 64, 64, this);
 		}
+		
+		g.setColor(Color.black);
+		Font oldFont = g.getFont();
+		Font playerNameFont = new Font("playerNameFont", Font.BOLD, 12);
+		g.setFont(playerNameFont);
+		g.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
+		g.setFont(oldFont);
+		g.drawString("Dice count: " + String.valueOf(Math.max(totalDiceCount,0)), 67, 41);
+		g.drawString("Dice per turn: " + String.valueOf(areaCount), 67, 55);
+		g.drawString("Reserve: " + String.valueOf(reserveCount), 67, 69);
 	}
 
 	public void setAreaCount(int areaCount) {
