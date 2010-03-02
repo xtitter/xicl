@@ -72,6 +72,7 @@ public class ImmutableWorldImpl implements World, Serializable {
 				Field field = ImmutableLandImpl.class.getDeclaredField("neighbouringLands");
 				field.setAccessible(true);
 				field.set(l, neighbouringLands);
+				field.setAccessible(false);
 			}catch (NoSuchFieldException e) {
 				throw new RuntimeException(e);
 			}catch (IllegalAccessException e) {
