@@ -68,7 +68,7 @@ public final class WorldJPanel extends JPanel {
 	
 	private int arrowState = 0;
 	
-	private LandFactory landFactory = new LandFactory();
+	private LandFactory landFactory = LandFactory.EMPTY_LAND_FACTORY;
 	
 	private ArrayList<Point> points = null;
 	
@@ -99,9 +99,7 @@ public final class WorldJPanel extends JPanel {
 		synchronized (flag2) {
 			this.world = world;
 			if (world!=null){
-				landFactory = new LandFactory();
-				landFactory.buildTheWorld(world);
-				landFactory.buildBackground(world);
+				landFactory = new LandFactory(world);
 				width = getWidth();
 				height = getHeight();
 			}
@@ -253,29 +251,29 @@ public final class WorldJPanel extends JPanel {
 				/*
 				 * Draw white-gray background
 				 */
-				ColoredLand l = landFactory.getBackground();
-				if (l != null) {
-					g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
+				BufferedImage backgroundImage = landFactory.getBackground();
+				if (backgroundImage != null) {
+					g2d.drawImage(backgroundImage, X_OFFSET - 29, Y_OFFSET - 26, backgroundImage.getWidth(), backgroundImage.getHeight(), this);
 				}
-				
+
 				/*
 				 * Draw lands
 				 */
 				int offsetX = 2;
 				int offsetY = 5;
-				
+
 				for (FullLand land : landsTmp) {
 					boolean battle = land.getLandId() == defendingLandId || land.getLandId() == attackingLandId;
-					l = landFactory.getLand(land.getLandId(), land.getFlag());
+					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
 						if (!battle) {
-							g2d.drawImage(l.image, l.x, l.y, l.size.width, l.size.height, this);
+							g2d.drawImage(l.image, l.x+X_OFFSET, l.y+Y_OFFSET, l.size.width, l.size.height, this);
 						} else {
 							BufferedImage doubleBuffer2 = new BufferedImage(l.size.width, l.size.height, BufferedImage.TYPE_INT_ARGB);
 							Graphics2D gd = (Graphics2D) doubleBuffer2.getGraphics();
 							gd.setComposite(alphaComposite); 
 							gd.drawImage(l.image, 0, 0, l.size.width, l.size.height, this);
-							g2d.drawImage(doubleBuffer2, l.x - offsetX, l.y - offsetY, l.size.width, l.size.height, this);
+							g2d.drawImage(doubleBuffer2, l.x - offsetX + X_OFFSET, l.y - offsetY + Y_OFFSET, l.size.width, l.size.height, this);
 							gd.dispose();
 						}
 					}
@@ -285,18 +283,18 @@ public final class WorldJPanel extends JPanel {
 				 * Draw dices and land id on the map
 				 */
 				for (FullLand land : landsTmp) {
-					l = landFactory.getLand(land.getLandId(), land.getFlag());
+					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
 						// Displaying dices
 						Image diceImage = ImageManager.getDice(land.getDiceCount(), land.getFlag());
 						if (diceImage != null){
-							g2d.drawImage(diceImage, l.center.x + DICE_X_OFFSET, l.center.y + DICE_Y_OFFSET, this);
+							g2d.drawImage(diceImage, l.center.x + DICE_X_OFFSET + X_OFFSET, l.center.y + DICE_Y_OFFSET + Y_OFFSET, this);
 						}
 
 						// Displaying land ids
                         g2d.setColor(Color.WHITE);
                         g2d.setFont(landIdFont);
-                        g2d.drawString(String.valueOf(land.getLandId()), (int)l.center.x+10, (int)l.center.y+8);
+                        g2d.drawString(String.valueOf(land.getLandId()), (int)l.center.x + X_OFFSET + 10, (int)l.center.y + Y_OFFSET + 8);
 					}
 				}
 				
@@ -335,7 +333,7 @@ public final class WorldJPanel extends JPanel {
 					this.arrowDoubleBufferOffsetY = 0;
 				}
 			}
-			g.drawImage(this.arrowDoubleBuffer, this.arrowDoubleBufferOffsetX, this.arrowDoubleBufferOffsetY, this.arrowDoubleBuffer.getWidth(), this.arrowDoubleBuffer.getHeight(), this);
+			g.drawImage(this.arrowDoubleBuffer, this.arrowDoubleBufferOffsetX + X_OFFSET, this.arrowDoubleBufferOffsetY+Y_OFFSET, this.arrowDoubleBuffer.getWidth(), this.arrowDoubleBuffer.getHeight(), this);
 		}
 		
 	    g.dispose();
