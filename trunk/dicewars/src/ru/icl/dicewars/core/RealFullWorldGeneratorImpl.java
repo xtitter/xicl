@@ -26,35 +26,50 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     private final static int HOLE_SIZE = 100;
     private final static int TENTACLE_WIDTH = 4;
 
-    private class Hex {
+    private static class Hex {
+    	private static final Hex[][] cache = new Hex[WORLD_X_SIZE+1][WORLD_Y_SIZE+1]; 
     	
         private int x;
         private int y;
+        private int hashCode = 0;
 
-        public Hex(Point point) {
-            this.x = point.getX();
-            this.y = point.getY();
-        }
-
-        public Hex(int x, int y) {
+        private Hex(int x, int y) {
             this.x = x;
             this.y = y;
         }
+        
+        private static Hex getHex(int x, int y){
+        	/*if (x < 0 || y < 0 || x > WORLD_X_SIZE || y > WORLD_Y_SIZE){
+        		throw new IllegalArgumentException();
+        	}*/
+        	
+        	if (cache[x][y] == null){
+        		cache[x][y] = new Hex(x, y);
+        	}
+        	return cache[x][y];
+        }
 
-        public int getX() {
+        private int getX() {
             return x;
         }
 
-        public int getY() {
+        private int getY() {
             return y;
         }
 
         public int hashCode() {
-            return y*WORLD_X_SIZE + x;
+        	int result = hashCode;
+            if (result == 0) {
+                 result = 17;
+                 result = 31 * result + x;
+                 result = 31 * result + y;
+                 hashCode = result;
+            }
+            return result;
         }
 
         public boolean equals(Object obj) {
-            if (!(obj instanceof Hex)) { throw new ClassCastException("wrong argument for equals()"); }
+            if (!(obj instanceof Hex)) return false;
             Hex point = (Hex) obj;
             return x == point.x && y == point.y;
         }
@@ -84,8 +99,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
         public int compare(Weightened<Hex> o1, Weightened<Hex> o2) {
             int w1 = o1.getWeight(); int w2 = o2.getWeight();
-            int x1 = o1.getElement().getX(); int x2 = o2.getElement().getX();
-            int y1 = o1.getElement().getY(); int y2 = o2.getElement().getY();
+            int x1 = o1.getElement().x; int x2 = o2.getElement().x;
+            int y1 = o1.getElement().y; int y2 = o2.getElement().y;
             if (x1 == x2 && y1 == y2) {
                 return 0;
             } else if (w1 < w2) {
@@ -125,7 +140,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         public void make() {
             for (int i=0; i<HOLES_COUNT; i++) {
                 Set<Hex> cheeseHole = wave(getRandomHex(true), HOLE_SIZE, true);
-                for (Hex hex : cheeseHole) { cheese[hex.getY()][hex.getX()] = true; }
+                for (Hex hex : cheeseHole) { cheese[hex.y][hex.x] = true; }
             }
         }
 
@@ -139,7 +154,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
             }
             border.removeAll(inside);
             for (Hex candidate : border) {
-                if (cheese[candidate.getY()][candidate.getX()]) {
+                if (cheese[candidate.y][candidate.x]) {
                     return false;
                 }
             }
@@ -185,7 +200,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         int frees = 0;
         for (int i=0; i<WORLD_Y_SIZE; i++) {
             for (int j=0; j<WORLD_X_SIZE; j++) {
-                frees += isEmpty(new Hex(j, i)) ? 1 : 0;
+                frees += isEmpty(Hex.getHex(j, i)) ? 1 : 0;
             }
         }
         return frees;
@@ -246,7 +261,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     private Set<Hex> getBorder(Set<Hex> hexes) {
-        Set<Hex> border = new HashSet<Hex>();
+        Set<Hex> border = new HashSet<Hex>(hexes.size() * 6);
         for (Hex hex : hexes) {
             border.addAll(getBorder(hex));
         }
@@ -258,25 +273,25 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     private Set<Hex> getBorder(Hex hex) {
-        Set<Hex> border = new HashSet<Hex>();
-        if (checkCoords(hex.getY(), hex.getX()-1)) { border.add(new Hex(hex.getX()-1, hex.getY())); }
-        if (checkCoords(hex.getY(), hex.getX()+1)) { border.add(new Hex(hex.getX()+1, hex.getY())); }
+        Set<Hex> border = new HashSet<Hex>(6);
+        if (checkCoords(hex.y, hex.x-1)) { border.add(Hex.getHex(hex.x-1, hex.y)); }
+        if (checkCoords(hex.y, hex.x+1)) { border.add(Hex.getHex(hex.x+1, hex.y)); }
         if (0==hex.getY()%2) {
-            if (checkCoords(hex.getY()-1, hex.getX())) { border.add(new Hex(hex.getX(), hex.getY()-1)); }
-            if (checkCoords(hex.getY()-1, hex.getX()+1)) { border.add(new Hex(hex.getX()+1, hex.getY()-1)); }
-            if (checkCoords(hex.getY()+1, hex.getX())) { border.add(new Hex(hex.getX(), hex.getY()+1)); }
-            if (checkCoords(hex.getY()+1, hex.getX()+1)) { border.add(new Hex(hex.getX()+1, hex.getY()+1)); }
+            if (checkCoords(hex.y-1, hex.x)) { border.add(Hex.getHex(hex.x, hex.y-1)); }
+            if (checkCoords(hex.y-1, hex.x+1)) { border.add(Hex.getHex(hex.x+1, hex.y-1)); }
+            if (checkCoords(hex.y+1, hex.x)) { border.add(Hex.getHex(hex.x, hex.y+1)); }
+            if (checkCoords(hex.y+1, hex.x+1)) { border.add(Hex.getHex(hex.x+1, hex.y+1)); }
         } else {
-            if (checkCoords(hex.getY()-1, hex.getX())) { border.add(new Hex(hex.getX(), hex.getY()-1)); }
-            if (checkCoords(hex.getY()-1, hex.getX()-1)) { border.add(new Hex(hex.getX()-1, hex.getY()-1)); }
-            if (checkCoords(hex.getY()+1, hex.getX())) { border.add(new Hex(hex.getX(), hex.getY()+1)); }
-            if (checkCoords(hex.getY()+1, hex.getX()-1)) { border.add(new Hex(hex.getX()-1, hex.getY()+1)); }
+            if (checkCoords(hex.y-1, hex.x)) { border.add(Hex.getHex(hex.x, hex.y-1)); }
+            if (checkCoords(hex.y-1, hex.x-1)) { border.add(Hex.getHex(hex.x-1, hex.y-1)); }
+            if (checkCoords(hex.y+1, hex.x)) { border.add(Hex.getHex(hex.x, hex.y+1)); }
+            if (checkCoords(hex.y+1, hex.x-1)) { border.add(Hex.getHex(hex.x-1, hex.y+1)); }
         }
         return border;
     }
 
     private void busy(Hex hex) {
-        empty[hex.getY()][hex.getX()] = false;
+        empty[hex.y][hex.x] = false;
     }
 
     private void busy(Set<Hex> hexes) {
@@ -286,11 +301,11 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     public void empty(Hex hex) {
-        empty[hex.getY()][hex.getX()] = true;
+        empty[hex.y][hex.x] = true;
     }
 
     public int id(Hex hex) {
-        return ids[hex.getY()][hex.getX()];
+        return ids[hex.y][hex.x];
     }
 
     private void empty(Set<Hex> hexes) {
@@ -300,7 +315,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     private Boolean isEmpty(Hex hex) {
-        return empty[hex.getY()][hex.getX()];
+        return empty[hex.y][hex.x];
     }
 
     private Set<Hex> filterFree(Set<Hex> hexes) {
@@ -334,10 +349,10 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
     private Boolean isWorldBorder(Hex hex) {
         return
-                0 == hex.getX()
-                || 0 == hex.getY()
-                || WORLD_X_SIZE-1 == hex.getX()
-                || WORLD_Y_SIZE-1 == hex.getY();
+                0 == hex.x
+                || 0 == hex.y
+                || WORLD_X_SIZE - 1 == hex.x
+                || WORLD_Y_SIZE - 1 == hex.y;
     }
 
     private Set<Hex> wave(Hex initialHex, int size, Boolean check) {
@@ -378,7 +393,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     private Hex hex(Point point) {
-        return new Hex(point.getX(), point.getY());
+        return Hex.getHex(point.getX(), point.getY());
     }
 
     private Set<Hex> hexes(Set<Point> points) {
@@ -401,8 +416,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         if (0 != id(hex)) { throw new IllegalArgumentException(); }
         //if (!isEmpty(hex)) { throw new IllegalArgumentException(); } 
         land.getPoints().add(transform(hex));
-        colors[hex.getY()][hex.getX()] = land.getFlag();
-        ids[hex.getY()][hex.getX()] = land.getLandId();
+        colors[hex.y][hex.x] = land.getFlag();
+        ids[hex.y][hex.x] = land.getLandId();
         busy(hex);
     }
 
@@ -412,8 +427,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
     private void uncolor(Hex hex) {
         if (0 == id(hex)) { throw new IllegalArgumentException(); }
-        colors[hex.getY()][hex.getX()] = null;
-        ids[hex.getY()][hex.getX()] = 0;
+        colors[hex.y][hex.x] = null;
+        ids[hex.y][hex.x] = 0;
         empty(hex);
     }
 
@@ -426,8 +441,8 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         Set<Hex> neighbourHexes = filterBusy(getBorder(landHexes));
         Set<Flag> neighbours = new HashSet<Flag>();
         for (Hex hex : neighbourHexes) {
-            if (null != colors[hex.getY()][hex.getX()]) {
-                neighbours.add(colors[hex.getY()][hex.getX()]);
+            if (null != colors[hex.y][hex.x]) {
+                neighbours.add(colors[hex.y][hex.x]);
             }
         }
         int count = 0;
@@ -470,18 +485,18 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     private Hex getRandomHex(Boolean center) {
-        if (!center && isEmpty(new Hex(0, 0))) { return new Hex(0, 0); }
-        if (!center && isEmpty(new Hex(WORLD_X_SIZE-1, 0))) { return new Hex(WORLD_X_SIZE-1, 0); }
-        if (!center && isEmpty(new Hex(0, WORLD_Y_SIZE-1))) { return new Hex(0, WORLD_Y_SIZE-1); }
-        if (!center && isEmpty(new Hex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1))) { return new Hex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1); }
+        if (!center && isEmpty(Hex.getHex(0, 0))) { return Hex.getHex(0, 0); }
+        if (!center && isEmpty(Hex.getHex(WORLD_X_SIZE-1, 0))) { return Hex.getHex(WORLD_X_SIZE-1, 0); }
+        if (!center && isEmpty(Hex.getHex(0, WORLD_Y_SIZE-1))) { return Hex.getHex(0, WORLD_Y_SIZE-1); }
+        if (!center && isEmpty(Hex.getHex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1))) { return Hex.getHex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1); }
 
         int offsetX = center ? WORLD_X_SIZE/6 : 0;
         int offsetY = center ? WORLD_Y_SIZE/6 : 0;
         int rangeX = center ? 2*WORLD_X_SIZE/3 : WORLD_X_SIZE;
         int rangeY = center ? 2*WORLD_Y_SIZE/3 : WORLD_Y_SIZE;
-        Hex hex = new Hex(offsetX + random(rangeX), offsetY + random(rangeY));
+        Hex hex = Hex.getHex(offsetX + random(rangeX), offsetY + random(rangeY));
         while (!isEmpty(hex) || !cheeseMaker.checkForCheese(hex, new HashSet<Hex>())) {
-            hex = new Hex(offsetX + random(rangeX), offsetY + random(rangeY));
+            hex = Hex.getHex(offsetX + random(rangeX), offsetY + random(rangeY));
         }
         return hex;
     }
@@ -578,7 +593,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
     private Boolean contains(Hex hex, Set<Hex> elements) {
         for (Hex element : elements) {
-            if (element.getY() == hex.getY() && element.getX() == hex.getX()) {
+            if (element.y == hex.y && element.x == hex.x) {
                 return true;
             }
         }
@@ -638,7 +653,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         Set<Hex> border = getWorldBorder(lands);
         for (int row=0; row<WORLD_Y_SIZE; row++) {
             for (int column=0; column<WORLD_Y_SIZE; column++) {
-                Hex current = new Hex(column, row);
+                Hex current = Hex.getHex(column, row);
                 FullLand owner = getOwnerLand(current, lands);	
                 System.out.print(null != owner ? getChar(owner.getFlag()) : (contains(current, border) ? '.' : (!isEmpty(current) ? '#' : ' ')));
             }
