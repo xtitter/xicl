@@ -138,7 +138,7 @@ public class ConfigurationLoader {
 		
 		File dir = new File(playerScanDir);
 
-		Set<String> classNames = new HashSet<String>();
+		List<String> classNames = new ArrayList<String>();
 
 		for (String className : defaultPlayerClassNames) {
 			classNames.add(className);
