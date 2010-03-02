@@ -87,9 +87,9 @@ public final class PlayerJPanel extends JPanel {
 		g.setFont(playerNameFont);
 		g.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
 		g.setFont(oldFont);
-		g.drawString("Dice count: " + String.valueOf(Math.max(totalDiceCount,0)), 67, 41);
-		g.drawString("Dice per turn: " + String.valueOf(areaCount), 67, 55);
-		g.drawString("Reserve: " + String.valueOf(reserveCount), 67, 69);
+		g.drawString("Dice count: " + String.valueOf(Math.max(totalDiceCount,0)), 64, 41);
+		g.drawString("Dice per turn: " + String.valueOf(areaCount), 64, 55);
+		g.drawString("Reserve: " + String.valueOf(reserveCount), 64, 69);
 	}
 
 	public void setAreaCount(int areaCount) {
