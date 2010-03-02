@@ -52,8 +52,7 @@ public final class InfoJPanel extends JPanel {
 		if (playerJPanel == null) throw new IllegalStateException();
 		flagToPlayerJPanelMap.put(flagDistributedActivity.getFlag(), playerJPanel);
 		playerJPanel.setFlag(flagDistributedActivity.getFlag());
-		revalidate();
-		repaint();
+		playerJPanel.repaint();
 	}
 	
 	public void clearPlayers(){
