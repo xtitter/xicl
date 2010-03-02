@@ -10,6 +10,7 @@ import ru.icl.dicewars.core.activity.FlagDistributedActivity;
 import ru.icl.dicewars.core.activity.GameEndedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
 import ru.icl.dicewars.core.activity.MaxConnectedLandsCountChangedActivity;
+import ru.icl.dicewars.core.activity.PlayersLoadedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
 import ru.icl.dicewars.core.activity.TotalDiceCountChangedActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
@@ -61,9 +62,13 @@ public class UIGameThread extends Thread {
 			if (activity instanceof WorldCreatedActivity) {
 				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
 				WindowManager.getInstance().getWorldJPanel().updateWorld(world);
+			} if (activity instanceof PlayersLoadedActivity){ 
+				PlayersLoadedActivity playersLoadedActivity = (PlayersLoadedActivity) activity;
+				WindowManager.getInstance().getInfoJPanel().initPlayers(playersLoadedActivity);
 			} else if (activity instanceof FlagDistributedActivity){
-				FlagDistributedActivity fda = (FlagDistributedActivity) activity;
-				WindowManager.getInstance().getInfoJPanel().initPlayers(fda);
+				FlagDistributedActivity flagDistributedActivity = (FlagDistributedActivity) activity;
+				WindowManager.getInstance().getInfoJPanel().addPlayer(flagDistributedActivity);
+				_sleep(500, speed);
 			} else if (activity instanceof LandUpdatedActivity) {
 				FullLand land = ((LandUpdatedActivity) activity).getFullLand();
 				WindowManager.getInstance().getWorldJPanel().updateLand(land);
