@@ -2,18 +2,20 @@ package ru.icl.dicewars.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import ru.icl.dicewars.client.Attack;
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
-import ru.icl.dicewars.client.Attack;
 import ru.icl.dicewars.client.Player;
 import ru.icl.dicewars.client.World;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
@@ -23,6 +25,7 @@ import ru.icl.dicewars.core.activity.SimpleGameEndedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimpleMaxConnectedLandsCountChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
+import ru.icl.dicewars.core.activity.SimplePlayersLoadedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleTotalDiceCountChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
 import ru.icl.dicewars.core.exception.InvalidPlayerClassInstatiationException;
@@ -34,7 +37,7 @@ import ru.icl.dicewars.util.ClassUtil;
 
 public class GamePlayThread extends Thread{
 	
-	private static final int MAX_ACTIVITY_COUNT_IN_QUEUE = 50;
+	private static final int MAX_ACTIVITY_COUNT_IN_QUEUE = 500;
 
 	private Configuration configuration;
 	
@@ -190,14 +193,6 @@ public class GamePlayThread extends Thread{
 		addToActivityQueue(new SimpleDiceCountInReserveChangedActivity(playerFlag, world.getDiceCountInReserve(playerFlag)));		
 	}
 	
-	private Map<Flag, String> getFlagToNameMap(Map<Player, Flag> playerFlagMap) {
-		Map<Flag, String> flagToNameMap = new HashMap<Flag, String>();
-		for (Player player : playerFlagMap.keySet()){
-			flagToNameMap.put(playerFlagMap.get(player), player.getName());
-		}
-		return flagToNameMap;
-	}
-
 	private Integer getTotalDiceCountByFlag(Flag flag){
 		Integer totalDiceCount = totalDiceCountMap.get(flag);
 		if (totalDiceCount == null) totalDiceCount = 0;
@@ -221,8 +216,14 @@ public class GamePlayThread extends Thread{
 		activityQueue.clear();
 		
 		Player[] players = getPlayers();
-
 		final int playerCount = players.length;
+
+		List<String> playerNames = new ArrayList<String>();
+		for (int i = 0;i<playerCount;i++){
+			playerNames.add(players[i].getName());
+		}
+		addToActivityQueue(new SimplePlayersLoadedActivityImpl(playerNames));
+
 		FullWorldGenerator fullWorldGenerator = configuration.geFullWorldGenerator();
 		final FullWorld world = fullWorldGenerator.generate();
 		addToActivityQueue(new SimpleWorldCreatedActivityImpl(new FullWorldImpl(world)));
@@ -243,6 +244,7 @@ public class GamePlayThread extends Thread{
 				Flag flag = players[i].chooseFlag(w, immutableAvailableFlags);
 				if (!playerFlagMap.values().contains(flag) && flag != null){
 					playerFlagMap.put(players[i], flag);
+					addToActivityQueue(new SimpleFlagDistributedActivity(i, flag));
 					flagPlayerMap.put(flag, players[i]);
 					availableFlags.remove(flag);
 				}
@@ -254,13 +256,12 @@ public class GamePlayThread extends Thread{
 			if (!flagPlayerMap.values().contains(players[i])){
 				Flag flag = availableFlags.iterator().next();
 				playerFlagMap.put(players[i], flag);
+				addToActivityQueue(new SimpleFlagDistributedActivity(i, flag));
 				flagPlayerMap.put(flag, players[i]);
 				availableFlags.remove(flag);
 			}
 		}
 		
-		addToActivityQueue(new SimpleFlagDistributedActivity(getFlagToNameMap(playerFlagMap)));
-
 		for (FullLand land : world.getFullLands()){
 			Flag flag = land.getFlag();
 			addTotalDiceCountByFlag(flag, land.getDiceCount());
@@ -298,7 +299,7 @@ public class GamePlayThread extends Thread{
 						);
 						lands.addAll(world.getLands());
 
-						//*TODO should be run in another thread 
+						//*TODO should be run in another thread
 						Attack attack = players[i].attack(immutableWorld);
 						
 						if (attack != null)

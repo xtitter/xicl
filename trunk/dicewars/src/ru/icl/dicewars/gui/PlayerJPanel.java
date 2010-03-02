@@ -19,28 +19,42 @@ public final class PlayerJPanel extends JPanel {
 	private final static int radius = 12; 
 	private final static int alpha = 90; 
 
-	private final Flag flag;
-	private final Color color;
+	private Flag flag;
 	private final String playerName;
 	private int totalDiceCount = -1;
 
 	private int areaCount = 0;
 	private int reserveCount = 0;
 	private int winnerTotalDiceCount = 0;
-	private int rank = 0;
 	private boolean winner = false;
 		
+	public PlayerJPanel(String playerName) {
+		this.playerName = playerName;
+		setBorder(new RoundedBorder(Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.LIGHT_GRAY, radius, 0));
+	}
+	
 	public PlayerJPanel(Flag flag, String playerName) {
-		this.color = FlagToColorUtil.getColorByFlag(flag, alpha);
 		this.flag = flag;
 		this.playerName = playerName;
-		setBorder(new RoundedBorder(this.color, this.color, this.color, radius, 0));
+		Color color = FlagToColorUtil.getColorByFlag(flag, alpha);
+		setBorder(new RoundedBorder(color, color, color, radius, 0));
+	}
+	
+	public void setFlag(Flag flag) {
+		this.flag = flag;
+		Color color = FlagToColorUtil.getColorByFlag(flag, alpha);
+		setBorder(new RoundedBorder(color, color, color, radius, 0));
+		repaint();
 	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setColor(FlagToColorUtil.getColorByFlag(flag, alpha));
+		if (flag != null){
+			g.setColor(FlagToColorUtil.getColorByFlag(flag, alpha));
+		}else{
+			g.setColor(Color.LIGHT_GRAY);
+		}
 		g.fillRect(radius, radius, getWidth() - radius*2, getHeight() - radius*2);
 		
 		g.setColor(Color.black);
@@ -57,25 +71,26 @@ public final class PlayerJPanel extends JPanel {
 	@Override
 	public void paintBorder(Graphics g) {
 		super.paintBorder(g);
-		
-		Image avatar = null;	
-		if (winner) {
-			g.drawImage(ImageManager.getTrophy(), 147, 20, 32, 32, this);
-			avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
+		if (flag != null){
+			Image avatar = null;	
+			if (winner) {
+				g.drawImage(ImageManager.getTrophy(), 147, 20, 32, 32, this);
+				avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
+			}
+			if (winnerTotalDiceCount / 2 > totalDiceCount){
+				avatar = ImageManager.getAvatar(flag, Emotion.CALM.value());
+			}
+			if (winnerTotalDiceCount / 4 > totalDiceCount){
+				avatar = ImageManager.getAvatar(flag, Emotion.EVIL.value());
+			}
+			if (areaCount == 0){
+				avatar = ImageManager.getAvatar(flag, Emotion.SAD.value());
+			}
+			if (avatar == null || totalDiceCount == -1){
+				avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
+			}
+			if (avatar != null) g.drawImage(avatar, radius - 12, radius - 4, 64, 64, this);
 		}
-		if (winnerTotalDiceCount / 2 > totalDiceCount){
-			avatar = ImageManager.getAvatar(flag, Emotion.CALM.value());
-		}
-		if (winnerTotalDiceCount / 4 > totalDiceCount){
-			avatar = ImageManager.getAvatar(flag, Emotion.EVIL.value());
-		}
-		if (areaCount == 0){
-			avatar = ImageManager.getAvatar(flag, Emotion.SAD.value());
-		}
-		if (avatar == null || totalDiceCount == -1){
-			avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
-		}
-		if (avatar != null) g.drawImage(avatar, radius - 12, radius - 4, 64, 64, this);
 	}
 
 	public void setAreaCount(int areaCount) {
@@ -104,14 +119,6 @@ public final class PlayerJPanel extends JPanel {
 	
 	public Flag getFlag() {
 		return flag;
-	}
-	
-	public void setRank(int rank) {
-		this.rank = rank;
-	}
-	
-	public int getRank() {
-		return rank;
 	}
 	
 	public void setWinner(boolean winner) {
