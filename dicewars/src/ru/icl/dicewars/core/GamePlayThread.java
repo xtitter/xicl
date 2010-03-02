@@ -221,15 +221,13 @@ public class GamePlayThread extends Thread{
 		activityQueue.clear();
 		
 		Player[] players = getPlayers();
-		initPlayers(players);
+
 		final int playerCount = players.length;
 		FullWorldGenerator fullWorldGenerator = configuration.geFullWorldGenerator();
 		final FullWorld world = fullWorldGenerator.generate();
+		addToActivityQueue(new SimpleWorldCreatedActivityImpl(new FullWorldImpl(world)));
 
-		for (FullLand land : world.getFullLands()){
-			Flag flag = land.getFlag();
-			addTotalDiceCountByFlag(flag, land.getDiceCount());
-		}
+		initPlayers(players);
 		
 		/* Players map to flags */
 		Map<Player, Flag> playerFlagMap = new HashMap<Player,Flag>();
@@ -261,9 +259,12 @@ public class GamePlayThread extends Thread{
 			}
 		}
 		
-		addToActivityQueue(new SimpleWorldCreatedActivityImpl(new FullWorldImpl(world)));
-		
 		addToActivityQueue(new SimpleFlagDistributedActivity(getFlagToNameMap(playerFlagMap)));
+
+		for (FullLand land : world.getFullLands()){
+			Flag flag = land.getFlag();
+			addTotalDiceCountByFlag(flag, land.getDiceCount());
+		}
 		
 		for (Flag flag : world.getFlags()){
 			addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(flag, getTotalDiceCountByFlag(flag)));
