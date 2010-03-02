@@ -1,9 +1,10 @@
 package ru.icl.dicewars.client;
 
+import java.io.Serializable;
 import java.util.Set;
 
 
-public interface Land {
+public interface Land extends Serializable{
 	public int getLandId();
 	
 	public int getDiceCount();

@@ -639,7 +639,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         for (int row=0; row<WORLD_Y_SIZE; row++) {
             for (int column=0; column<WORLD_Y_SIZE; column++) {
                 Hex current = new Hex(column, row);
-                FullLand owner = getOwnerLand(current, lands);
+                FullLand owner = getOwnerLand(current, lands);	
                 System.out.print(null != owner ? getChar(owner.getFlag()) : (contains(current, border) ? '.' : (!isEmpty(current) ? '#' : ' ')));
             }
             System.out.println();
@@ -659,7 +659,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
             int left = countLands(player, lands);
             int dices = left * DICE_PER_LAND;
             for (FullLand land : lands) {
-                if (land.getFlag() == player) {
+                if (land.getFlag().equals(player)) {
                     int amount = MIN_DICE_PER_LAND + Math.min(dices - MIN_DICE_PER_LAND * left, random(MAX_DICE_PER_LAND - MIN_DICE_PER_LAND));
                     land.setDiceCount(DiceStack.valueOf(amount));
                     dices -= amount;

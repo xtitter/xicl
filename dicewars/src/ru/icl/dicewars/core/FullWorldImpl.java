@@ -1,6 +1,5 @@
 package ru.icl.dicewars.core;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,7 +13,7 @@ import java.util.Set;
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
-public class FullWorldImpl implements FullWorld, Serializable {
+public class FullWorldImpl implements FullWorld {
 	private static final long serialVersionUID = -7073748047091860751L;
 
 	private Flag myFlag;

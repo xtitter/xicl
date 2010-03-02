@@ -1,13 +1,12 @@
 package ru.icl.dicewars.core;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 
-public class FullLandImpl implements FullLand, Serializable {
+public class FullLandImpl implements FullLand {
 	private static final long serialVersionUID = 5476695166843009151L;
 
 	private int landId;
