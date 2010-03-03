@@ -18,7 +18,7 @@ import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class UIGameThread extends Thread {
 	
-	boolean t = true;
+	volatile boolean t = true;
 	
 	volatile int speed = 1;
 	

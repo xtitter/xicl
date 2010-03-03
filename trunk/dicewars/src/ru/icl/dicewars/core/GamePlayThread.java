@@ -49,7 +49,7 @@ public class GamePlayThread extends Thread{
 	
 	private Object startedFlag = new Object();
 	
-	private boolean t = true;
+	private volatile boolean t = true;
 	
 	private boolean useActivityQueue = true;
 	

@@ -31,7 +31,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     	
         private int x;
         private int y;
-        private int hashCode = 0;
+        private volatile int hashCode = 0;
 
         private Hex(int x, int y) {
             this.x = x;
