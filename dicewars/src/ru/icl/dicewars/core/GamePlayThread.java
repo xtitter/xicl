@@ -147,7 +147,7 @@ public class GamePlayThread extends Thread{
 					this.wait();
 				}
 			}catch (InterruptedException e) {
-				throw new RuntimeException(e);
+				kill();
 			}
 		}
 		activityQueue.add(activity);

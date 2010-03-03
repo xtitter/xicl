@@ -41,13 +41,10 @@ public class UIGameThread extends Thread {
 		return speed;
 	}
 	
-	private void checkPause(){
+	private void checkPause() throws InterruptedException{
 		if (speed < 0){
-			try{
-				synchronized (this) {
-					this.wait();	
-				}
-			}catch (InterruptedException e) {
+			synchronized (this) {
+				this.wait();	
 			}
 		}
 	}
@@ -56,75 +53,76 @@ public class UIGameThread extends Thread {
 	public void run() {
 		GamePlayThread gamePlayThread = new GamePlayThread(configuration);
 		gamePlayThread.start();
-		
-		while (t) {
-			DiceWarsActivity activity = gamePlayThread.pollFromActivityQueue();
-			if (activity instanceof WorldCreatedActivity) {
-				FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
-				WindowManager.getInstance().getWorldJPanel().updateWorld(world);
-			} if (activity instanceof PlayersLoadedActivity){ 
-				PlayersLoadedActivity playersLoadedActivity = (PlayersLoadedActivity) activity;
-				WindowManager.getInstance().getInfoJPanel().initPlayers(playersLoadedActivity);
-			} else if (activity instanceof FlagDistributedActivity){
-				FlagDistributedActivity flagDistributedActivity = (FlagDistributedActivity) activity;
-				WindowManager.getInstance().getInfoJPanel().addPlayer(flagDistributedActivity);
-				_sleep(500, speed);
-			} else if (activity instanceof LandUpdatedActivity) {
-				FullLand land = ((LandUpdatedActivity) activity).getFullLand();
-				WindowManager.getInstance().getWorldJPanel().updateLand(land);
-			} else if (activity instanceof SimplePlayerAttackActivity) {
-				SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
-				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
-				_sleep(700, speed);
-				checkPause();
-				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(pa.getToLandId());
-				_sleep(250, speed);
-				checkPause();
-				if (speed == 1){
-					WindowManager.getInstance().getWorldJPanel().drawArrow(pa.getFromLandId(), pa.getToLandId());
+		try{
+			while (t) {
+				DiceWarsActivity activity = gamePlayThread.pollFromActivityQueue();
+				if (activity instanceof WorldCreatedActivity) {
+					FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
+					WindowManager.getInstance().getWorldJPanel().updateWorld(world);
+				} if (activity instanceof PlayersLoadedActivity){ 
+					PlayersLoadedActivity playersLoadedActivity = (PlayersLoadedActivity) activity;
+					WindowManager.getInstance().getInfoJPanel().initPlayers(playersLoadedActivity);
+				} else if (activity instanceof FlagDistributedActivity){
+					FlagDistributedActivity flagDistributedActivity = (FlagDistributedActivity) activity;
+					WindowManager.getInstance().getInfoJPanel().addPlayer(flagDistributedActivity);
+					_sleep(500, speed);
+				} else if (activity instanceof LandUpdatedActivity) {
+					FullLand land = ((LandUpdatedActivity) activity).getFullLand();
+					WindowManager.getInstance().getWorldJPanel().updateLand(land);
+				} else if (activity instanceof SimplePlayerAttackActivity) {
+					SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
+					WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
+					_sleep(700, speed);
+					checkPause();
+					WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(pa.getToLandId());
+					_sleep(250, speed);
+					checkPause();
+					if (speed == 1){
+						WindowManager.getInstance().getWorldJPanel().drawArrow(pa.getFromLandId(), pa.getToLandId());
+					}
+					_sleep(350, speed);
+					checkPause();
+					WindowManager.getInstance().getWorldJPanel().eraseArrow();
+					WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
+					WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(0);
+					_sleep(300, speed);
+					checkPause();
+				} else if (activity instanceof DiceCountInReserveChangedActivity) {
+					DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
+					WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
+				} else if (activity instanceof TotalDiceCountChangedActivity) {
+					TotalDiceCountChangedActivity tda = (TotalDiceCountChangedActivity)activity;
+					WindowManager.getInstance().getInfoJPanel().updateDiceCount(tda.getFlag(), tda.getTotalDiceCount());
+				} else if (activity instanceof MaxConnectedLandsCountChangedActivity) {
+					MaxConnectedLandsCountChangedActivity max = (MaxConnectedLandsCountChangedActivity)activity;
+					WindowManager.getInstance().getInfoJPanel().updateAreaCount(max.getFlag(), max.getLandsCount());
+				} else if (activity instanceof GameEndedActivity){
+					WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
+					break;
 				}
-				_sleep(350, speed);
+				
+				if (speed == 1)
+					_sleep(100);
+	
+				if (speed == 2)
+					_sleep(10);
+	
 				checkPause();
-				WindowManager.getInstance().getWorldJPanel().eraseArrow();
-				WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
-				WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(0);
-				_sleep(300, speed);
-				checkPause();
-			} else if (activity instanceof DiceCountInReserveChangedActivity) {
-				DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
-				WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
-			} else if (activity instanceof TotalDiceCountChangedActivity) {
-				TotalDiceCountChangedActivity tda = (TotalDiceCountChangedActivity)activity;
-				WindowManager.getInstance().getInfoJPanel().updateDiceCount(tda.getFlag(), tda.getTotalDiceCount());
-			} else if (activity instanceof MaxConnectedLandsCountChangedActivity) {
-				MaxConnectedLandsCountChangedActivity max = (MaxConnectedLandsCountChangedActivity)activity;
-				WindowManager.getInstance().getInfoJPanel().updateAreaCount(max.getFlag(), max.getLandsCount());
-			} else if (activity instanceof GameEndedActivity){
-				WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
-				break;
 			}
-			
-			if (speed == 1)
-				_sleep(100);
-
-			if (speed == 2)
-				_sleep(10);
-
-			checkPause();
+		}catch (InterruptedException e) {
 		}
 		
 		while (gamePlayThread.isAlive()){
 			gamePlayThread.kill();
-			_sleep(10);
+			try{
+				_sleep(10);
+			}catch (InterruptedException e) {
+			}
 		}
 	}
 	
-	private void _sleep(long time) {
-		try {
-			Thread.sleep(time);
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-		}
+	private void _sleep(long time) throws InterruptedException{
+		Thread.sleep(time);
 	}
 
 	private void _sleep(long time, int speed) {
