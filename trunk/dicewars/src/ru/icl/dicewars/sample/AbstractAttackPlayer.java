@@ -19,7 +19,7 @@ public abstract class AbstractAttackPlayer implements Player{
 	}
 	
 	@Override
-	public void opponentAttack(Flag apponentFlag, Attack attack, World world) {
+	public void opponentAttack(Flag opponentFlag, Attack attack, World world) {
 	}
 
 	@Override
