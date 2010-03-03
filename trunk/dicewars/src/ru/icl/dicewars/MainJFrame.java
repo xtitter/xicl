@@ -33,6 +33,9 @@ import javax.swing.border.MatteBorder;
 
 import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.ConfigurationLoader;
+import ru.icl.dicewars.core.FullWorld;
+import ru.icl.dicewars.core.FullWorldGenerator;
+import ru.icl.dicewars.core.RealFullWorldGeneratorImpl;
 import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.gui.InfoJPanel;
 import ru.icl.dicewars.gui.PlayersJDialog;
@@ -260,9 +263,9 @@ public final class MainJFrame extends JFrame {
 		ConfigurationLoader configurationLoader = ConfigurationLoader.getInstance();
 		synchronized (ConfigurationLoader.getInstance()) {
 			configurationLoader.load();
-			int playerCount = configurationLoader.getPlayerClasses().length;
+			int playersCount = configurationLoader.getPlayerClasses().length;
 
-			if (playerCount > MAX_PLAYER_COUNT || playerCount < 2) {
+			if (playersCount > MAX_PLAYER_COUNT || playersCount < 2) {
 				JOptionPane
 						.showMessageDialog(
 								this,
@@ -271,9 +274,12 @@ public final class MainJFrame extends JFrame {
 								JOptionPane.WARNING_MESSAGE, ImageManager
 										.getWarningIcon());
 			} else {
-				Configuration configuration = new SimpleConfigurationImpl(
+				RealFullWorldGeneratorImpl realFullWorldGeneratorImpl = new RealFullWorldGeneratorImpl();
+				realFullWorldGeneratorImpl.setPlayersCount(playersCount);
+				FullWorld fullWorld = realFullWorldGeneratorImpl.generate();
+				Configuration configuration = new SimpleConfigurationImpl(fullWorld,
 						configurationLoader.getPlayerClasses(),
-						configurationLoader.getMaxDiceCountInReserve());
+						configurationLoader.getMaxDiceCountInReserve(), configurationLoader.getClassLoader());
 				startGame(configuration);
 			}
 		}
