@@ -3,21 +3,37 @@ package ru.icl.dicewars.core;
 import ru.icl.dicewars.client.Player;
 
 public class SimpleConfigurationImpl implements Configuration {
+	
+	private FullWorld fullWorld;
+	
 	private Class<Player>[] playerClasses;
+	
 	private int maxDiceCountInReserve;
 	
-	private FullWorldGenerator fullWorldGenerator;
-	private Object fullWorldGeneratorFlag = new Object();
+	private ClassLoader classLoader;
 	
-	@SuppressWarnings("unchecked")
-	public SimpleConfigurationImpl(Class<Player>[] playerClasses,
+	public SimpleConfigurationImpl(FullWorld fullWorld, Class<Player>[] playerClasses,
 			int maxDiceCountInReserve) {
-		if (playerClasses == null || playerClasses.length < 2
+		this(fullWorld, playerClasses, maxDiceCountInReserve, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public SimpleConfigurationImpl(FullWorld fullWorld, Class<Player>[] playerClasses,
+			int maxDiceCountInReserve, ClassLoader classLoader) {
+		if (fullWorld == null || playerClasses == null || playerClasses.length < 2
 				|| playerClasses.length > 8)
 			throw new IllegalArgumentException();
 
+		this.fullWorld = fullWorld;
+		
 		this.playerClasses = new Class[playerClasses.length];
 
+		if (classLoader != null){
+			this.classLoader = classLoader;
+		}else{
+			this.classLoader = Thread.currentThread().getContextClassLoader();
+		}
+		
 		int i = 0;
 		for (Class<Player> playerClass : playerClasses) {
 			this.playerClasses[i] = playerClass;
@@ -32,17 +48,8 @@ public class SimpleConfigurationImpl implements Configuration {
 	}
 	
 	@Override
-	public FullWorldGenerator geFullWorldGenerator() {
-		if (fullWorldGenerator == null) {
-			synchronized (fullWorldGeneratorFlag) {
-				if (fullWorldGenerator == null) {
-					RealFullWorldGeneratorImpl generator = new RealFullWorldGeneratorImpl();
-					generator.setPlayersCount(getPlayersCount());
-					return generator;
-				}
-			}
-		}
-		return fullWorldGenerator;
+	public FullWorld getFullWorld() {
+		return fullWorld;
 	}
 
 	@Override
@@ -58,5 +65,10 @@ public class SimpleConfigurationImpl implements Configuration {
 	@Override
 	public int getMaxDiceCountInReserve() {
 		return maxDiceCountInReserve;
+	}
+	
+	@Override
+	public ClassLoader getClassLoader() {
+		return classLoader;
 	}
 }

@@ -58,6 +58,8 @@ public class ConfigurationLoader {
 	private Class<Player>[] allPlayerClasses;
 	private Class<Player>[] playerClasses;
 
+	private ClassLoader classLoader;
+	
 	private ConfigurationLoader() {
 	}
 
@@ -236,19 +238,22 @@ public class ConfigurationLoader {
 		}
 	}
 	
+	public ClassLoader getClassLoader(){
+		return this.classLoader;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private Class<Player>[] loadPlayerClasses(String[] classNames) {
 		List<Class<Player>> playersList = new ArrayList<Class<Player>>();
 		File dir = new File(playerScanDir);
-		ClassLoader classLoader = null;
 		try{
-			classLoader = new URLClassLoader(new URL[]{dir.toURI().toURL()});
+			this.classLoader = new URLClassLoader(new URL[]{dir.toURI().toURL()});
 		}catch (MalformedURLException e) {
 			throw new IllegalStateException(e);
 		}
 		for (String clazz : classNames) {
 			try {
-				Class<?> loadedClass = classLoader.loadClass(clazz);
+				Class<?> loadedClass = this.classLoader.loadClass(clazz);
 				if (ClassUtil.isAssignable(Player.class, loadedClass)) {
 					playersList.add((Class<Player>) loadedClass);
 				} else {

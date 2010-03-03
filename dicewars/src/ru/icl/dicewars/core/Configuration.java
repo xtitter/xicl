@@ -9,5 +9,7 @@ public interface Configuration {
 
 	public Class<Player>[] getPlayerClasses();
 	
-	public FullWorldGenerator geFullWorldGenerator();
+	public ClassLoader getClassLoader();
+	
+	public FullWorld getFullWorld();
 }

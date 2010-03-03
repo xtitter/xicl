@@ -1,8 +1,9 @@
 package ru.icl.dicewars.client;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public interface Player {
+public interface Player extends Serializable{
 
 	public String getName();
 
