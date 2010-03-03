@@ -9,6 +9,14 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -51,6 +59,35 @@ public final class MainJFrame extends JFrame {
     private final HoverButton fastForwardSpeed;
     private final HoverButton forwardSpeed;
     
+	static {
+		Logger logger = Logger.getLogger("");
+		ConsoleHandler ch = new ConsoleHandler();
+		ch.setFormatter(new Formatter() {
+			@Override
+			public String format(LogRecord record) {
+				Level level = record.getLevel();
+				StringBuilder sb = new StringBuilder();
+				Date time = new Date(record.getMillis());
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+				sb.append(simpleDateFormat.format(time) + " ");
+				
+				if (level.equals(Level.INFO)){
+					sb.append("[INFO] ");
+				}
+				
+				if (level.equals(Level.WARNING)){
+					sb.append("[WARN] ");
+				}
+				sb.append(record.getMessage()+"\n");
+				return sb.toString();
+			}
+		});
+		for (Handler h : logger.getHandlers()){
+			logger.removeHandler(h);
+		}
+		logger.addHandler(ch);
+	}
+
     private final Command pauseSpeedCommand = new Command() {
         @Override
         public void execute() {

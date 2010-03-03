@@ -10,7 +10,7 @@ public interface Player {
 	
 	public Flag chooseFlag(World world, Set<Flag> availableFlags);
 
-	public void opponentAttack(Flag apponentFlag, Attack attack, World world);
+	public void opponentAttack(Flag opponentFlag, Attack attack, World world);
 	
 	public Attack attack(World world);
 }
