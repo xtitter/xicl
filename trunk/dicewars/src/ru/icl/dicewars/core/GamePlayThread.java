@@ -12,23 +12,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.jws.Oneway;
-
 import ru.icl.dicewars.client.Attack;
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
 import ru.icl.dicewars.client.Player;
 import ru.icl.dicewars.client.World;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
-import ru.icl.dicewars.core.activity.SimpleDiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.SimpleFlagChosenActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleGameEndedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
-import ru.icl.dicewars.core.activity.SimpleMaxConnectedLandsCountChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivityImpl;
 import ru.icl.dicewars.core.activity.SimplePlayersLoadedActivityImpl;
-import ru.icl.dicewars.core.activity.SimpleTotalDiceCountChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
+import ru.icl.dicewars.core.activity.SimpleWorldInfoUpdatedActivityImpl;
 import ru.icl.dicewars.core.exception.InvalidPlayerClassInstatiationException;
 import ru.icl.dicewars.core.exception.InvalidPlayersCountException;
 import ru.icl.dicewars.core.roll.LandRoll;
@@ -151,9 +147,6 @@ public class GamePlayThread extends Thread {
 			j--;
 		}
 		addTotalDiceCountByFlag(playerFlag, totalAddedDiceCount);
-		addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(
-				playerFlag, getTotalDiceCountByFlag(playerFlag)));
-
 	}
 
 	void grantWorldFromReserve(final FullWorld world, final Flag playerFlag) {
@@ -174,9 +167,8 @@ public class GamePlayThread extends Thread {
 			world.decDiceCountInReserve(playerFlag);
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
-		addToActivityQueue(new SimpleDiceCountInReserveChangedActivity(
-				playerFlag, world.getDiceCountInReserve(playerFlag)));
-
+		int j = world.getMaxConnectedLandsByFlag(playerFlag);
+		addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(playerFlag, world.getDiceCountInReserve(playerFlag), j, world.getDiceCountInReserve(playerFlag)));
 	}
 
 	void grantWorldByFlag(final FullWorld world, final Flag playerFlag) {
@@ -626,14 +618,8 @@ public class GamePlayThread extends Thread {
 		}
 
 		for (Flag flag : world.getFlags()) {
-			addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(
-					flag, getTotalDiceCountByFlag(flag)));
-		}
-
-		for (Flag flag : world.getFlags()) {
 			int maxConectedLandsCount = world.getMaxConnectedLandsByFlag(flag);
-			addToActivityQueue(new SimpleMaxConnectedLandsCountChangedActivityImpl(
-					flag, maxConectedLandsCount));
+			addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(flag, getTotalDiceCountByFlag(flag), maxConectedLandsCount, 0));
 		}
 
 		/* Start the game */
@@ -704,28 +690,22 @@ public class GamePlayThread extends Thread {
 											addToActivityQueue(new SimpleLandUpdatedActivity(
 													land));
 
-											addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(
-													neighbouringLandFlag,
-													getTotalDiceCountByFlag(neighbouringLandFlag)));
 										} else {
 											addTotalDiceCountByFlag(playerFlag,
 													(land.getDiceCount() - 1)
 															* (-1));
 											land.setDiceCount(DiceStack.ONE);
-											addToActivityQueue(new SimpleTotalDiceCountChangedActivityImpl(
-													playerFlag,
-													getTotalDiceCountByFlag(playerFlag)));
+											
 											addToActivityQueue(new SimpleLandUpdatedActivity(
 													land));
 										}
 										int m = world
 												.getMaxConnectedLandsByFlag(neighbouringLandFlag);
-										addToActivityQueue(new SimpleMaxConnectedLandsCountChangedActivityImpl(
-												neighbouringLandFlag, m));
+										addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(neighbouringLandFlag, getTotalDiceCountByFlag(neighbouringLandFlag), m, world.getDiceCountInReserve(neighbouringLandFlag)));
+										
 										m = world
 												.getMaxConnectedLandsByFlag(playerFlag);
-										addToActivityQueue(new SimpleMaxConnectedLandsCountChangedActivityImpl(
-												playerFlag, m));
+										addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(playerFlag, getTotalDiceCountByFlag(playerFlag), m, world.getDiceCountInReserve(playerFlag)));
 										successAttacked = true;
 									}
 								}
