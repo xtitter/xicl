@@ -4,11 +4,9 @@ import ru.icl.dicewars.client.Attack;
 
 public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 	private Attack attack;
-	private boolean isWin;
-	public SimplePlayerAttackActivityImpl(Attack attack, boolean isWin) {
+	public SimplePlayerAttackActivityImpl(Attack attack) {
 		if (attack == null) throw new IllegalArgumentException();
 		this.attack = attack;
-		this.isWin = isWin;
 	}
 	
 	@Override
@@ -19,9 +17,5 @@ public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 	@Override
 	public int getToLandId(){
 		return attack.getToLandId();
-	}
-	
-	public boolean isWin() {
-		return isWin;
 	}
 }
