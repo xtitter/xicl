@@ -41,9 +41,9 @@ public class GamePlayThread extends Thread {
 	private static final Logger logger = Logger.getLogger(GamePlayThread.class
 			.toString());
 
-	private static final int AMOUNT_OF_THREADS_TO_START_GC = 20;
+	private static final int AMOUNT_OF_THREADS_TO_START_GC = 200;
 
-	private final static int MAX_ACTIVITY_COUNT_IN_QUEUE = 50;
+	private final static int MAX_ACTIVITY_COUNT_IN_QUEUE = 500;
 	
 	Configuration configuration;
 
@@ -233,6 +233,7 @@ public class GamePlayThread extends Thread {
 			@Override
 			public void run() {
 				try {
+					//System.gc();
 					startTime = System.currentTimeMillis();
 					player.init();
 					startTime = null;
@@ -303,6 +304,7 @@ public class GamePlayThread extends Thread {
 			@Override
 			public void run() {
 				try {
+					//System.gc();
 					startTime = System.currentTimeMillis();
 					flag = player.chooseFlag(world, availableFlags);
 					startTime = null;
@@ -380,6 +382,7 @@ public class GamePlayThread extends Thread {
 			@Override
 			public void run() {
 				try {
+					//System.gc();
 					startTime = System.currentTimeMillis();
 					player.opponentAttack(opponentFlag, attack, world);
 					startTime = null;
@@ -449,6 +452,7 @@ public class GamePlayThread extends Thread {
 			@Override
 			public void run() {
 				try {
+					//System.gc();
 					startTime = System.currentTimeMillis();
 					attack = player.attack(world);
 					startTime = null;
