@@ -1,18 +1,15 @@
 package ru.icl.dicewars.gui.thread;
 
+import ru.icl.dicewars.core.ActivityGamePlayThread;
 import ru.icl.dicewars.core.Configuration;
-import ru.icl.dicewars.core.FullLand;
 import ru.icl.dicewars.core.FullWorld;
-import ru.icl.dicewars.core.GamePlayThread;
-import ru.icl.dicewars.core.activity.DiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
-import ru.icl.dicewars.core.activity.FlagDistributedActivity;
+import ru.icl.dicewars.core.activity.FlagChosenActivity;
 import ru.icl.dicewars.core.activity.GameEndedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
-import ru.icl.dicewars.core.activity.MaxConnectedLandsCountChangedActivity;
 import ru.icl.dicewars.core.activity.PlayersLoadedActivity;
-import ru.icl.dicewars.core.activity.SimplePlayerAttackActivity;
-import ru.icl.dicewars.core.activity.TotalDiceCountChangedActivity;
+import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
+import ru.icl.dicewars.core.activity.SimplePlayerAttackActivityImpl;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
@@ -51,7 +48,7 @@ public class UIGameThread extends Thread {
 	
 	@Override
 	public void run() {
-		GamePlayThread gamePlayThread = new GamePlayThread(configuration);
+		ActivityGamePlayThread gamePlayThread = new ActivityGamePlayThread(configuration);
 		gamePlayThread.start();
 		try{
 			while (t) {
@@ -62,23 +59,23 @@ public class UIGameThread extends Thread {
 				} if (activity instanceof PlayersLoadedActivity){ 
 					PlayersLoadedActivity playersLoadedActivity = (PlayersLoadedActivity) activity;
 					WindowManager.getInstance().getInfoJPanel().initPlayers(playersLoadedActivity);
-				} else if (activity instanceof FlagDistributedActivity){
-					FlagDistributedActivity flagDistributedActivity = (FlagDistributedActivity) activity;
+				} else if (activity instanceof FlagChosenActivity){
+					FlagChosenActivity flagDistributedActivity = (FlagChosenActivity) activity;
 					WindowManager.getInstance().getInfoJPanel().addPlayer(flagDistributedActivity);
 					_sleep(500, speed);
-				} else if (activity instanceof LandUpdatedActivity) {
-					FullLand land = ((LandUpdatedActivity) activity).getFullLand();
-					WindowManager.getInstance().getWorldJPanel().updateLand(land);
-				} else if (activity instanceof SimplePlayerAttackActivity) {
-					SimplePlayerAttackActivity pa = ((SimplePlayerAttackActivity) activity);
-					WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(pa.getFromLandId());
+				} else if (activity instanceof SimpleLandUpdatedActivity) {
+					LandUpdatedActivity landUpdatedActivity = (LandUpdatedActivity) activity;
+					WindowManager.getInstance().getWorldJPanel().updateLand(landUpdatedActivity.getFullLand());
+				} else if (activity instanceof SimplePlayerAttackActivityImpl) {
+					SimplePlayerAttackActivityImpl simplePlayerActivity = ((SimplePlayerAttackActivityImpl) activity);
+					WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(simplePlayerActivity.getFromLandId());
 					_sleep(700, speed);
 					checkPause();
-					WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(pa.getToLandId());
+					WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(simplePlayerActivity.getToLandId());
 					_sleep(250, speed);
 					checkPause();
 					if (speed == 1){
-						WindowManager.getInstance().getWorldJPanel().drawArrow(pa.getFromLandId(), pa.getToLandId());
+						WindowManager.getInstance().getWorldJPanel().drawArrow(simplePlayerActivity.getFromLandId(), simplePlayerActivity.getToLandId());
 					}
 					_sleep(350, speed);
 					checkPause();
@@ -87,15 +84,6 @@ public class UIGameThread extends Thread {
 					WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(0);
 					_sleep(300, speed);
 					checkPause();
-				} else if (activity instanceof DiceCountInReserveChangedActivity) {
-					DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
-					WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
-				} else if (activity instanceof TotalDiceCountChangedActivity) {
-					TotalDiceCountChangedActivity tda = (TotalDiceCountChangedActivity)activity;
-					WindowManager.getInstance().getInfoJPanel().updateDiceCount(tda.getFlag(), tda.getTotalDiceCount());
-				} else if (activity instanceof MaxConnectedLandsCountChangedActivity) {
-					MaxConnectedLandsCountChangedActivity max = (MaxConnectedLandsCountChangedActivity)activity;
-					WindowManager.getInstance().getInfoJPanel().updateAreaCount(max.getFlag(), max.getLandsCount());
 				} else if (activity instanceof GameEndedActivity){
 					WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
 					break;

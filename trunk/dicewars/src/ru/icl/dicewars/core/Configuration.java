@@ -12,4 +12,20 @@ public interface Configuration {
 	public ClassLoader getClassLoader();
 	
 	public FullWorld getFullWorld();
+	
+	public long getMaxMemoryForPlayer();
+	
+	public long getMaxTimeForInitMethod();
+	
+	public long getMaxTimeForChooseFlagMethod();
+	
+	public long getMaxTimeForOpponentAttackMethod();
+	
+	public long getMaxTimeForAttackMethod();
+	
+	public Type getType();
+	
+	public static enum Type{
+		INTERRUPT_EXECUTION, NOTIFY, OFF
+	}
 }

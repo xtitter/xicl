@@ -34,7 +34,6 @@ import javax.swing.border.MatteBorder;
 import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.ConfigurationLoader;
 import ru.icl.dicewars.core.FullWorld;
-import ru.icl.dicewars.core.FullWorldGenerator;
 import ru.icl.dicewars.core.RealFullWorldGeneratorImpl;
 import ru.icl.dicewars.core.SimpleConfigurationImpl;
 import ru.icl.dicewars.gui.InfoJPanel;

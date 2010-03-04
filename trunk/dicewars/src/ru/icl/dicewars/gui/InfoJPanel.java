@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import ru.icl.dicewars.client.Flag;
-import ru.icl.dicewars.core.activity.FlagDistributedActivity;
+import ru.icl.dicewars.core.activity.FlagChosenActivity;
 import ru.icl.dicewars.core.activity.PlayersLoadedActivity;
 
 public final class InfoJPanel extends JPanel {
@@ -47,7 +47,7 @@ public final class InfoJPanel extends JPanel {
 		repaint();
 	}
 	
-	public void addPlayer(FlagDistributedActivity flagDistributedActivity){
+	public void addPlayer(FlagChosenActivity flagDistributedActivity){
 		PlayerJPanel playerJPanel = positionToplayerJPanelMap.get(flagDistributedActivity.getPosition());
 		if (playerJPanel == null) throw new IllegalStateException();
 		flagToPlayerJPanelMap.put(flagDistributedActivity.getFlag(), playerJPanel);
