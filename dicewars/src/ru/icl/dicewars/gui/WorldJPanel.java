@@ -133,23 +133,16 @@ public final class WorldJPanel extends JPanel {
 	public void updateLand(FullLand land) {
 		if (world == null || width == 0 || height == 0)
 			throw new IllegalStateException();
-		
-		defendingPlayerLandId = 0;
-		width = getWidth();
-		height = getHeight();
+
 		FullLand l2 = null;
 		
-		Set<FullLand> landsTmp;
-		synchronized (flag) {
-			landsTmp = new HashSet<FullLand>(world.getFullLands());	
-		}
-		
-		for (FullLand l : landsTmp) {
+		for (FullLand l : world.getFullLands()) {
 			if (l.getLandId() == land.getLandId()) {
 				l2 = l;
 				break;
 			}
 		}
+		
 		if (l2 != null) {
 			synchronized (flag) {
 				world.getFullLands().remove(l2);

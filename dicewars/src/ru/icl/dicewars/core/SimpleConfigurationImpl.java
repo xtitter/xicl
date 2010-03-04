@@ -71,4 +71,34 @@ public class SimpleConfigurationImpl implements Configuration {
 	public ClassLoader getClassLoader() {
 		return classLoader;
 	}
+	
+	@Override
+	public long getMaxMemoryForPlayer() {
+		return 1024*1024*8;
+	}
+	
+	@Override
+	public long getMaxTimeForAttackMethod() {
+		return 1000;
+	}
+	
+	@Override
+	public long getMaxTimeForChooseFlagMethod() {
+		return 100;
+	}
+	
+	@Override
+	public long getMaxTimeForInitMethod() {
+		return 1000;
+	}
+	
+	@Override
+	public long getMaxTimeForOpponentAttackMethod() {
+		return 100;
+	}
+	
+	@Override
+	public Type getType() {
+		return Configuration.Type.NOTIFY;
+	}
 }

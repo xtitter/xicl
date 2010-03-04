@@ -1,21 +1,14 @@
 package ru.icl.dicewars.core.activity;
 
-import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Attack;
 
-public class SimplePlayerAttackActivity implements PlayerAttackActivity{
-	private Flag flag;
+public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 	private Attack attack;
-	public SimplePlayerAttackActivity(Flag flag, Attack attack) {
-		if (flag == null) throw new IllegalArgumentException();
+	private boolean isWin;
+	public SimplePlayerAttackActivityImpl(Attack attack, boolean isWin) {
 		if (attack == null) throw new IllegalArgumentException();
-		this.flag = flag;
 		this.attack = attack;
-	}
-	
-	@Override
-	public Flag getFlag() {
-		return flag;
+		this.isWin = isWin;
 	}
 	
 	@Override
@@ -26,5 +19,9 @@ public class SimplePlayerAttackActivity implements PlayerAttackActivity{
 	@Override
 	public int getToLandId(){
 		return attack.getToLandId();
+	}
+	
+	public boolean isWin() {
+		return isWin;
 	}
 }

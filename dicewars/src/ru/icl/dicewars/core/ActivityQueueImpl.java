@@ -3,15 +3,12 @@ package ru.icl.dicewars.core;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import ru.icl.dicewars.core.activity.DiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
-import ru.icl.dicewars.core.activity.FlagDistributedActivity;
+import ru.icl.dicewars.core.activity.FlagChosenActivity;
 import ru.icl.dicewars.core.activity.GameEndedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
-import ru.icl.dicewars.core.activity.MaxConnectedLandsCountChangedActivity;
 import ru.icl.dicewars.core.activity.PlayerAttackActivity;
 import ru.icl.dicewars.core.activity.PlayersLoadedActivity;
-import ru.icl.dicewars.core.activity.TotalDiceCountChangedActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
 
 public class ActivityQueueImpl implements ActivityQueue {
@@ -42,13 +39,8 @@ public class ActivityQueueImpl implements ActivityQueue {
 			throw new IllegalStateException();
 		}
 		
-		if (e instanceof FlagDistributedActivity
+		if (e instanceof FlagChosenActivity
 				&& (!isWorldCreated || playerCount <= 0)) {
-			throw new IllegalStateException();
-		}
-
-		if (e instanceof LandUpdatedActivity
-				&& !isFlagDistributed) {
 			throw new IllegalStateException();
 		}
 
@@ -67,21 +59,6 @@ public class ActivityQueueImpl implements ActivityQueue {
 			throw new IllegalStateException();
 		}
 
-		if (e instanceof TotalDiceCountChangedActivity
-				&& !isFlagDistributed) {
-			throw new IllegalStateException();
-		}
-
-		if (e instanceof DiceCountInReserveChangedActivity
-				&& !isFlagDistributed) {
-			throw new IllegalStateException();
-		}
-
-		if (e instanceof MaxConnectedLandsCountChangedActivity
-				&& !isFlagDistributed) {
-			throw new IllegalStateException();
-		}
-
 		queue.add(e);
 		
 		if (e instanceof PlayersLoadedActivity) {
@@ -94,7 +71,7 @@ public class ActivityQueueImpl implements ActivityQueue {
 			isWorldCreated = true;
 		}
 
-		if (e instanceof FlagDistributedActivity) {
+		if (e instanceof FlagChosenActivity) {
 			playerCount--;
 			if (playerCount == 0) isFlagDistributed = true;
 		}

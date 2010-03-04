@@ -89,3 +89,4 @@ public class SimpleLandUpdatedActivity implements LandUpdatedActivity{
 		return fullLand;
 	}
 }
+
