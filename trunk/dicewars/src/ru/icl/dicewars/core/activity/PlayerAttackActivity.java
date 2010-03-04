@@ -4,6 +4,4 @@ public interface PlayerAttackActivity extends DiceWarsActivity {
 	public int getFromLandId();
 
 	public int getToLandId();
-	
-	public boolean isWin();
 }

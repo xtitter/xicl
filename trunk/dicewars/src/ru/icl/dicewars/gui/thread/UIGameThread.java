@@ -1,15 +1,18 @@
 package ru.icl.dicewars.gui.thread;
 
-import ru.icl.dicewars.core.ActivityGamePlayThread;
 import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.FullWorld;
+import ru.icl.dicewars.core.GamePlayThread;
+import ru.icl.dicewars.core.activity.DiceCountInReserveChangedActivity;
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.FlagChosenActivity;
 import ru.icl.dicewars.core.activity.GameEndedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
+import ru.icl.dicewars.core.activity.MaxConnectedLandsCountChangedActivity;
 import ru.icl.dicewars.core.activity.PlayersLoadedActivity;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivityImpl;
+import ru.icl.dicewars.core.activity.TotalDiceCountChangedActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
@@ -48,7 +51,7 @@ public class UIGameThread extends Thread {
 	
 	@Override
 	public void run() {
-		ActivityGamePlayThread gamePlayThread = new ActivityGamePlayThread(configuration);
+		GamePlayThread gamePlayThread = new GamePlayThread(configuration);
 		gamePlayThread.start();
 		try{
 			while (t) {
@@ -84,6 +87,15 @@ public class UIGameThread extends Thread {
 					WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(0);
 					_sleep(300, speed);
 					checkPause();
+				} else if (activity instanceof DiceCountInReserveChangedActivity) {
+					DiceCountInReserveChangedActivity dcr = (DiceCountInReserveChangedActivity)activity;
+					WindowManager.getInstance().getInfoJPanel().updateReserve(dcr.getFlag(), dcr.getDiceCount());
+				} else if (activity instanceof TotalDiceCountChangedActivity) {
+					TotalDiceCountChangedActivity tda = (TotalDiceCountChangedActivity)activity;
+					WindowManager.getInstance().getInfoJPanel().updateDiceCount(tda.getFlag(), tda.getTotalDiceCount());
+				} else if (activity instanceof MaxConnectedLandsCountChangedActivity) {
+					MaxConnectedLandsCountChangedActivity max = (MaxConnectedLandsCountChangedActivity)activity;
+					WindowManager.getInstance().getInfoJPanel().updateAreaCount(max.getFlag(), max.getLandsCount());
 				} else if (activity instanceof GameEndedActivity){
 					WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
 					break;
