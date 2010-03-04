@@ -67,14 +67,15 @@ public final class InfoJPanel extends JPanel {
 		repaint();
 	}
 	
-	public void updateReserve(Flag flag, int diceCount) {
+	public void update(Flag flag, int totalDiceCount, int maxConnectedLandsCount, int diceCountInReserve) {
 		if (flagToPlayerJPanelMap.containsKey(flag)) {
-			flagToPlayerJPanelMap.get(flag).setReserveCount(diceCount);
-			flagToPlayerJPanelMap.get(flag).repaint();
+			flagToPlayerJPanelMap.get(flag).setReserveCount(diceCountInReserve);
 		}
-	}
+		
+		if (flagToPlayerJPanelMap.containsKey(flag)) {
+			flagToPlayerJPanelMap.get(flag).setAreaCount(maxConnectedLandsCount);
+		}
 
-	public void updateDiceCount(Flag flag, int totalDiceCount) {
 		if (flagToPlayerJPanelMap.containsKey(flag)) {
 			flagToPlayerJPanelMap.get(flag).setTotalDiceCount(totalDiceCount);
 			if (winnerFlag != null) {
@@ -126,12 +127,5 @@ public final class InfoJPanel extends JPanel {
 		flagToPlayerJPanelMap.get(to).setWinner(true);
 		flagToPlayerJPanelMap.get(to).repaint();
 		winnerFlag = to;
-	}
-	
-	public void updateAreaCount(Flag flag, int count) {
-		if (flagToPlayerJPanelMap.containsKey(flag)) {
-			flagToPlayerJPanelMap.get(flag).setAreaCount(count);
-			flagToPlayerJPanelMap.get(flag).repaint();
-		}
 	}
 }

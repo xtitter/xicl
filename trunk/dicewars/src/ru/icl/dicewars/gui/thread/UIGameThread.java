@@ -87,9 +87,7 @@ public class UIGameThread extends Thread {
 					checkPause();
 				} else if (activity instanceof WorldInfoUpdatedActivity) {
 					WorldInfoUpdatedActivity worldInfoUpdatedActivity = (WorldInfoUpdatedActivity)activity;
-					WindowManager.getInstance().getInfoJPanel().updateReserve(worldInfoUpdatedActivity.getFlag(), worldInfoUpdatedActivity.getDiceCountInReserve());
-					WindowManager.getInstance().getInfoJPanel().updateDiceCount(worldInfoUpdatedActivity.getFlag(), worldInfoUpdatedActivity.getTotalDiceCount());
-					WindowManager.getInstance().getInfoJPanel().updateAreaCount(worldInfoUpdatedActivity.getFlag(), worldInfoUpdatedActivity.getMaxConnectedLandsCount());
+					WindowManager.getInstance().getInfoJPanel().update(worldInfoUpdatedActivity.getFlag(), worldInfoUpdatedActivity.getTotalDiceCount(), worldInfoUpdatedActivity.getMaxConnectedLandsCount(), worldInfoUpdatedActivity.getDiceCountInReserve());
 				} else if (activity instanceof GameEndedActivity){
 					WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
 					break;
