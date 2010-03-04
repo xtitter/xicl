@@ -247,8 +247,8 @@ public class GamePlayThread extends Thread {
 		}
 		InitThread initThread = new InitThread();
 		Player previousStateOfPlayer = copyPlayer(player);
-		initThread.start();
 		threadCreatedNotify();
+		initThread.start();
 		boolean isMemoryLimitExceeded = false;
 		boolean isTimeLimitExceeded = false;
 		try {
@@ -323,8 +323,8 @@ public class GamePlayThread extends Thread {
 		}
 		ChooseFlagThread chooseFlagThread = new ChooseFlagThread();
 		Player previousStateOfPlayer = (Player) copyPlayer(player);
-		chooseFlagThread.start();
 		threadCreatedNotify();
+		chooseFlagThread.start();
 		boolean isMemoryLimitExceeded = false;
 		boolean isTimeLimitExceeded = false;
 		try {
@@ -397,8 +397,8 @@ public class GamePlayThread extends Thread {
 		OpponentAttackThread opponentAttackThread = new OpponentAttackThread();
 		Player previousStateOfPlayer = (Player) copyPlayer(player);
 		opponentAttackThread.setPriority(MAX_PRIORITY);
-		opponentAttackThread.start();
 		threadCreatedNotify();
+		opponentAttackThread.start();
 		boolean isMemoryLimitExceeded = false;
 		boolean isTimeLimitExceeded = false;
 		try {
@@ -472,8 +472,8 @@ public class GamePlayThread extends Thread {
 		}
 		AttackThread attackThread = new AttackThread();
 		Player previousStateOfPlayer = (Player) copyPlayer(player);
-		attackThread.start();
 		threadCreatedNotify();
+		attackThread.start();
 		boolean isMemoryLimitExceeded = false;
 		boolean isTimeLimitExceeded = false;
 		try {
