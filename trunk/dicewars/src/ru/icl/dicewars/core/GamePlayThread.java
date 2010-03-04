@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.jws.Oneway;
+
 import ru.icl.dicewars.client.Attack;
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.client.Land;
@@ -40,11 +42,13 @@ import com.javamex.classmexer.MemoryUtil.VisibilityFilter;
 
 public class GamePlayThread extends Thread {
 
-	private static final int AMOUNT_OF_THREADS_TO_START_GC = 20;
-
 	private static final Logger logger = Logger.getLogger(GamePlayThread.class
 			.toString());
 
+	private static final int AMOUNT_OF_THREADS_TO_START_GC = 20;
+
+	private final static int MAX_ACTIVITY_COUNT_IN_QUEUE = 50;
+	
 	Configuration configuration;
 
 	private boolean started = false;
@@ -52,8 +56,6 @@ public class GamePlayThread extends Thread {
 	private Object startedFlag = new Object();
 
 	volatile boolean t = true;
-
-	private final static int MAX_ACTIVITY_COUNT_IN_QUEUE = 50;
 
 	private ActivityQueue activityQueue = new ActivityQueueImpl();
 
@@ -198,7 +200,10 @@ public class GamePlayThread extends Thread {
 	}
 
 	private long calcPlayerMemoryUsage(Player player) {
-		return MemoryUtil.deepMemoryUsageOf(player, VisibilityFilter.ALL);
+		List<Object> l = new ArrayList<Object>();
+		l.add(player);
+		l.add(player.getClass());
+		return MemoryUtil.deepMemoryUsageOf(l, VisibilityFilter.ALL);
 	}
 
 	private Player copyPlayer(Player player) {
