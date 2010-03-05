@@ -146,6 +146,7 @@ public class GamePlayThread extends Thread {
 			}
 			j--;
 		}
+		
 		addTotalDiceCountByFlag(playerFlag, totalAddedDiceCount);
 	}
 
@@ -168,7 +169,7 @@ public class GamePlayThread extends Thread {
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
 		int j = world.getMaxConnectedLandsByFlag(playerFlag);
-		addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(playerFlag, world.getDiceCountInReserve(playerFlag), j, world.getDiceCountInReserve(playerFlag)));
+		addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(playerFlag, getTotalDiceCountByFlag(playerFlag), j, world.getDiceCountInReserve(playerFlag)));
 	}
 
 	void grantWorldByFlag(final FullWorld world, final Flag playerFlag) {
@@ -195,6 +196,9 @@ public class GamePlayThread extends Thread {
 		List<Object> l = new ArrayList<Object>();
 		l.add(player);
 		l.add(player.getClass());
+		for (Class<?> clazz : player.getClass().getDeclaredClasses()){
+			l.add(clazz);
+		}
 		return MemoryUtil.deepMemoryUsageOf(l, VisibilityFilter.ALL);
 	}
 
@@ -246,6 +250,7 @@ public class GamePlayThread extends Thread {
 			}
 		}
 		InitThread initThread = new InitThread();
+		initThread.setPriority(Thread.MAX_PRIORITY);
 		Player previousStateOfPlayer = copyPlayer(player);
 		threadCreatedNotify();
 		initThread.start();
@@ -321,7 +326,9 @@ public class GamePlayThread extends Thread {
 				return flag;
 			}
 		}
+		
 		ChooseFlagThread chooseFlagThread = new ChooseFlagThread();
+		chooseFlagThread.setPriority(Thread.MAX_PRIORITY);
 		Player previousStateOfPlayer = (Player) copyPlayer(player);
 		threadCreatedNotify();
 		chooseFlagThread.start();
@@ -395,6 +402,7 @@ public class GamePlayThread extends Thread {
 			}
 		}
 		OpponentAttackThread opponentAttackThread = new OpponentAttackThread();
+		opponentAttackThread.setPriority(Thread.MAX_PRIORITY);
 		Player previousStateOfPlayer = (Player) copyPlayer(player);
 		opponentAttackThread.setPriority(MAX_PRIORITY);
 		threadCreatedNotify();
@@ -471,6 +479,7 @@ public class GamePlayThread extends Thread {
 			}
 		}
 		AttackThread attackThread = new AttackThread();
+		attackThread.setPriority(Thread.MAX_PRIORITY);
 		Player previousStateOfPlayer = (Player) copyPlayer(player);
 		threadCreatedNotify();
 		attackThread.start();
