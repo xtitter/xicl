@@ -377,9 +377,9 @@ public class GamePlayThread extends Thread {
 
 	@SuppressWarnings("deprecation")
 	private Player fireOpponentAttack(final Player player,
-			final Flag opponentFlag, final Attack attack, final World world) {
+			final Flag opponentFlag, final Attack attack, final World beforeWorld, final boolean isAttackWin) {
 		if (configuration.getType() == Configuration.Type.OFF) {
-			player.opponentAttack(opponentFlag, attack, world);
+			player.opponentAttack(opponentFlag, attack, beforeWorld, isAttackWin);
 			return player;
 		}
 
@@ -391,7 +391,7 @@ public class GamePlayThread extends Thread {
 				try {
 					//System.gc();
 					startTime = System.currentTimeMillis();
-					player.opponentAttack(opponentFlag, attack, world);
+					player.opponentAttack(opponentFlag, attack, beforeWorld, isAttackWin);
 					startTime = null;
 				} catch (Exception e) {
 				}
@@ -662,6 +662,7 @@ public class GamePlayThread extends Thread {
 						int fromLandId = attack.getFromLandId();
 						int toLandId = attack.getToLandId();
 						boolean successAttacked = false;
+						boolean isAttackWin = false;
 						for (FullLand land : world.getFullLands()) {
 							if (!successAttacked
 									&& land.getLandId() == fromLandId
@@ -680,6 +681,7 @@ public class GamePlayThread extends Thread {
 										addToActivityQueue(new SimplePlayerAttackActivityImpl(
 												attack));
 										if (landRollResult.isLeftWin()) {
+											isAttackWin = true;
 											addTotalDiceCountByFlag(
 													neighbouringLandFlag,
 													(neighbouringLand
@@ -702,7 +704,6 @@ public class GamePlayThread extends Thread {
 											land.setDiceCount(DiceStack.ONE);
 											addToActivityQueue(new SimpleLandUpdatedActivity(
 													land));
-
 										} else {
 											addTotalDiceCountByFlag(playerFlag,
 													(land.getDiceCount() - 1)
@@ -730,7 +731,7 @@ public class GamePlayThread extends Thread {
 								if (!f.equals(playerFlag)
 										&& world.isExistsLandByFlag(f)) {
 									players[i] = fireOpponentAttack(players[i],
-											f, attack, immutableWorld);
+											f, attack, immutableWorld, isAttackWin);
 								}
 							}
 						}
