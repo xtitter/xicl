@@ -50,7 +50,7 @@ public class UIGameThread extends Thread {
 	@Override
 	public void run() {
 		GamePlayThread gamePlayThread = new GamePlayThread(configuration);
-		gamePlayThread.setPriority(Thread.MIN_PRIORITY);
+		//gamePlayThread.setPriority(Thread.MIN_PRIORITY);
 		gamePlayThread.start();
 		try{
 			while (t) {

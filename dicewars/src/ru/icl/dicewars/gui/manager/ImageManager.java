@@ -23,7 +23,7 @@ public class ImageManager {
 	private static Image getImageFromResource(String path, Rectangle rec) {
         Image image = getImageFromResource(path);
         
-        if (rec == null && image == null)
+        if (rec == null || image == null)
              return image;
 
         Image resized = image.getScaledInstance(rec.width, rec.height, java.awt.Image.SCALE_AREA_AVERAGING);
@@ -321,18 +321,69 @@ public class ImageManager {
     	return map.get(Integer.valueOf(emotion));
     }
     
-    public static Image getTrophy() {
-    	if (trophy == null) {
-    		synchronized (trophySync) {
-				if (trophy == null) {
-					trophy = getImageFromResource("/resources/info/trophy.png");
-				}
+    public static Image getTrophyImage() {
+    	if (trophyImage == null) {
+			if (trophyImage == null) {
+				trophyImage = getImageFromResource("/resources/info/trophy.png");
 			}
     	}
-    	return trophy;
+    	return trophyImage;
     }
     
+    public static Image getDicePerTurnCountImage(Flag flag) {
+    	if (dicePerTurnCountImages == null)
+    		dicePerTurnCountImages = new HashMap<Flag, Image>();
+    	Image ret = dicePerTurnCountImages.get(flag);
+    	if (ret == null) {
+    		String fileName = null;
+			switch (flag) {
+				case BLUE:	fileName = "blue_land"; break;
+				case RED:	fileName = "red_land"; break;
+				case CYAN:	fileName = "cyan_land"; break;
+				case YELLOW:	fileName = "yellow_land"; break;
+				case GREEN:	fileName = "green_land"; break;
+				case ORANGE:	fileName = "orange_land"; break;
+				case GRAY:	fileName = "gray_land"; break;
+				case MAGENTA: fileName = "magenta_land"; break;
+				default:
+					throw new IllegalStateException();
+			}
+			ret = getImageFromResource("/resources/info/"+fileName+".png", new Rectangle(24,24));
+			dicePerTurnCountImages.put(flag, ret);
+    	}
+    	return ret;
+    }
+    
+    public static Image getDiceCountInReserveImage(Flag flag) {
+    	if (diceCountInReserveImages == null)
+    		diceCountInReserveImages = new HashMap<Flag, Image>();
+    	Image ret = diceCountInReserveImages.get(flag);
+    	if (ret == null) {
+    		String fileName = null;
+			switch (flag) {
+				case BLUE:	fileName = "blue_dice"; break;
+				case RED:	fileName = "red_dice"; break;
+				case CYAN:	fileName = "cyan_dice"; break;
+				case YELLOW:	fileName = "yellow_dice"; break;
+				case GREEN:	fileName = "green_dice"; break;
+				case ORANGE:	fileName = "orange_dice"; break;
+				case GRAY:	fileName = "gray_dice"; break;
+				case MAGENTA: fileName = "magenta_dice"; break;
+				default:
+					throw new IllegalStateException();
+			}
+			ret = getImageFromResource("/resources/info/"+fileName+".png", new Rectangle(20,20));
+			diceCountInReserveImages.put(flag, ret);
+    	}
+    	return ret;
+    }    
     private static Map<Integer, Map<Flag,Image>> dices;
+    
+    private static Map<Flag, Image> dicePerTurnCountImages;
+    
+    private static Map<Flag, Image> diceCountInReserveImages;
+    
+    private static Image trophyImage;
     
     private static Image pauseSpeedImage;
     private static Image pauseSpeedImageSelected;
@@ -359,7 +410,7 @@ public class ImageManager {
     private static Icon startNewGameIcon;
     private static Icon exitIcon;
     private static Icon playersIcon;
-    private static Icon stopGameIcon ;
+    private static Icon stopGameIcon;
     
     private static Icon upArrowIcon;
     private static Icon downArrowIcon;
@@ -368,9 +419,5 @@ public class ImageManager {
     private static Icon warningIcon;
     private static Image playersImage;
 
-    private static Object trophySync = new Object();
-    
     private static Map<Flag, Map<Integer, Image>> avatars = new HashMap<Flag, Map<Integer,Image>>();
-    
-    private static Image trophy;
 }

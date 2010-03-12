@@ -239,8 +239,7 @@ public final class MainJFrame extends JFrame {
 				RealFullWorldGeneratorImpl realFullWorldGeneratorImpl = new RealFullWorldGeneratorImpl();
 				realFullWorldGeneratorImpl.setPlayersCount(playersCount);
 				FullWorld fullWorld = realFullWorldGeneratorImpl.generate();
-				Configuration configuration = new SimpleConfigurationImpl(fullWorld,
-						configurationLoader.getPlayerClasses(),
+				Configuration configuration = new SimpleConfigurationImpl(fullWorld, configurationLoader.getPlayerClasses(),
 						configurationLoader.getMaxDiceCountInReserve(), configurationLoader.getClassLoader());
 				startGame(configuration);
 			}
@@ -251,7 +250,7 @@ public final class MainJFrame extends JFrame {
 		Rectangle scrnRect = getGraphicsConfiguration().getBounds();
         setSize(scrnRect.width, scrnRect.height);
         
-        setTitle("DiceWars (Version 0.5)");
+        setTitle("DiceWars");
         
         setIconImage(ImageManager.getDiceIconImage());
         

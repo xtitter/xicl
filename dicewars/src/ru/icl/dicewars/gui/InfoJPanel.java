@@ -73,7 +73,7 @@ public final class InfoJPanel extends JPanel {
 		}
 		
 		if (flagToPlayerJPanelMap.containsKey(flag)) {
-			flagToPlayerJPanelMap.get(flag).setAreaCount(maxConnectedLandsCount);
+			flagToPlayerJPanelMap.get(flag).setDicePerTurnCount(maxConnectedLandsCount);
 		}
 
 		if (flagToPlayerJPanelMap.containsKey(flag)) {
