@@ -48,8 +48,8 @@ class LandFactory {
 		for (FullLand land : world.getFullLands()) {
 			empty.getPoints().removeAll(land.getPoints());
 		}
-		BackgroundPainter backgroundPainter = new BackgroundPainter(empty, new Color(240, 240,
-				240, 150));
+		BackgroundPainter backgroundPainter = new BackgroundPainter(empty, new Color(230, 230,
+				230));
 		this.backgroundPainter = backgroundPainter;
 	}
 

@@ -60,7 +60,7 @@ public class ImageManager {
 					throw new IllegalStateException();
 			}
     		String path = "/resources/dice/" + fileName + index + ".png";
-    		Image image = getImageFromResource(path, new Rectangle(0,0,62,75));
+    		Image image = getImageFromResource(path);
     		d.put(flag, image);
     	}
     	
