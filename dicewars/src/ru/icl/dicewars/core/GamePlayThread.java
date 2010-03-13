@@ -376,9 +376,9 @@ public class GamePlayThread extends Thread {
 
 	@SuppressWarnings("deprecation")
 	private Player fireOpponentAttack(final Player player,
-			final Flag opponentFlag, final Attack attack, final World beforeWorld, final boolean isAttackWin) {
+			final Flag opponentFlag, final Attack attack, final World beforeWorld, final boolean wasAttackWon) {
 		if (configuration.getType() == Configuration.Type.OFF) {
-			player.opponentAttack(opponentFlag, attack, beforeWorld, isAttackWin);
+			player.opponentAttack(opponentFlag, attack, beforeWorld, wasAttackWon);
 			return player;
 		}
 
@@ -390,7 +390,7 @@ public class GamePlayThread extends Thread {
 				try {
 					//System.gc();
 					startTime = System.currentTimeMillis();
-					player.opponentAttack(opponentFlag, attack, beforeWorld, isAttackWin);
+					player.opponentAttack(opponentFlag, attack, beforeWorld, wasAttackWon);
 					startTime = null;
 				} catch (Exception e) {
 				}
@@ -661,7 +661,7 @@ public class GamePlayThread extends Thread {
 						int fromLandId = attack.getFromLandId();
 						int toLandId = attack.getToLandId();
 						boolean successAttacked = false;
-						boolean isAttackWin = false;
+						boolean wasAttackWon = false;
 						for (FullLand land : world.getFullLands()) {
 							if (!successAttacked
 									&& land.getLandId() == fromLandId
@@ -680,7 +680,7 @@ public class GamePlayThread extends Thread {
 										addToActivityQueue(new SimplePlayerAttackActivityImpl(
 												attack));
 										if (landRollResult.isLeftWin()) {
-											isAttackWin = true;
+											wasAttackWon = true;
 											addTotalDiceCountByFlag(
 													neighbouringLandFlag,
 													(neighbouringLand
@@ -730,7 +730,7 @@ public class GamePlayThread extends Thread {
 								if (!f.equals(playerFlag)
 										&& world.isExistsLandByFlag(f)) {
 									players[i] = fireOpponentAttack(players[i],
-											f, attack, immutableWorld, isAttackWin);
+											f, attack, immutableWorld, wasAttackWon);
 								}
 							}
 						}
