@@ -133,24 +133,22 @@ public class GamePlayThread extends Thread {
 		return arrayLands[rnd];
 	}
 
-	void grantReserve(final FullWorld world, final Flag playerFlag) {
+	void grantWorldByFlag(final FullWorld world, final Flag playerFlag) {
 		int j = world.getMaxConnectedLandsByFlag(playerFlag);
 
 		// *TODO speed up this block
 		int totalAddedDiceCount = 0;
 		while (j > 0) {
-			if (configuration.getMaxDiceCountInReserve() > world
-					.getDiceCountInReserve(playerFlag)) {
+			//if (configuration.getMaxDiceCountInReserve() > world
+			//	.getDiceCountInReserve(playerFlag)) {
 				world.incDiceCountInReserve(playerFlag);
 				totalAddedDiceCount++;
-			}
+			//}
 			j--;
 		}
 		
 		addTotalDiceCountByFlag(playerFlag, totalAddedDiceCount);
-	}
 
-	void grantWorldFromReserve(final FullWorld world, final Flag playerFlag) {
 		Land land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		while (land != null && world.hasInReserve(playerFlag)) {
 			if (land.getDiceCount() > 7)
@@ -168,13 +166,14 @@ public class GamePlayThread extends Thread {
 			world.decDiceCountInReserve(playerFlag);
 			land = getRandomLandForDiceIncreasingByFlag(world, playerFlag);
 		}
-		int j = world.getMaxConnectedLandsByFlag(playerFlag);
-		addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(playerFlag, getTotalDiceCountByFlag(playerFlag), j, world.getDiceCountInReserve(playerFlag)));
-	}
-
-	void grantWorldByFlag(final FullWorld world, final Flag playerFlag) {
-		grantReserve(world, playerFlag);
-		grantWorldFromReserve(world, playerFlag);
+		
+		// *TODO speed up this block
+		while (world.getDiceCountInReserve(playerFlag) > configuration.getMaxDiceCountInReserve()){
+			world.decDiceCountInReserve(playerFlag);
+			addTotalDiceCountByFlag(playerFlag, -1);
+		}
+		
+		addToActivityQueue(new SimpleWorldInfoUpdatedActivityImpl(playerFlag, getTotalDiceCountByFlag(playerFlag), totalAddedDiceCount, world.getDiceCountInReserve(playerFlag)));
 	}
 
 	private Integer getTotalDiceCountByFlag(Flag flag) {

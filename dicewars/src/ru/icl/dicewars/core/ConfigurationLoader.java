@@ -42,7 +42,7 @@ public class ConfigurationLoader {
 	
 	private final static String DEFAULT_PLAYERS_CONF_FILENAME = "players.conf";
 
-	private static final int DEFAULT_MAX_DICE_COUNT_IN_RESERVE = 64;
+	private static final int DEFAULT_MAX_DICE_COUNT_IN_RESERVE = 100;
 
 	private static ConfigurationLoader configurationLoader = null;
 
