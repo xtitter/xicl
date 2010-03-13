@@ -13,7 +13,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 
     /*** CONST ***/
 
-    private final static int WORLD_Y_SIZE = 55;
+    private final static int WORLD_Y_SIZE = 53;
     private final static int WORLD_X_SIZE = 68;
     private final static int MIN_LAND_SIZE = 55;
     private final static int MAX_LAND_SIZE = 68;

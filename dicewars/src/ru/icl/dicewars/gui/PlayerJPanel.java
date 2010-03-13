@@ -24,7 +24,7 @@ public final class PlayerJPanel extends JPanel {
 	private int totalDiceCount = -1;
 
 	private int dicePerTurnCount = 0;
-	private int reserveCount = 0;
+	private int diceCountInReserve = 0;
 	private int winnerTotalDiceCount = 0;
 	private boolean winner = false;
 		
@@ -63,7 +63,7 @@ public final class PlayerJPanel extends JPanel {
 		if (flag != null){
 			Image avatar = null;	
 			if (winner) {
-				g.drawImage(ImageManager.getTrophyImage(), 145, 30, 32, 32, this);
+				g.drawImage(ImageManager.getTrophyImage(), 142, 30, this);
 				avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
 			}
 			if (winnerTotalDiceCount / 2 > totalDiceCount){
@@ -78,7 +78,7 @@ public final class PlayerJPanel extends JPanel {
 			if (avatar == null || totalDiceCount == -1){
 				avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
 			}
-			if (avatar != null) g.drawImage(avatar, radius - 9, radius - 1, 64, 64, this);
+			if (avatar != null) g.drawImage(avatar, radius - 9, radius - 4, this);
 			
 			Image dicePerTurnCountImage = ImageManager.getDicePerTurnCountImage(flag);
 			if (dicePerTurnCountImage != null)
@@ -86,7 +86,7 @@ public final class PlayerJPanel extends JPanel {
 			
 			Image diceCountInReserveImage = ImageManager.getDiceCountInReserveImage(flag);
 			if (diceCountInReserveImage != null)
-				g.drawImage(diceCountInReserveImage, 75, 56, this);
+				g.drawImage(diceCountInReserveImage, 72, 56, this);
 		}
 		
 		g.setColor(Color.black);
@@ -95,12 +95,12 @@ public final class PlayerJPanel extends JPanel {
 		g.setFont(playerNameFont);
 		g.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
 		if (flag != null){
-			Font dicePerTurnCountFont = new Font("dicePerTurnCountFont", Font.BOLD, 24);
+			Font dicePerTurnCountFont = new Font("dicePerTurnCountFont", Font.ITALIC, 20);
 			g.setFont(dicePerTurnCountFont);
 			g.drawString("- " + String.valueOf(dicePerTurnCount), 101, 48);
-			Font diceInReserveCountFont = new Font("diceInReserveCountFont", Font.BOLD, 20);
+			Font diceInReserveCountFont = new Font("diceInReserveCountFont", Font.ITALIC, 20);
 			g.setFont(diceInReserveCountFont);
-			g.drawString("- " + String.valueOf(reserveCount), 104, 72);
+			g.drawString("- " + String.valueOf(diceCountInReserve), 101, 72);
 		}
 		g.setFont(oldFont);
 	}
@@ -113,12 +113,12 @@ public final class PlayerJPanel extends JPanel {
 		return dicePerTurnCount;
 	}
 	
-	public void setReserveCount(int reserveCount) {
-		this.reserveCount = reserveCount;
+	public void setDiceCountInReserve(int diceCountInReserve) {
+		this.diceCountInReserve = diceCountInReserve;
 	}
 	
-	public int getReserveCount() {
-		return reserveCount;
+	public int getDiceCountInReserve() {
+		return diceCountInReserve;
 	}
 	
 	public int getTotalDiceCount() {

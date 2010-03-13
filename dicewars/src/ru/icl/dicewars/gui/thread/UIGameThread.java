@@ -19,6 +19,8 @@ public class UIGameThread extends Thread {
 	volatile boolean t = true;
 	
 	volatile int speed = 1;
+	//volatile boolean freeze = false;
+	//final Object freezeFlag = new Object();
 	
 	Configuration configuration;
 
@@ -115,18 +117,26 @@ public class UIGameThread extends Thread {
 	}
 	
 	private void _sleep(long time) throws InterruptedException{
+		/*while (freeze){
+			freeze = false;
+			synchronized (freezeFlag) {
+				freezeFlag.wait(1000);
+			}
+		}*/
 		Thread.sleep(time);
 	}
 
-	private void _sleep(long time, int speed) {
-		try {
-			if (speed == 1)
-				Thread.sleep(time);
-			if (speed == 2)
-				Thread.sleep(time / 10);
-		} catch (InterruptedException ie) {
-			ie.printStackTrace();
-		}
+	private void _sleep(long time, int speed) throws InterruptedException{
+		/*while (freeze){
+			freeze = false;
+			synchronized (freezeFlag) {
+				freezeFlag.wait(1000);
+			}
+		}*/
+		if (speed == 1)
+			Thread.sleep(time);
+		if (speed == 2)
+			Thread.sleep(time / 10);
 	}
 
 	public void kill() {
@@ -136,4 +146,8 @@ public class UIGameThread extends Thread {
 			this.notifyAll();
 		}
 	}
+
+	/*public void freeze() {
+		freeze = true;
+	}*/
 }

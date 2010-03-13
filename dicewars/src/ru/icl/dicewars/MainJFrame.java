@@ -139,6 +139,10 @@ public final class MainJFrame extends JFrame {
 	        infoJPanel.setBounds(screenWidth - 220, 30, 200, screenHeight - 120);
 	        infoJPanel.revalidate();
 	        
+	        final WorldJPanel worldJPanel = WindowManager.getInstance().getWorldJPanel();
+	        worldJPanel.revalidate();
+	        worldJPanel.clearBuffers();
+	        
 	        Rectangle buttonSize = new Rectangle(32, 32);
 	        int x = (screenWidth - 220) / 2 - buttonSize.width * 2 - 12 - 24;
 	        int y = (int)(screenHeight - 150);
@@ -159,7 +163,9 @@ public final class MainJFrame extends JFrame {
     
     /*AdjustmentListener scrollListener = new AdjustmentListener() {
 		public void adjustmentValueChanged(AdjustmentEvent e) {
-			WindowManager.getInstance().freeze();
+			if (uiGameThread != null){
+				uiGameThread.freeze();
+			}
 		}
 	};*/
 	
@@ -250,6 +256,8 @@ public final class MainJFrame extends JFrame {
 		Rectangle scrnRect = getGraphicsConfiguration().getBounds();
         setSize(scrnRect.width, scrnRect.height);
         
+        setMinimumSize(new Dimension(800,600));
+        
         setTitle("DiceWars");
         
         setIconImage(ImageManager.getDiceIconImage());
@@ -268,15 +276,15 @@ public final class MainJFrame extends JFrame {
         setContentPane(contentPane);
         
         final WorldJPanel world = WindowManager.getInstance().getWorldJPanel();
-        world.setPreferredSize(new Dimension(1350,930));
+        world.setPreferredSize(new Dimension(2400,2400));
         world.setBorder(BorderFactory.createEtchedBorder());
         
         final JScrollPane jScrollPane = WindowManager.getInstance().getJScrollPane();
-        jScrollPane.setBounds(10, 30, scrnRect.width - 240, scrnRect.height - 120);
+        jScrollPane.setBounds(10, 30, getWidth() - 240, getHeight() - 120);
         jScrollPane.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jScrollPane.setOpaque(false);
 		jScrollPane.getViewport().setOpaque(false);
-		jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		jScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		jScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		jScrollPane.setBorder(BorderFactory.createLineBorder(new Color(0, 100, 0, 0)));
 		//jScrollPane.getHorizontalScrollBar().addAdjustmentListener(scrollListener);
@@ -285,7 +293,7 @@ public final class MainJFrame extends JFrame {
 		jLayeredPane.add(jScrollPane, 0);
         
         final JPanel infoJPanel = WindowManager.getInstance().getInfoJPanel();
-        infoJPanel.setBounds(scrnRect.width - 220, 30, 200, scrnRect.height - 120);
+        infoJPanel.setBounds(getWidth() - 220, 30, 200, getHeight() - 120);
         infoJPanel.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jLayeredPane.add(infoJPanel, 0);
 
@@ -301,8 +309,8 @@ public final class MainJFrame extends JFrame {
         		ImageManager.getPauseSpeedImageHoveredSelected(),
         		ImageManager.getPauseSpeedImage(),
                 imageSize);
-        int x = (scrnRect.width - 220) / 2 - buttonSize.width * 2 - 12 - 24;
-        int y = (int)(scrnRect.height - 150);
+        int x = (getWidth() - 220) / 2 - buttonSize.width * 2 - 12 - 24;
+        int y = (int)(getHeight() - 150);
         pauseSpeed.setBounds(new Rectangle(x, y, buttonSize.width, buttonSize.height));
         pauseSpeed.setEnabled(true);
         pauseSpeed.setObserver(pauseSpeedCommand);

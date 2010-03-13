@@ -69,7 +69,7 @@ public final class InfoJPanel extends JPanel {
 	
 	public void update(Flag flag, int totalDiceCount, int maxConnectedLandsCount, int diceCountInReserve) {
 		if (flagToPlayerJPanelMap.containsKey(flag)) {
-			flagToPlayerJPanelMap.get(flag).setReserveCount(diceCountInReserve);
+			flagToPlayerJPanelMap.get(flag).setDiceCountInReserve(diceCountInReserve);
 		}
 		
 		if (flagToPlayerJPanelMap.containsKey(flag)) {

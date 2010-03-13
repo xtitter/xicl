@@ -10,10 +10,10 @@ import java.util.Set;
 import ru.icl.dicewars.core.Point;
 
 abstract class AbstractPainter {
-	private static final int MIN_X = WorldJPanel.MIN_X;
-	private static final int MIN_Y = WorldJPanel.MIN_Y;
-	private static final int MAX_X = WorldJPanel.MAX_X;
-	private static final int MAX_Y = WorldJPanel.MAX_Y;
+	static final int MIN_X = WorldJPanel.MIN_X;
+	static final int MIN_Y = WorldJPanel.MIN_Y;
+	static final int MAX_X = WorldJPanel.MAX_X;
+	static final int MAX_Y = WorldJPanel.MAX_Y;
 	
 	final static BasicStroke stroke = new BasicStroke(2.0f);
 	

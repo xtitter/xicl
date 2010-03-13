@@ -51,13 +51,14 @@ class BackgroundPainter extends AbstractPainter{
 
 			g2d.setColor(color);
 			g2d.setStroke(stroke);
+			g2d.fillRect(0, 0, maxX+20, maxY+20);
 
 			for (Point p : land.getPoints()) {
 				rowOffset = p.getY() % 2 == 0 ? 9 : 0;
 				int _x = p.getX() * 19 + rowOffset;
 				int _y = p.getY() * (20 - correction);
 				Polygon pol = getHexagon(_x - minX, _y - minY, 10);
-				g2d.fillPolygon(pol);
+				//g2d.fillPolygon(pol);
 				drawBorder(g2d, land.getPoints(), p, pol);
 			}
 

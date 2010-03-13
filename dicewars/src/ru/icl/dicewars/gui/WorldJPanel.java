@@ -26,6 +26,7 @@ import ru.icl.dicewars.gui.arrow.ArrowFactory;
 import ru.icl.dicewars.gui.arrow.BezierArrow;
 import ru.icl.dicewars.gui.arrow.ArrowFactory.ArrowType;
 import ru.icl.dicewars.gui.manager.ImageManager;
+import ru.icl.dicewars.gui.manager.WindowManager;
 
 public final class WorldJPanel extends JPanel {
 	private static final long serialVersionUID = -3234906592754761865L;
@@ -34,26 +35,32 @@ public final class WorldJPanel extends JPanel {
 	
 	private FullWorld world;
 
-	private int width;
-	private int height;
-
-	public static final int X_OFFSET = 35;
-	public static final int Y_OFFSET = 30;
+	public static final int X_OFFSET = 10;
+	public static final int Y_OFFSET = 10;
 
 	public static final int DICE_X_OFFSET = -30;
 	public static final int DICE_Y_OFFSET = -70;
+
+	public static final int ARROW_X_OFFSET = 17;
+	public static final int ARROW_Y_OFFSET = 10;
+
+	public static final int BACKGROUND_X_OFFSET = 29;
+	public static final int BACKGROUND_Y_OFFSET = 26;
 	
 	public static final int MIN_X = -1;
 	public static final int MIN_Y = -1;
 	public static final int MAX_X = 68;
-	public static final int MAX_Y = 55;
+	public static final int MAX_Y = 53;
 	
-	private BufferedImage doubleBuffer = null;
-	private BufferedImage arrowDoubleBuffer = null;
+	private static final int MAIN_IMAGE_WIDTH = (MAX_X+1)*19 + 9;
+	private static final int MAIN_IMAGE_HEIGHT = (MAX_Y+1)*(20-4);
+	
+	private Image doubleBuffer = null;
+	private Image arrowDoubleBuffer = null;
 	private int arrowDoubleBufferOffsetX = 0;
 	private int arrowDoubleBufferOffsetY = 0;
 	
-    private static final Font landIdFont = new Font(Font.SANS_SERIF, Font.BOLD, 12);
+    private static final Font landIdFont = new Font(Font.SANS_SERIF, Font.ITALIC, 12);
 	
 	//Bug with concurrent modification fix. This is slowest method. World object should be wrapped.
 	private final Object flag = new Object();	
@@ -64,7 +71,7 @@ public final class WorldJPanel extends JPanel {
 	private int attackingPlayerLandId = 0;
 	private int defendingPlayerLandId = 0;
 	
-	private AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.75f);
+	private AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.60f);
 	
 	private int arrowState = 0;
 	
@@ -100,8 +107,6 @@ public final class WorldJPanel extends JPanel {
 			this.world = world;
 			if (world!=null){
 				landFactory = new LandFactory(world);
-				width = getWidth();
-				height = getHeight();
 			}
 			this.doubleBuffer = null;	
 		}
@@ -109,7 +114,7 @@ public final class WorldJPanel extends JPanel {
 	}
 	
 	public void updateAttackingPlayer(int attackingPlayerLandId) {
-		if (world == null || width == 0 || height == 0)
+		if (world == null)
 			throw new IllegalStateException();
 
 		this.attackingPlayerLandId = attackingPlayerLandId;
@@ -120,7 +125,7 @@ public final class WorldJPanel extends JPanel {
 	}
 
 	public void updateDefendingPlayerLandId(int defendingPlayerLandId) {
-		if (world == null || width == 0 || height == 0)
+		if (world == null)
 			throw new IllegalStateException();
 
 		this.defendingPlayerLandId = defendingPlayerLandId;
@@ -131,7 +136,7 @@ public final class WorldJPanel extends JPanel {
 	}
 	
 	public void updateLand(FullLand land) {
-		if (world == null || width == 0 || height == 0)
+		if (world == null)
 			throw new IllegalStateException();
 
 		FullLand l2 = null;
@@ -174,8 +179,17 @@ public final class WorldJPanel extends JPanel {
 		repaint();
 	}
 	
+	public void clearBuffers(){
+		synchronized (flag2) {
+			this.doubleBuffer = null;	
+		}
+		synchronized (flag4) {
+			this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;	
+		}
+	}
+	
 	public void drawArrow(Integer fromLandId, Integer toLandId){
-		if (world == null || width == 0 || height == 0)
+		if (world == null)
 			throw new IllegalStateException();
 		
 		synchronized (flag4) {
@@ -222,7 +236,7 @@ public final class WorldJPanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (world == null || width == 0 || height == 0)
+		if (world == null)
 			return;
 		Set<FullLand> landsTmp;
 
@@ -236,9 +250,9 @@ public final class WorldJPanel extends JPanel {
 					landsTmp = new HashSet<FullLand>(world.getFullLands());	
 				}
 				
-				this.doubleBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g2d = (Graphics2D) doubleBuffer.getGraphics();
-			
+				BufferedImage bufferedImage = new BufferedImage(MAIN_IMAGE_WIDTH, MAIN_IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
+				
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				
 				/*
@@ -246,7 +260,7 @@ public final class WorldJPanel extends JPanel {
 				 */
 				BufferedImage backgroundImage = landFactory.getBackground();
 				if (backgroundImage != null) {
-					g2d.drawImage(backgroundImage, X_OFFSET - 29, Y_OFFSET - 26, backgroundImage.getWidth(), backgroundImage.getHeight(), this);
+					g2d.drawImage(backgroundImage, X_OFFSET - BACKGROUND_X_OFFSET, Y_OFFSET - BACKGROUND_Y_OFFSET, backgroundImage.getWidth(), backgroundImage.getHeight(), this);
 				}
 
 				/*
@@ -283,17 +297,30 @@ public final class WorldJPanel extends JPanel {
 						if (diceImage != null){
 							g2d.drawImage(diceImage, l.center.x + DICE_X_OFFSET + X_OFFSET, l.center.y + DICE_Y_OFFSET + Y_OFFSET, this);
 						}
-
-						// Displaying land ids
-                        g2d.setColor(Color.WHITE);
-                        g2d.setFont(landIdFont);
-                        g2d.drawString(String.valueOf(land.getLandId()), (int)l.center.x + X_OFFSET + 10, (int)l.center.y + Y_OFFSET + 8);
 					}
 				}
 				
 				g2d.dispose();
+				int w = WindowManager.getInstance().getScreenWidth() - 250;
+				
+				doubleBuffer = new BufferedImage(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, BufferedImage.TYPE_INT_ARGB); 
+				g2d = (Graphics2D) doubleBuffer.getGraphics();
+				
+				g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
+				
+				for (FullLand land : landsTmp) {
+					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
+					if (l != null) {
+						// Displaying land ids
+                        g2d.setColor(Color.WHITE);
+                        g2d.setFont(landIdFont);
+                        g2d.drawString(String.valueOf(land.getLandId()), ((int)l.center.x + X_OFFSET + 27) * w/MAIN_IMAGE_WIDTH, ((int)l.center.y + Y_OFFSET + 20) * w/MAIN_IMAGE_WIDTH);
+					}
+				}
+				g2d.dispose();
 			}
-			g.drawImage(this.doubleBuffer, 0, 0, this.doubleBuffer.getWidth(), this.doubleBuffer.getHeight(), this);
+			
+			g.drawImage(doubleBuffer, 0, 0, doubleBuffer.getWidth(this), doubleBuffer.getHeight(this), this);
 		}
 		
 		synchronized (flag4) {
@@ -312,21 +339,28 @@ public final class WorldJPanel extends JPanel {
 					
 					arrow.setCoordinates(p1.x - minx + 25, p1.y - miny + 25, p2.x - minx + 25, p2.y - miny + 25);
 
-					this.arrowDoubleBuffer = new BufferedImage(Math.abs(p2.x - p1.x) + 50, Math.abs(p2.y - p1.y) + 50, BufferedImage.TYPE_INT_ARGB);
+					BufferedImage arrowBufferedImage = new BufferedImage(Math.abs(p2.x - p1.x) + 50, Math.abs(p2.y - p1.y) + 50, BufferedImage.TYPE_INT_ARGB);
 					this.arrowDoubleBufferOffsetX = minx - 25;
 					this.arrowDoubleBufferOffsetY = miny - 25;
 					
-					Graphics2D g2d = (Graphics2D) arrowDoubleBuffer.getGraphics();
+					Graphics2D g2d = (Graphics2D) arrowBufferedImage.getGraphics();
 					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 					arrow.paint(g2d);
 					g2d.dispose();
+					
+					int w = WindowManager.getInstance().getScreenWidth() - 250;
+					
+					arrowDoubleBuffer = arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST);		
 				}else{
 					this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;
 					this.arrowDoubleBufferOffsetX = 0;
 					this.arrowDoubleBufferOffsetY = 0;
 				}
 			}
-			g.drawImage(this.arrowDoubleBuffer, this.arrowDoubleBufferOffsetX + X_OFFSET, this.arrowDoubleBufferOffsetY+Y_OFFSET, this.arrowDoubleBuffer.getWidth(), this.arrowDoubleBuffer.getHeight(), this);
+			
+			int w = WindowManager.getInstance().getScreenWidth() - 250;
+			
+			g.drawImage(this.arrowDoubleBuffer, (this.arrowDoubleBufferOffsetX + ARROW_X_OFFSET) * w/MAIN_IMAGE_WIDTH, (this.arrowDoubleBufferOffsetY+ARROW_Y_OFFSET) * w/MAIN_IMAGE_WIDTH, arrowDoubleBuffer.getWidth(this), arrowDoubleBuffer.getHeight(this), this);
 		}
 		
 	    g.dispose();
