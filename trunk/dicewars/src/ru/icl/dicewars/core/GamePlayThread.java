@@ -23,6 +23,7 @@ import ru.icl.dicewars.core.activity.SimpleGameEndedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivityImpl;
 import ru.icl.dicewars.core.activity.SimplePlayersLoadedActivityImpl;
+import ru.icl.dicewars.core.activity.SimpleTurnNumberChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleWorldInfoUpdatedActivityImpl;
 import ru.icl.dicewars.core.exception.InvalidPlayerClassInstatiationException;
@@ -637,6 +638,7 @@ public class GamePlayThread extends Thread {
 		/* Start the game */
 		int turnNumber = 1;
 		while (!hasWinner(world) && t) {
+			addToActivityQueue(new SimpleTurnNumberChangedActivityImpl(turnNumber));
 			for (int i = 0; i < playerCount; i++) {
 				Flag playerFlag = playerToFlagMap.get(players[i]);
 				world.setMyFlag(playerFlag);
@@ -678,7 +680,7 @@ public class GamePlayThread extends Thread {
 										LandRollResult landRollResult = LandRoll
 												.roll(land, neighbouringLand);
 										addToActivityQueue(new SimplePlayerAttackActivityImpl(
-												attack));
+												attack, playerFlag, neighbouringLandFlag, landRollResult.getLeftDices(), landRollResult.getRightDices()));
 										if (landRollResult.isLeftWin()) {
 											wasAttackWon = true;
 											addTotalDiceCountByFlag(

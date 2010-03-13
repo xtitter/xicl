@@ -10,6 +10,7 @@ import ru.icl.dicewars.core.activity.LandUpdatedActivity;
 import ru.icl.dicewars.core.activity.PlayersLoadedActivity;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivityImpl;
+import ru.icl.dicewars.core.activity.TurnNumberChangedActivity;
 import ru.icl.dicewars.core.activity.WorldCreatedActivity;
 import ru.icl.dicewars.core.activity.WorldInfoUpdatedActivity;
 import ru.icl.dicewars.gui.manager.WindowManager;
@@ -72,6 +73,9 @@ public class UIGameThread extends Thread {
 					WindowManager.getInstance().getWorldJPanel().updateLand(landUpdatedActivity.getFullLand());
 				} else if (activity instanceof SimplePlayerAttackActivityImpl) {
 					SimplePlayerAttackActivityImpl simplePlayerActivity = ((SimplePlayerAttackActivityImpl) activity);
+					if (speed == 1 || speed == 2){
+						WindowManager.getInstance().getBottomInfoJPanel().updateDices(simplePlayerActivity.getPlayerFlag(), simplePlayerActivity.getOpponentFlag(), simplePlayerActivity.getPlayerDices(), simplePlayerActivity.getOpponentDices());
+					}
 					WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(simplePlayerActivity.getFromLandId());
 					_sleep(700, speed);
 					checkPause();
@@ -81,16 +85,21 @@ public class UIGameThread extends Thread {
 					if (speed == 1){
 						WindowManager.getInstance().getWorldJPanel().drawArrow(simplePlayerActivity.getFromLandId(), simplePlayerActivity.getToLandId());
 					}
-					_sleep(350, speed);
+					_sleep(500, speed);
 					checkPause();
 					WindowManager.getInstance().getWorldJPanel().eraseArrow();
 					WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(0);
 					WindowManager.getInstance().getWorldJPanel().updateDefendingPlayerLandId(0);
 					_sleep(300, speed);
 					checkPause();
+					WindowManager.getInstance().getBottomInfoJPanel().updateDices(null, null, null, null);
 				} else if (activity instanceof WorldInfoUpdatedActivity) {
 					WorldInfoUpdatedActivity worldInfoUpdatedActivity = (WorldInfoUpdatedActivity)activity;
 					WindowManager.getInstance().getInfoJPanel().update(worldInfoUpdatedActivity.getFlag(), worldInfoUpdatedActivity.getTotalDiceCount(), worldInfoUpdatedActivity.getMaxConnectedLandsCount(), worldInfoUpdatedActivity.getDiceCountInReserve());
+				} else if (activity instanceof TurnNumberChangedActivity){
+					TurnNumberChangedActivity turnNumberChangedActivity = (TurnNumberChangedActivity) activity;
+					int turnNumber = turnNumberChangedActivity.getTurnNumber();
+					WindowManager.getInstance().getBottomInfoJPanel().updateTurnNumber(turnNumber);
 				} else if (activity instanceof GameEndedActivity){
 					WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
 					break;

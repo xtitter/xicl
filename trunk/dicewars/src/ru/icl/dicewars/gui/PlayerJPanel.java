@@ -17,6 +17,10 @@ import ru.icl.dicewars.gui.util.FlagToColorUtil;
 public final class PlayerJPanel extends JPanel {
 
 	private final static long serialVersionUID = 8066379108638626622L;
+	
+	private final static Font DICE_PER_TURN_COUNT_FONT = new Font("dicePerTurnCountFont", Font.ITALIC, 20);
+	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font("diceInReserveCountFont", Font.ITALIC, 20);
+	private final static Font PLAYER_NAME_FONT = new Font("playerNameFont", Font.BOLD, 12);
 
 	private final static int radius = 12; 
 	private final static int alpha = 90; 
@@ -95,15 +99,14 @@ public final class PlayerJPanel extends JPanel {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Font oldFont = g2d.getFont();
-		Font playerNameFont = new Font("playerNameFont", Font.BOLD, 12);
-		g2d.setFont(playerNameFont);
+		
+		g2d.setFont(PLAYER_NAME_FONT);
 		g2d.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
 		if (flag != null){
-			Font dicePerTurnCountFont = new Font("dicePerTurnCountFont", Font.ITALIC, 20);
-			g2d.setFont(dicePerTurnCountFont);
+			g2d.setFont(DICE_PER_TURN_COUNT_FONT);
 			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 101, 48);
-			Font diceInReserveCountFont = new Font("diceInReserveCountFont", Font.ITALIC, 20);
-			g2d.setFont(diceInReserveCountFont);
+			
+			g2d.setFont(DICE_IN_RESERVE_COUNT_FONT);
 			g2d.drawString("- " + String.valueOf(diceCountInReserve), 101, 72);
 		}
 		g2d.setFont(oldFont);
