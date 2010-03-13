@@ -3,7 +3,9 @@ package ru.icl.dicewars.gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
@@ -90,19 +92,21 @@ public final class PlayerJPanel extends JPanel {
 		}
 		
 		g.setColor(Color.black);
-		Font oldFont = g.getFont();
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		Font oldFont = g2d.getFont();
 		Font playerNameFont = new Font("playerNameFont", Font.BOLD, 12);
-		g.setFont(playerNameFont);
-		g.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
+		g2d.setFont(playerNameFont);
+		g2d.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
 		if (flag != null){
 			Font dicePerTurnCountFont = new Font("dicePerTurnCountFont", Font.ITALIC, 20);
-			g.setFont(dicePerTurnCountFont);
-			g.drawString("- " + String.valueOf(dicePerTurnCount), 101, 48);
+			g2d.setFont(dicePerTurnCountFont);
+			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 101, 48);
 			Font diceInReserveCountFont = new Font("diceInReserveCountFont", Font.ITALIC, 20);
-			g.setFont(diceInReserveCountFont);
-			g.drawString("- " + String.valueOf(diceCountInReserve), 101, 72);
+			g2d.setFont(diceInReserveCountFont);
+			g2d.drawString("- " + String.valueOf(diceCountInReserve), 101, 72);
 		}
-		g.setFont(oldFont);
+		g2d.setFont(oldFont);
 	}
 
 	public void setDicePerTurnCount(int areaCount) {
