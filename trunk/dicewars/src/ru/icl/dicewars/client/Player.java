@@ -11,7 +11,7 @@ public interface Player extends Serializable{
 	
 	public Flag chooseFlag(World world, Set<Flag> availableFlags);
 
-	public void opponentAttack(Flag opponentFlag, Attack attack, World beforeWorld, boolean isAttackWin);
+	public void opponentAttack(Flag opponentFlag, Attack attack, World beforeWorld, boolean wasAttackWon);
 	
 	public Attack attack(World world);
 }
