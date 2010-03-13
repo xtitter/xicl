@@ -330,6 +330,16 @@ public class ImageManager {
     	return trophyImage;
     }
     
+    public static Image getArrowImage() {
+    	if (arrowImage == null) {
+			if (arrowImage == null) {
+				arrowImage = getImageFromResource("/resources/info/arrow.png");
+			}
+    	}
+    	return arrowImage;
+    }
+
+    
     public static Image getDicePerTurnCountImage(Flag flag) {
     	if (dicePerTurnCountImages == null)
     		dicePerTurnCountImages = new HashMap<Flag, Image>();
@@ -377,13 +387,53 @@ public class ImageManager {
     	}
     	return ret;
     }    
+    
+    public static Image getRolledDiceImage(Flag flag, int num) {
+		if (num < 1 || num > 8) throw new IllegalArgumentException(); 
+		
+		if (roledDices == null) {
+			roledDices = new HashMap<Integer, Map<Flag,Image>>();
+    	}
+    	Integer index = Integer.valueOf(num);
+    	
+    	if (roledDices.get(num) == null){
+    		roledDices.put(num, new HashMap<Flag, Image>());
+    	}
+    	
+    	Map<Flag,Image> d = roledDices.get(num);
+    	
+    	if (!d.containsKey(flag)) {
+    		String fileName = null;
+    		switch (flag) {
+				case BLUE:	fileName = "blue";break;
+				case RED:	fileName = "red";break;
+				case CYAN:	fileName = "cyan";break;
+				case YELLOW:	fileName = "yellow";break;
+				case GREEN:	fileName = "green";break;
+				case ORANGE:	fileName = "orange";break;
+				case GRAY:	fileName = "gray";break;
+				case MAGENTA: fileName = "magenta";break;
+				default:
+					throw new IllegalStateException();
+			}
+    		String path = "/resources/info/" + fileName + "_dice" +index + ".png";
+    		Image image = getImageFromResource(path);
+    		d.put(flag, image);
+    	}
+    	
+    	return d.get(flag);
+	}
+    
     private static Map<Integer, Map<Flag,Image>> dices;
+    
+    private static Map<Integer, Map<Flag,Image>> roledDices;
     
     private static Map<Flag, Image> dicePerTurnCountImages;
     
     private static Map<Flag, Image> diceCountInReserveImages;
     
     private static Image trophyImage;
+    private static Image arrowImage;
     
     private static Image pauseSpeedImage;
     private static Image pauseSpeedImageSelected;

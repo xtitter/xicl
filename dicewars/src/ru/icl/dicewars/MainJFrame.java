@@ -28,6 +28,7 @@ import ru.icl.dicewars.core.ConfigurationLoader;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.RealFullWorldGeneratorImpl;
 import ru.icl.dicewars.core.SimpleConfigurationImpl;
+import ru.icl.dicewars.gui.BottomInfoJPanel;
 import ru.icl.dicewars.gui.InfoJPanel;
 import ru.icl.dicewars.gui.PlayersJDialog;
 import ru.icl.dicewars.gui.TopMenuMenuBar;
@@ -128,24 +129,24 @@ public final class MainJFrame extends JFrame {
     private final ComponentAdapter resizeListener = new ComponentAdapter(){
 		@Override
 		public void componentResized(ComponentEvent e) {
-			final int screenWidth = WindowManager.getInstance().getScreenWidth();
-			final int screenHeight = WindowManager.getInstance().getScreenHeight();
-			
 			final JScrollPane jScrollPane = WindowManager.getInstance().getJScrollPane();
-			jScrollPane.setBounds(10, 30, screenWidth - 240, screenHeight - 120);
+			jScrollPane.setBounds(10, 30, getWidth() - 240, getHeight() - 120);
 			jScrollPane.revalidate();
 			
 			final InfoJPanel infoJPanel = WindowManager.getInstance().getInfoJPanel();
-	        infoJPanel.setBounds(screenWidth - 220, 30, 200, screenHeight - 120);
+	        infoJPanel.setBounds(getWidth() - 220, 30, 200, getHeight() - 70);
 	        infoJPanel.revalidate();
+	        
+	        final BottomInfoJPanel bottomInfoJPanel = WindowManager.getInstance().getBottomInfoJPanel();
+	        bottomInfoJPanel.setBounds(10, getHeight() - 120 + 30 + 5, getWidth() - 240, 45);
 	        
 	        final WorldJPanel worldJPanel = WindowManager.getInstance().getWorldJPanel();
 	        worldJPanel.revalidate();
 	        worldJPanel.clearBuffers();
 	        
 	        Rectangle buttonSize = new Rectangle(32, 32);
-	        int x = (screenWidth - 220) / 2 - buttonSize.width * 2 - 12 - 24;
-	        int y = (int)(screenHeight - 150);
+	        int x = (getWidth() - 220) / 2 - buttonSize.width * 2 - 12 - 24;
+	        int y = (int)(getHeight() - 150);
 	        x += buttonSize.width + 24; 
 	        pauseSpeed.setLocation(x, y);
 	        pauseSpeed.repaint();
@@ -253,10 +254,9 @@ public final class MainJFrame extends JFrame {
 	}
     
 	public MainJFrame() {
-		Rectangle scrnRect = getGraphicsConfiguration().getBounds();
-        setSize(scrnRect.width, scrnRect.height);
-        
-        setMinimumSize(new Dimension(800,600));
+		setExtendedState(MAXIMIZED_BOTH);
+		
+        setMinimumSize(new Dimension(1000,600));
         
         setTitle("DiceWars");
         
@@ -280,7 +280,7 @@ public final class MainJFrame extends JFrame {
         world.setBorder(BorderFactory.createEtchedBorder());
         
         final JScrollPane jScrollPane = WindowManager.getInstance().getJScrollPane();
-        jScrollPane.setBounds(10, 30, getWidth() - 240, getHeight() - 120);
+        jScrollPane.setBounds(10, 30, getWidth() - 240, getHeight() - 70);
         jScrollPane.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jScrollPane.setOpaque(false);
 		jScrollPane.getViewport().setOpaque(false);
@@ -293,9 +293,14 @@ public final class MainJFrame extends JFrame {
 		jLayeredPane.add(jScrollPane, 0);
         
         final JPanel infoJPanel = WindowManager.getInstance().getInfoJPanel();
-        infoJPanel.setBounds(getWidth() - 220, 30, 200, getHeight() - 120);
+        infoJPanel.setBounds(getWidth() - 220, 30, 200, getHeight() - 70);
         infoJPanel.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
         jLayeredPane.add(infoJPanel, 0);
+        
+        BottomInfoJPanel bottomInfoJPanel = WindowManager.getInstance().getBottomInfoJPanel();
+        bottomInfoJPanel.setBounds(10, getHeight() - 120 + 30 + 5, getWidth() - 240, 45);
+        bottomInfoJPanel.setBorder(new MatteBorder(2, 2, 2, 2, Color.LIGHT_GRAY));
+        jLayeredPane.add(bottomInfoJPanel, 0);
 
         addComponentListener(resizeListener);
 		

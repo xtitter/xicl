@@ -4,6 +4,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 
 import ru.icl.dicewars.MainJFrame;
+import ru.icl.dicewars.gui.BottomInfoJPanel;
 import ru.icl.dicewars.gui.InfoJPanel;
 import ru.icl.dicewars.gui.PlayersJDialog;
 import ru.icl.dicewars.gui.WorldJPanel;
@@ -19,6 +20,7 @@ public class WindowManager {
 	private MainJFrame mainJFrame;
 	private PlayersJDialog playersJDialog;
 	private JScrollPane jScrollPane;
+	private BottomInfoJPanel bottomInfoJPanel;
 
 	private final Object jLayeredPaneFlag = new Object();
 	private final Object worldJPanelFlag = new Object();
@@ -26,6 +28,7 @@ public class WindowManager {
 	private final Object mainJFrameFlag = new Object();
 	private final Object playersJDialogFlag = new Object();
 	private final Object jScrollPaneFlag = new Object();
+	private final Object bottomInfoJPanelFlag = new Object();
 	
 	//This class should be instantiated.
 	private WindowManager() {
@@ -113,6 +116,17 @@ public class WindowManager {
 
 	public int getScreenHeight() {
 		return getMainFrame().getSize().height;
+	}
+
+	public BottomInfoJPanel getBottomInfoJPanel() {
+		if (bottomInfoJPanel == null){
+			synchronized (bottomInfoJPanelFlag) {
+				if (bottomInfoJPanel == null){
+					bottomInfoJPanel = new BottomInfoJPanel();
+				}
+			}
+		}
+		return bottomInfoJPanel;
 	}
 
 }
