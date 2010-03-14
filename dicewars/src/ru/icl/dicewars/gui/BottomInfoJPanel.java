@@ -34,6 +34,11 @@ public class BottomInfoJPanel extends JPanel {
 
 	public void init() {
 		this.turnNumber = 0;
+		this.playerDicesList = null;
+		this.playerFlag = null;
+		this.opponentFlag = null;
+		this.opponentDicesList = null;
+		repaint();
 	}
 
 	@Override
@@ -46,7 +51,7 @@ public class BottomInfoJPanel extends JPanel {
 			g2d.setFont(TEXT_FONT);
 			g2d.drawString("Turn: ", 10, 10);
 			g2d.setFont(TURN_FONT);
-			g2d.drawString(String.valueOf(turnNumber), 10, 40);
+			g2d.drawString(String.valueOf(turnNumber), 10, 38);
 		}
 		g2d.setColor(Color.DARK_GRAY);
 		g2d.setFont(DICE_SUM_FONT);
@@ -67,16 +72,16 @@ public class BottomInfoJPanel extends JPanel {
 				}
 				Image arrowImage = ImageManager.getArrowImage();
 				if (arrowImage != null)
-					g2d.drawImage(arrowImage, 23 + getWidth()/2, 15, this);
+					g2d.drawImage(arrowImage, 23 + getWidth()/2, 11, this);
 				j = 0;
 				sum = 0;
 				for (Integer i : opponentDicesList){
 					Image diceImage = ImageManager.getRolledDiceImage(opponentFlag, i.intValue());
-					g2d.drawImage(diceImage, 15 + getWidth()/2 + 30 + j * 35, 7, this);
+					g2d.drawImage(diceImage, 15 + getWidth()/2 + 30 + j * 35+7, 7, this);
 					sum += i;
 					j++;
 				}
-				g2d.drawString("= " + String.valueOf(sum), 15 + getWidth()/2 + 30 + j * 35 + 3, 30);
+				g2d.drawString("= " + String.valueOf(sum), 15 + getWidth()/2 + 30 + j * 35 + 8, 30);
 			}
 		}
 	}

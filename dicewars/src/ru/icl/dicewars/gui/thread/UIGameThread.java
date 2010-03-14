@@ -61,6 +61,7 @@ public class UIGameThread extends Thread {
 				if (activity instanceof WorldCreatedActivity) {
 					FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
 					WindowManager.getInstance().getWorldJPanel().updateWorld(world);
+					WindowManager.getInstance().getBottomInfoJPanel().init();
 				} if (activity instanceof PlayersLoadedActivity){ 
 					PlayersLoadedActivity playersLoadedActivity = (PlayersLoadedActivity) activity;
 					WindowManager.getInstance().getInfoJPanel().initPlayers(playersLoadedActivity);
