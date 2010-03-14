@@ -23,6 +23,8 @@ public interface Configuration {
 	
 	public long getMaxTimeForAttackMethod();
 	
+	public long getMaxTimeForGetNameMethod();
+	
 	public Type getType();
 	
 	public static enum Type{

@@ -101,7 +101,11 @@ public final class PlayerJPanel extends JPanel {
 		Font oldFont = g2d.getFont();
 		
 		g2d.setFont(PLAYER_NAME_FONT);
-		g2d.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
+		if (playerName != null){
+			g2d.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
+		}else{
+			g2d.drawString("No name", 67, 20);
+		}
 		if (flag != null){
 			g2d.setFont(DICE_PER_TURN_COUNT_FONT);
 			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 101, 48);

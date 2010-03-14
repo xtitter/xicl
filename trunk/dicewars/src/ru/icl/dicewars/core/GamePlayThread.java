@@ -227,7 +227,10 @@ public class GamePlayThread extends Thread {
 	@SuppressWarnings("deprecation")
 	private Player fireInit(final Player player) {
 		if (configuration.getType() == Configuration.Type.OFF) {
-			player.init();
+			try{
+				player.init();
+			}catch (Exception e) {
+			}
 			return player;
 		}
 
@@ -298,7 +301,12 @@ public class GamePlayThread extends Thread {
 	private FireChooseFlagResult fireChooseFlag(final Player player,
 			final World world, final Set<Flag> availableFlags) {
 		if (configuration.getType() == Configuration.Type.OFF) {
-			Flag flag = player.chooseFlag(world, availableFlags);
+			Flag flag = null; 
+			try{
+				flag = player.chooseFlag(world, availableFlags);
+			}catch (Exception e) {
+				flag = null;
+			}
 			return new FireChooseFlagResult(flag, player);
 		}
 
@@ -379,7 +387,10 @@ public class GamePlayThread extends Thread {
 	private Player fireOpponentAttack(final Player player,
 			final Flag opponentFlag, final Attack attack, final World beforeWorld, final boolean wasAttackWon) {
 		if (configuration.getType() == Configuration.Type.OFF) {
-			player.opponentAttack(opponentFlag, attack, beforeWorld, wasAttackWon);
+			try{
+				player.opponentAttack(opponentFlag, attack, beforeWorld, wasAttackWon);
+			}catch (Exception e) {
+			}
 			return player;
 		}
 
@@ -402,7 +413,6 @@ public class GamePlayThread extends Thread {
 			}
 		}
 		OpponentAttackThread opponentAttackThread = new OpponentAttackThread();
-		opponentAttackThread.setPriority(Thread.MAX_PRIORITY);
 		Player previousStateOfPlayer = (Player) copyPlayer(player);
 		opponentAttackThread.setPriority(MAX_PRIORITY);
 		threadCreatedNotify();
@@ -444,6 +454,86 @@ public class GamePlayThread extends Thread {
 			return previousStateOfPlayer;
 		}
 		return player;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private FireGetNameResult fireGetName(final Player player) {
+		if (configuration.getType() == Configuration.Type.OFF) {
+			String name = null;
+			try{
+				name = player.getName();
+			}catch (Exception e) {
+				name = null;
+			}
+			return new FireGetNameResult(name, player);
+		}
+
+		class GetNameThread extends Thread {
+			volatile Long startTime = null;
+			
+			String playerName = null;
+
+			@Override
+			public void run() {
+				try {
+					//System.gc();
+					startTime = System.currentTimeMillis();
+					playerName = player.getName();
+					startTime = null;
+				} catch (Exception e) {
+				}
+			}
+
+			public Long getStartTime() {
+				return startTime;
+			}
+			
+			public String getPlayerName() {
+				return playerName;
+			}
+		}
+		GetNameThread getNameThread = new GetNameThread();
+		Player previousStateOfPlayer = (Player) copyPlayer(player);
+		getNameThread.setPriority(MAX_PRIORITY);
+		threadCreatedNotify();
+		getNameThread.start();
+		boolean isMemoryLimitExceeded = false;
+		boolean isTimeLimitExceeded = false;
+		try {
+			while (getNameThread.isAlive()) {
+				long t1 = System.currentTimeMillis();
+				Long startTime = getNameThread.getStartTime();
+				if (!isTimeLimitExceeded
+						&& startTime != null
+						&& t1 - startTime.longValue() > configuration
+								.getMaxTimeForGetNameMethod() + 10) {
+					logger
+							.info(player.getClass()
+									+ " - time limit has exceeded on execution getName method. Method execution was continued.");
+					isTimeLimitExceeded = true;
+					if (configuration.getType() == Configuration.Type.INTERRUPT_EXECUTION) {
+						getNameThread.stop();
+						return new FireGetNameResult(null, previousStateOfPlayer);
+					}
+				}
+				if (!isMemoryLimitExceeded
+						&& calcPlayerMemoryUsage(player) > configuration
+								.getMaxMemoryForPlayer()) {
+					logger
+							.info(player.getClass()
+									+ " - memory limit has exceeded on execution of getName method. Method execution was aborted.");
+					isMemoryLimitExceeded = true;
+					if (configuration.getType() == Configuration.Type.INTERRUPT_EXECUTION) {
+						getNameThread.stop();
+						return new FireGetNameResult(null, previousStateOfPlayer);
+					}
+				}
+				getNameThread.join(10);
+			}
+		} catch (InterruptedException e) {
+			return new FireGetNameResult(null, previousStateOfPlayer);
+		}
+		return new FireGetNameResult(getNameThread.getPlayerName(), previousStateOfPlayer);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -604,11 +694,14 @@ public class GamePlayThread extends Thread {
 
 	void play() {
 		Player[] players = instantiatePlayers();
-
+		
+		initPlayers(players);
+		
 		List<String> playerNames = new ArrayList<String>();
 		for (int i = 0; i < players.length; i++) {
-			// TODO* this is a bug
-			playerNames.add(players[i].getName());
+			FireGetNameResult fireGetNameResult = fireGetName(players[i]);
+			playerNames.add(fireGetNameResult.getName());
+			players[i] = fireGetNameResult.getPlayer();
 		}
 		addToActivityQueue(new SimplePlayersLoadedActivityImpl(playerNames));
 
@@ -618,8 +711,6 @@ public class GamePlayThread extends Thread {
 
 		addToActivityQueue(new SimpleWorldCreatedActivityImpl(
 				new FullWorldImpl(world)));
-
-		initPlayers(players);
 
 		/* Players map to flags */
 		Map<Player, Flag> playerToFlagMap = chooseFlags(players,
@@ -796,6 +887,24 @@ public class GamePlayThread extends Thread {
 
 		public Attack getAttack() {
 			return attack;
+		}
+	}
+	
+	static class FireGetNameResult {
+		private Player player;
+		private String name;;
+
+		FireGetNameResult(String name, Player player) {
+			this.name = name;
+			this.player = player;
+		}
+
+		public Player getPlayer() {
+			return player;
+		}
+		
+		public String getName() {
+			return name;
 		}
 	}
 }
