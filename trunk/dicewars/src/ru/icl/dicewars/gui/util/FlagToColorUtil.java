@@ -17,7 +17,7 @@ public class FlagToColorUtil {
 		case CYAN:
 			return new Color(100, 255, 255, alpha);
 		case GREEN:
-			return new Color(0, 150, 0, alpha);
+			return new Color(15, 170, 15, alpha);
 		case MAGENTA:
 			return new Color(255, 100, 255, alpha);
 		case ORANGE:
