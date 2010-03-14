@@ -84,12 +84,17 @@ public class SimpleConfigurationImpl implements Configuration {
 	
 	@Override
 	public long getMaxTimeForChooseFlagMethod() {
-		return 100;
+		return 1000;
 	}
 	
 	@Override
 	public long getMaxTimeForInitMethod() {
-		return 1000;
+		return 2000;
+	}
+	
+	@Override
+	public long getMaxTimeForGetNameMethod() {
+		return 100;
 	}
 	
 	@Override
