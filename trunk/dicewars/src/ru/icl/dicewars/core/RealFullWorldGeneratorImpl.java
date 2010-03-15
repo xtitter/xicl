@@ -19,9 +19,9 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     private final static int MAX_LAND_SIZE = 68;
     private final static int MIN_LAND_COUNT = 40;
     private final static int MAX_LAND_COUNT = 50;
-    private final static int DICE_PER_LAND = 3;
+    private final static int DICE_PER_LAND = 2;
     private final static int MIN_DICE_PER_LAND = 1;
-    private final static int MAX_DICE_PER_LAND = 8;
+    private final static int MAX_DICE_PER_LAND = 3;
     private final static int HOLES_COUNT = 5;
     private final static int HOLE_SIZE = 100;
     private final static int TENTACLE_WIDTH = 4;
@@ -675,7 +675,9 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
             int dices = left * DICE_PER_LAND;
             for (FullLand land : lands) {
                 if (land.getFlag().equals(player)) {
-                    int amount = MIN_DICE_PER_LAND + Math.min(dices - MIN_DICE_PER_LAND * left, random(MAX_DICE_PER_LAND - MIN_DICE_PER_LAND));
+                    int max = Math.min(dices - MIN_DICE_PER_LAND * (left - 1), MAX_DICE_PER_LAND);
+                    int min = Math.max(dices - MAX_DICE_PER_LAND * (left - 1), MIN_DICE_PER_LAND);
+                    int amount = min + random(max - min);
                     land.setDiceCount(DiceStack.valueOf(amount));
                     dices -= amount;
                     left--;
