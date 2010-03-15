@@ -141,6 +141,8 @@ public final class MainJFrame extends JFrame {
 	        bottomInfoJPanel.setBounds(10, getHeight() - 120 + 30 + 5, getWidth() - 240, 45);
 	        
 	        final WorldJPanel worldJPanel = WindowManager.getInstance().getWorldJPanel();
+	        final int w = getWidth() - 250; 
+	        worldJPanel.setPreferredSize(new Dimension(w, WorldJPanel.MAIN_IMAGE_HEIGHT * w/WorldJPanel.MAIN_IMAGE_WIDTH));
 	        worldJPanel.revalidate();
 	        worldJPanel.clearBuffers();
 	        
@@ -395,4 +397,12 @@ public final class MainJFrame extends JFrame {
             }
         });
     }
+    
+    /*Work around*/
+    /*public int getSpeed() {
+    	if (uiGameThread != null){
+    		return uiGameThread.getSpeed();
+    	}
+		return 0;
+	}*/
 }

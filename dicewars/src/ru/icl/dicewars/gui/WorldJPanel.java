@@ -52,8 +52,8 @@ public final class WorldJPanel extends JPanel {
 	public static final int MAX_X = 68;
 	public static final int MAX_Y = 53;
 	
-	private static final int MAIN_IMAGE_WIDTH = (MAX_X+1)*19 + 9;
-	private static final int MAIN_IMAGE_HEIGHT = (MAX_Y+1)*(20-4);
+	public static final int MAIN_IMAGE_WIDTH = (MAX_X+1)*19 + 9;
+	public static final int MAIN_IMAGE_HEIGHT = (MAX_Y+1)*(20-4);
 	
 	private Image doubleBuffer = null;
 	private Image arrowDoubleBuffer = null;
@@ -306,8 +306,12 @@ public final class WorldJPanel extends JPanel {
 				doubleBuffer = new BufferedImage(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, BufferedImage.TYPE_INT_ARGB); 
 				g2d = (Graphics2D) doubleBuffer.getGraphics();
 				
+				/*int speed = WindowManager.getInstance().getMainFrame().getSpeed();
+				if (speed < 0 || speed == 1){
+					g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
+				}else{*/
 				g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
-				
+				//}
 				for (FullLand land : landsTmp) {
 					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
@@ -350,7 +354,12 @@ public final class WorldJPanel extends JPanel {
 					
 					int w = WindowManager.getInstance().getScreenWidth() - 250;
 					
-					arrowDoubleBuffer = arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST);		
+					/*int speed = WindowManager.getInstance().getMainFrame().getSpeed();
+					if (speed < 0 || speed == 1){
+						arrowDoubleBuffer = arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_AREA_AVERAGING);
+					}else{*/
+					arrowDoubleBuffer = arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST);
+					//}
 				}else{
 					this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;
 					this.arrowDoubleBufferOffsetX = 0;
