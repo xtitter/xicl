@@ -18,9 +18,9 @@ public final class PlayerJPanel extends JPanel {
 
 	private final static long serialVersionUID = 8066379108638626622L;
 	
-	private final static Font DICE_PER_TURN_COUNT_FONT = new Font("dicePerTurnCountFont", Font.ITALIC, 20);
-	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font("diceInReserveCountFont", Font.ITALIC, 20);
-	private final static Font PLAYER_NAME_FONT = new Font("playerNameFont", Font.BOLD, 12);
+	private final static Font DICE_PER_TURN_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 20);
+	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 20);
+	private final static Font PLAYER_NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 
 	private final static int radius = 12; 
 	private final static int alpha = 90; 

@@ -2,28 +2,31 @@ package ru.icl.dicewars.gui;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import javax.swing.JPanel;
 
 import ru.icl.dicewars.client.Flag;
 import ru.icl.dicewars.gui.manager.ImageManager;
-import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class BottomInfoJPanel extends JPanel {
 
 	private static final long serialVersionUID = 4253340434381302756L;
-	private static final Font TEXT_FONT = new Font("TEXT_FONT",
+	private static final Font TEXT_FONT = new Font(Font.SANS_SERIF,
 			Font.BOLD, 10);
-	private static final Font TURN_FONT = new Font("TURN_FONT",
+	private static final Font TURN_FONT = new Font(Font.SANS_SERIF,
 			Font.ITALIC, 30);
-	private static final Font DICE_SUM_FONT = new Font("DICE_SUM_FONT",
+	private static final Font DICE_SUM_FONT = new Font(Font.SANS_SERIF,
 			Font.ITALIC, 20);
 
+	private static final FontMetrics DICE_SUM_FONT_METRIC = new FontMetrics(DICE_SUM_FONT){};
+	
 	private int turnNumber;
 	private List<Integer> playerDicesList;
 	private Flag playerFlag;
@@ -65,11 +68,10 @@ public class BottomInfoJPanel extends JPanel {
 					sum += i;
 					j++;
 				}
-				if (sum < 10){
-					g2d.drawString(String.valueOf(sum) + " =", 15 + getWidth()/2 - 30 - j * 35, 30);
-				}else{
-					g2d.drawString(String.valueOf(sum) + " =", 15 + getWidth()/2 - 30 - j * 35 - 10, 30);
-				}
+				
+				Rectangle2D rectangle2d = DICE_SUM_FONT_METRIC.getStringBounds(String.valueOf(sum) + " =", g2d);
+				
+				g2d.drawString(String.valueOf(sum) + " =", 15 + getWidth()/2 - 30 - (j-1) * 35 - 7 - (int)rectangle2d.getWidth(), 30);
 				Image arrowImage = ImageManager.getArrowImage();
 				if (arrowImage != null)
 					g2d.drawImage(arrowImage, 23 + getWidth()/2, 11, this);
@@ -77,11 +79,11 @@ public class BottomInfoJPanel extends JPanel {
 				sum = 0;
 				for (Integer i : opponentDicesList){
 					Image diceImage = ImageManager.getRolledDiceImage(opponentFlag, i.intValue());
-					g2d.drawImage(diceImage, 15 + getWidth()/2 + 30 + j * 35+7, 7, this);
+					g2d.drawImage(diceImage, 15 + getWidth()/2 + 30 + j * 35 + 7, 7, this);
 					sum += i;
 					j++;
 				}
-				g2d.drawString("= " + String.valueOf(sum), 15 + getWidth()/2 + 30 + j * 35 + 8, 30);
+				g2d.drawString("= " + String.valueOf(sum), 15 + getWidth()/2 + 30 + (j) * 35 + 14, 30);
 			}
 		}
 	}
