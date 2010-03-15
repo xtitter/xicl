@@ -19,7 +19,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     private final static int MAX_LAND_SIZE = 68;
     private final static int MIN_LAND_COUNT = 40;
     private final static int MAX_LAND_COUNT = 50;
-    private final static int DICE_PER_LAND = 3;
+    private final static int DICE_PER_LAND = 2;
     private final static int MIN_DICE_PER_LAND = 1;
     private final static int MAX_DICE_PER_LAND = 8;
     private final static int HOLES_COUNT = 5;
