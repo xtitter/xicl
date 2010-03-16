@@ -35,8 +35,8 @@ public final class WorldJPanel extends JPanel {
 	
 	private FullWorld world;
 
-	public static final int X_OFFSET = 10;
-	public static final int Y_OFFSET = 10;
+	public static final int X_OFFSET = 15;
+	public static final int Y_OFFSET = 15;
 
 	public static final int DICE_X_OFFSET = -30;
 	public static final int DICE_Y_OFFSET = -70;
@@ -330,10 +330,9 @@ public final class WorldJPanel extends JPanel {
 				g2d.dispose();
 				int w = WindowManager.getInstance().getScreenWidth() - 250;
 				
-				doubleBuffer = resize(bufferedImage, w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH);
-				
+				doubleBuffer = resize(bufferedImage, w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH);				
 				//doubleBuffer = new BufferedImage(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, BufferedImage.TYPE_INT_ARGB); 
-				//g2d = (Graphics2D) doubleBuffer.getGraphics();
+				g2d = (Graphics2D) doubleBuffer.getGraphics();
 				
 				/*int speed = WindowManager.getInstance().getMainFrame().getSpeed();
 				if (speed < 0 || speed == 1){
