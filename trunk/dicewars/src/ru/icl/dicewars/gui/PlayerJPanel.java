@@ -18,8 +18,8 @@ public final class PlayerJPanel extends JPanel {
 
 	private final static long serialVersionUID = 8066379108638626622L;
 	
-	private final static Font DICE_PER_TURN_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 14);
-	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 14);
+	private final static Font DICE_PER_TURN_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 16);
+	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 16);
 	private final static Font PLAYER_NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 
 	private final static int radius = 12; 
@@ -69,7 +69,7 @@ public final class PlayerJPanel extends JPanel {
 		if (flag != null){
 			Image avatar = null;	
 			if (winner) {
-				g.drawImage(ImageManager.getTrophyImage(), 149, 20, this);
+				g.drawImage(ImageManager.getTrophyImage(), 151, 9, this);
 				avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
 			}
 			if (winnerTotalDiceCount / 2 > totalDiceCount){
@@ -88,7 +88,7 @@ public final class PlayerJPanel extends JPanel {
 			
 			Image dicePerTurnCountImage = ImageManager.getDicePerTurnCountImage(flag);
 			if (dicePerTurnCountImage != null)
-				g.drawImage(dicePerTurnCountImage, 60, 32, this);
+				g.drawImage(dicePerTurnCountImage, 55, 32, this);
 			
 			Image diceCountInReserveImage = ImageManager.getDiceCountInReserveImage(flag);
 			if (diceCountInReserveImage != null)
@@ -108,7 +108,7 @@ public final class PlayerJPanel extends JPanel {
 		}
 		if (flag != null){
 			g2d.setFont(DICE_PER_TURN_COUNT_FONT);
-			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 80, 45);
+			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 75, 45);
 			
 			g2d.setFont(DICE_IN_RESERVE_COUNT_FONT);
 			g2d.drawString("- " + String.valueOf(diceCountInReserve), 125, 45);
