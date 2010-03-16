@@ -294,11 +294,11 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         empty[hex.y][hex.x] = false;
     }
 
-    private void busy(Set<Hex> hexes) {
+    /*private void busy(Set<Hex> hexes) {
         for (Hex hex : hexes) {
             busy(hex);
         }
-    }
+    }*/
 
     public void empty(Hex hex) {
         empty[hex.y][hex.x] = true;
@@ -406,11 +406,11 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return new Point(hex.getX(), hex.getY());
     }
 
-    private Set<Point> transform(Set<Hex> hexes) {
+    /*private Set<Point> transform(Set<Hex> hexes) {
         Set<Point> result = new HashSet<Point>();
         for (Hex hex : hexes) { result.add(transform(hex)); }
         return result;
-    }
+    }*/
 
     private void color(FullLand land, Hex hex) {
         if (0 != id(hex)) { throw new IllegalArgumentException(); }
@@ -591,14 +591,14 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
         return null;
     }
 
-    private Boolean contains(Hex hex, Set<Hex> elements) {
+    /*private Boolean contains(Hex hex, Set<Hex> elements) {
         for (Hex element : elements) {
             if (element.y == hex.y && element.x == hex.x) {
                 return true;
             }
         }
         return false;
-    }
+    }*/
 
     private Set<FullLand> getNeighboursFrom(FullLand land, Set<FullLand> lands) {
         Set<FullLand> neighbours = new HashSet<FullLand>();
@@ -627,7 +627,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     //Mkamalov: Client interface should be clear to end user.
-	private char getChar(Flag f) {
+	/*private char getChar(Flag f) {
 		switch (f) {
 		case BLUE:
 			return 'B';
@@ -647,9 +647,9 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
 			return 'Y';
 		}
 		throw new IllegalStateException();
-	}
+	}*/
     
-    private void output(Set<FullLand> lands) {
+    /*private void output(Set<FullLand> lands) {
         Set<Hex> border = getWorldBorder(lands);
         for (int row=0; row<WORLD_Y_SIZE; row++) {
             for (int column=0; column<WORLD_Y_SIZE; column++) {
@@ -659,7 +659,7 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
             }
             System.out.println();
         }
-    }
+    }*/
 
     private int countLands(Flag player, Set<FullLand> lands) {
         int count = 0;

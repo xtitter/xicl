@@ -22,6 +22,7 @@ import ru.icl.dicewars.core.activity.SimpleFlagChosenActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleGameEndedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivityImpl;
+import ru.icl.dicewars.core.activity.SimplePlayerGameOverActivityImpl;
 import ru.icl.dicewars.core.activity.SimplePlayersLoadedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleTurnNumberChangedActivityImpl;
 import ru.icl.dicewars.core.activity.SimpleWorldCreatedActivityImpl;
@@ -728,6 +729,7 @@ public class GamePlayThread extends Thread {
 
 		/* Start the game */
 		int turnNumber = 1;
+		int place = playerCount;
 		while (!hasWinner(world) && t) {
 			addToActivityQueue(new SimpleTurnNumberChangedActivityImpl(turnNumber));
 			for (int i = 0; i < playerCount; i++) {
@@ -791,6 +793,8 @@ public class GamePlayThread extends Thread {
 													.isExistsLandByFlag(neighbouringLandFlag)) {
 												world.getFlags().remove(
 														neighbouringLandFlag);
+												addToActivityQueue(new SimplePlayerGameOverActivityImpl(neighbouringLandFlag, place));
+												place--;
 											}
 
 											land.setDiceCount(DiceStack.ONE);
@@ -837,10 +841,19 @@ public class GamePlayThread extends Thread {
 			}
 			turnNumber++;
 		}
-		if (t)
+		if (t){
+			if (hasWinner(world)){
+				Flag flag = getWinner(world);
+				addToActivityQueue(new SimplePlayerGameOverActivityImpl(flag, 1));
+			}
 			addToActivityQueue(new SimpleGameEndedActivityImpl());
+		}
 	}
 
+	private Flag getWinner(World world){
+		return world.getFlags().iterator().next();
+	}
+	
 	@Override
 	public final void run() {
 		synchronized (startedFlag) {

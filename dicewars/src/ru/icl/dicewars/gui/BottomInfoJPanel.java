@@ -24,7 +24,8 @@ public class BottomInfoJPanel extends JPanel {
 			Font.ITALIC, 30);
 	private static final Font DICE_SUM_FONT = new Font(Font.SANS_SERIF,
 			Font.ITALIC, 20);
-
+	
+	@SuppressWarnings("serial")
 	private static final FontMetrics DICE_SUM_FONT_METRIC = new FontMetrics(DICE_SUM_FONT){};
 	
 	private int turnNumber;
@@ -48,8 +49,10 @@ public class BottomInfoJPanel extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
 		if (turnNumber > 0) {
 			g2d.setFont(TEXT_FONT);
 			g2d.drawString("Turn: ", 10, 10);
