@@ -18,8 +18,8 @@ public final class PlayerJPanel extends JPanel {
 
 	private final static long serialVersionUID = 8066379108638626622L;
 	
-	private final static Font DICE_PER_TURN_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 20);
-	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 20);
+	private final static Font DICE_PER_TURN_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 14);
+	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 14);
 	private final static Font PLAYER_NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 
 	private final static int radius = 12; 
@@ -69,7 +69,7 @@ public final class PlayerJPanel extends JPanel {
 		if (flag != null){
 			Image avatar = null;	
 			if (winner) {
-				g.drawImage(ImageManager.getTrophyImage(), 142, 30, this);
+				g.drawImage(ImageManager.getTrophyImage(), 149, 20, this);
 				avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
 			}
 			if (winnerTotalDiceCount / 2 > totalDiceCount){
@@ -84,15 +84,15 @@ public final class PlayerJPanel extends JPanel {
 			if (avatar == null || totalDiceCount == -1){
 				avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
 			}
-			if (avatar != null) g.drawImage(avatar, radius - 9, radius - 4, this);
+			if (avatar != null) g.drawImage(avatar, radius - 9, radius - 8, this);
 			
 			Image dicePerTurnCountImage = ImageManager.getDicePerTurnCountImage(flag);
 			if (dicePerTurnCountImage != null)
-				g.drawImage(dicePerTurnCountImage, 72, 28, this);
+				g.drawImage(dicePerTurnCountImage, 60, 32, this);
 			
 			Image diceCountInReserveImage = ImageManager.getDiceCountInReserveImage(flag);
 			if (diceCountInReserveImage != null)
-				g.drawImage(diceCountInReserveImage, 72, 56, this);
+				g.drawImage(diceCountInReserveImage, 105, 32, this);
 		}
 		
 		g.setColor(Color.black);
@@ -108,10 +108,10 @@ public final class PlayerJPanel extends JPanel {
 		}
 		if (flag != null){
 			g2d.setFont(DICE_PER_TURN_COUNT_FONT);
-			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 101, 48);
+			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 80, 45);
 			
 			g2d.setFont(DICE_IN_RESERVE_COUNT_FONT);
-			g2d.drawString("- " + String.valueOf(diceCountInReserve), 101, 72);
+			g2d.drawString("- " + String.valueOf(diceCountInReserve), 125, 45);
 		}
 		g2d.setFont(oldFont);
 	}
