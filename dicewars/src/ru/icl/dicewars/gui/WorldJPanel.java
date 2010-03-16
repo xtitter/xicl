@@ -233,6 +233,26 @@ public final class WorldJPanel extends JPanel {
 		t.stop();
 	}
 	
+	private static BufferedImage resize(BufferedImage image, int width, int height) {
+		int type = image.getType() == 0? BufferedImage.TYPE_INT_ARGB : image.getType();
+		BufferedImage resizedImage = new BufferedImage(width, height, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.setComposite(AlphaComposite.Src);
+
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+		RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+		g.setRenderingHint(RenderingHints.KEY_RENDERING,
+		RenderingHints.VALUE_RENDER_QUALITY);
+
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g.drawImage(image, 0, 0, width, height, null);
+		g.dispose();
+		return resizedImage;
+	} 
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -253,7 +273,14 @@ public final class WorldJPanel extends JPanel {
 				BufferedImage bufferedImage = new BufferedImage(MAIN_IMAGE_WIDTH, MAIN_IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
 				
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+				
+				g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+						RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+				g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+						RenderingHints.VALUE_RENDER_QUALITY);
 				
 				/*
 				 * Draw white-gray background
@@ -303,14 +330,16 @@ public final class WorldJPanel extends JPanel {
 				g2d.dispose();
 				int w = WindowManager.getInstance().getScreenWidth() - 250;
 				
-				doubleBuffer = new BufferedImage(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, BufferedImage.TYPE_INT_ARGB); 
-				g2d = (Graphics2D) doubleBuffer.getGraphics();
+				doubleBuffer = resize(bufferedImage, w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH);
+				
+				//doubleBuffer = new BufferedImage(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, BufferedImage.TYPE_INT_ARGB); 
+				//g2d = (Graphics2D) doubleBuffer.getGraphics();
 				
 				/*int speed = WindowManager.getInstance().getMainFrame().getSpeed();
 				if (speed < 0 || speed == 1){
 					g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
 				}else{*/
-				g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
+				//g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
 				//}
 				for (FullLand land : landsTmp) {
 					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
@@ -348,7 +377,12 @@ public final class WorldJPanel extends JPanel {
 					this.arrowDoubleBufferOffsetY = miny - 25;
 					
 					Graphics2D g2d = (Graphics2D) arrowBufferedImage.getGraphics();
-					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+							RenderingHints.VALUE_ANTIALIAS_ON);
+					g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+							RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+					g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+							RenderingHints.VALUE_RENDER_QUALITY);
 					arrow.paint(g2d);
 					g2d.dispose();
 					
@@ -358,7 +392,8 @@ public final class WorldJPanel extends JPanel {
 					if (speed < 0 || speed == 1){
 						arrowDoubleBuffer = arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_AREA_AVERAGING);
 					}else{*/
-					arrowDoubleBuffer = arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST);
+					arrowDoubleBuffer = resize(arrowBufferedImage, arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH); 
+						//arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST);
 					//}
 				}else{
 					this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;
