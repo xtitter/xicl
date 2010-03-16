@@ -314,7 +314,7 @@ public class ImageManager {
     		
 			Image avatar = getImageFromResource("/resources/avatars/"
 					+ fileName + String.valueOf(emotion) + ".png",
-					new Rectangle(0, 0, 64, 64));
+					new Rectangle(0, 0, 48, 48));
     		map.put(emotion, avatar);
     	}
     	
@@ -324,7 +324,7 @@ public class ImageManager {
     public static Image getTrophyImage() {
     	if (trophyImage == null) {
 			if (trophyImage == null) {
-				trophyImage = getImageFromResource("/resources/info/trophy.png");
+				trophyImage = getImageFromResource("/resources/info/trophy.png", new Rectangle(24, 24));
 			}
     	}
     	return trophyImage;
@@ -358,7 +358,7 @@ public class ImageManager {
 				default:
 					throw new IllegalStateException();
 			}
-			ret = getImageFromResource("/resources/info/"+fileName+".png", new Rectangle(24,24));
+			ret = getImageFromResource("/resources/info/"+fileName+".png", new Rectangle(16,16));
 			dicePerTurnCountImages.put(flag, ret);
     	}
     	return ret;
@@ -382,7 +382,7 @@ public class ImageManager {
 				default:
 					throw new IllegalStateException();
 			}
-			ret = getImageFromResource("/resources/info/"+fileName+".png", new Rectangle(20,20));
+			ret = getImageFromResource("/resources/info/"+fileName+".png", new Rectangle(16,16));
 			diceCountInReserveImages.put(flag, ret);
     	}
     	return ret;

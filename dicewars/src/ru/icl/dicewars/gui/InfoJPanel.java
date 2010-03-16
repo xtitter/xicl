@@ -14,7 +14,7 @@ public final class InfoJPanel extends JPanel {
 	private static final long serialVersionUID = -222523072240558572L;
 
 	private static final int WIDTH = 180;
-	private static final int HEIGHT = 80;
+	private static final int HEIGHT = 55;
 	
 	private Map<Flag, PlayerJPanel> flagToPlayerJPanelMap = new HashMap<Flag, PlayerJPanel>();
 	private Map<Integer, PlayerJPanel> positionToplayerJPanelMap = new HashMap<Integer, PlayerJPanel>();
