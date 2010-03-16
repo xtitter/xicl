@@ -19,6 +19,7 @@ public final class PlayerJPanel extends JPanel {
 	private final static long serialVersionUID = 8066379108638626622L;
 	
 	private final static Font DICE_PER_TURN_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 16);
+	private final static Font PLACE_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 20);
 	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 16);
 	private final static Font PLAYER_NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
 
@@ -33,6 +34,9 @@ public final class PlayerJPanel extends JPanel {
 	private int diceCountInReserve = 0;
 	private int winnerTotalDiceCount = 0;
 	private boolean winner = false;
+	
+	private int place = 10;
+	private boolean isGameOver = false;
 		
 	public PlayerJPanel(String playerName) {
 		this.playerName = playerName;
@@ -52,6 +56,14 @@ public final class PlayerJPanel extends JPanel {
 		setBorder(new RoundedBorder(color, color, color, radius, 0));
 	}
 	
+	public void setPlace(int place) {
+		this.place = place;
+	}
+	
+	public void setGameOver(boolean f){
+		this.isGameOver = f;
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -66,10 +78,15 @@ public final class PlayerJPanel extends JPanel {
 	@Override
 	public void paintBorder(Graphics g) {
 		super.paintBorder(g);
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
 		if (flag != null){
 			Image avatar = null;	
 			if (winner) {
-				g.drawImage(ImageManager.getTrophyImage(), 151, 9, this);
+				g.drawImage(ImageManager.getTrophyImage(), 150, 9, this);
 				avatar = ImageManager.getAvatar(flag, Emotion.HAPPY.value());
 			}
 			if (winnerTotalDiceCount / 2 > totalDiceCount){
@@ -84,20 +101,20 @@ public final class PlayerJPanel extends JPanel {
 			if (avatar == null || totalDiceCount == -1){
 				avatar = ImageManager.getAvatar(flag, Emotion.SMILING.value());
 			}
-			if (avatar != null) g.drawImage(avatar, radius - 9, radius - 8, this);
+			if (avatar != null) g.drawImage(avatar, radius - 9, radius - 6, this);
 			
-			Image dicePerTurnCountImage = ImageManager.getDicePerTurnCountImage(flag);
-			if (dicePerTurnCountImage != null)
-				g.drawImage(dicePerTurnCountImage, 55, 32, this);
+			if (!isGameOver){
+				Image dicePerTurnCountImage = ImageManager.getDicePerTurnCountImage(flag);
+				if (dicePerTurnCountImage != null)
+					g2d.drawImage(dicePerTurnCountImage, 55, 32, this);
 			
-			Image diceCountInReserveImage = ImageManager.getDiceCountInReserveImage(flag);
-			if (diceCountInReserveImage != null)
-				g.drawImage(diceCountInReserveImage, 105, 32, this);
+				Image diceCountInReserveImage = ImageManager.getDiceCountInReserveImage(flag);
+				if (diceCountInReserveImage != null)
+					g2d.drawImage(diceCountInReserveImage, 105, 32, this);
+			}
 		}
 		
-		g.setColor(Color.black);
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setColor(Color.black);
 		Font oldFont = g2d.getFont();
 		
 		g2d.setFont(PLAYER_NAME_FONT);
@@ -106,12 +123,18 @@ public final class PlayerJPanel extends JPanel {
 		}else{
 			g2d.drawString("No name", 67, 20);
 		}
-		if (flag != null){
+		if (flag != null && !isGameOver){
 			g2d.setFont(DICE_PER_TURN_COUNT_FONT);
 			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 75, 45);
 			
 			g2d.setFont(DICE_IN_RESERVE_COUNT_FONT);
 			g2d.drawString("- " + String.valueOf(diceCountInReserve), 125, 45);
+		}else{
+			if (flag != null && isGameOver){
+				g2d.setColor(Color.DARK_GRAY);
+				g2d.setFont(PLACE_FONT);
+				g2d.drawString("Place: " + String.valueOf(place), 65, 45);
+			}
 		}
 		g2d.setFont(oldFont);
 	}

@@ -7,6 +7,7 @@ import ru.icl.dicewars.core.activity.DiceWarsActivity;
 import ru.icl.dicewars.core.activity.FlagChosenActivity;
 import ru.icl.dicewars.core.activity.GameEndedActivity;
 import ru.icl.dicewars.core.activity.LandUpdatedActivity;
+import ru.icl.dicewars.core.activity.PlayerGameOverActivity;
 import ru.icl.dicewars.core.activity.PlayersLoadedActivity;
 import ru.icl.dicewars.core.activity.SimpleLandUpdatedActivity;
 import ru.icl.dicewars.core.activity.SimplePlayerAttackActivityImpl;
@@ -96,7 +97,10 @@ public class UIGameThread extends Thread {
 					WindowManager.getInstance().getBottomInfoJPanel().updateDices(null, null, null, null);
 				} else if (activity instanceof WorldInfoUpdatedActivity) {
 					WorldInfoUpdatedActivity worldInfoUpdatedActivity = (WorldInfoUpdatedActivity)activity;
-					WindowManager.getInstance().getInfoJPanel().update(worldInfoUpdatedActivity.getFlag(), worldInfoUpdatedActivity.getTotalDiceCount(), worldInfoUpdatedActivity.getMaxConnectedLandsCount(), worldInfoUpdatedActivity.getDiceCountInReserve());
+					WindowManager.getInstance().getInfoJPanel().updatePlayerInfo(worldInfoUpdatedActivity.getFlag(), worldInfoUpdatedActivity.getTotalDiceCount(), worldInfoUpdatedActivity.getMaxConnectedLandsCount(), worldInfoUpdatedActivity.getDiceCountInReserve());
+				} else if (activity instanceof PlayerGameOverActivity){
+					PlayerGameOverActivity playerLostActivity = (PlayerGameOverActivity) activity;
+					WindowManager.getInstance().getInfoJPanel().updatePlayerPlace(playerLostActivity.getFlag(), playerLostActivity.getPlace());
 				} else if (activity instanceof TurnNumberChangedActivity){
 					TurnNumberChangedActivity turnNumberChangedActivity = (TurnNumberChangedActivity) activity;
 					int turnNumber = turnNumberChangedActivity.getTurnNumber();

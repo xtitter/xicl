@@ -14,7 +14,7 @@ public final class InfoJPanel extends JPanel {
 	private static final long serialVersionUID = -222523072240558572L;
 
 	private static final int WIDTH = 180;
-	private static final int HEIGHT = 55;
+	private static final int HEIGHT = 59;
 	
 	private Map<Flag, PlayerJPanel> flagToPlayerJPanelMap = new HashMap<Flag, PlayerJPanel>();
 	private Map<Integer, PlayerJPanel> positionToplayerJPanelMap = new HashMap<Integer, PlayerJPanel>();
@@ -39,7 +39,7 @@ public final class InfoJPanel extends JPanel {
 			player.setBounds(10, yoffset, WIDTH, HEIGHT);
 			add(player);
 			positionToplayerJPanelMap.put(i++, player);
-			yoffset += HEIGHT + 10;
+			yoffset += HEIGHT + 6;
 		}
 		winnerFlag = null;
 		winnerTotalDiceCount = 0;
@@ -67,7 +67,7 @@ public final class InfoJPanel extends JPanel {
 		repaint();
 	}
 	
-	public void update(Flag flag, int totalDiceCount, int maxConnectedLandsCount, int diceCountInReserve) {
+	public void updatePlayerInfo(Flag flag, int totalDiceCount, int maxConnectedLandsCount, int diceCountInReserve) {
 		if (flagToPlayerJPanelMap.containsKey(flag)) {
 			flagToPlayerJPanelMap.get(flag).setDiceCountInReserve(diceCountInReserve);
 		}
@@ -127,5 +127,13 @@ public final class InfoJPanel extends JPanel {
 		flagToPlayerJPanelMap.get(to).setWinner(true);
 		flagToPlayerJPanelMap.get(to).repaint();
 		winnerFlag = to;
+	}
+
+	public void updatePlayerPlace(Flag flag, int place) {
+		if (flagToPlayerJPanelMap.containsKey(flag)) {
+			flagToPlayerJPanelMap.get(flag).setPlace(place);
+			flagToPlayerJPanelMap.get(flag).setGameOver(true);
+			flagToPlayerJPanelMap.get(flag).repaint();
+		}
 	}
 }

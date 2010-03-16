@@ -21,7 +21,8 @@ public class SimpleLandUpdatedActivity implements LandUpdatedActivity{
 		final int diceCount = fullLand.getDiceCount();
 		final Set<Point> points = Collections.unmodifiableSet(new HashSet<Point>(fullLand.getPoints()));
 		this.fullLand = new FullLand() {
-			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public Set<Land> getNeighbouringLands() {
 				throw new UnsupportedOperationException();

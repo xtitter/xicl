@@ -35,8 +35,8 @@ public final class WorldJPanel extends JPanel {
 	
 	private FullWorld world;
 
-	public static final int X_OFFSET = 18;
-	public static final int Y_OFFSET = 18;
+	public static final int X_OFFSET = 15;
+	public static final int Y_OFFSET = 15;
 
 	public static final int DICE_X_OFFSET = -30;
 	public static final int DICE_Y_OFFSET = -70;
@@ -273,14 +273,12 @@ public final class WorldJPanel extends JPanel {
 				BufferedImage bufferedImage = new BufferedImage(MAIN_IMAGE_WIDTH, MAIN_IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2d = (Graphics2D) bufferedImage.getGraphics();
 				
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-				
+				/*g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
 				g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 						RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-						RenderingHints.VALUE_RENDER_QUALITY);
+						RenderingHints.VALUE_RENDER_QUALITY);*/
 				
 				/*
 				 * Draw white-gray background
@@ -331,15 +329,13 @@ public final class WorldJPanel extends JPanel {
 				int w = WindowManager.getInstance().getScreenWidth() - 250;
 				
 				doubleBuffer = resize(bufferedImage, w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH);				
-				//doubleBuffer = new BufferedImage(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, BufferedImage.TYPE_INT_ARGB); 
 				g2d = (Graphics2D) doubleBuffer.getGraphics();
 				
-				/*int speed = WindowManager.getInstance().getMainFrame().getSpeed();
-				if (speed < 0 || speed == 1){
-					g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
-				}else{*/
-				//g2d.drawImage(bufferedImage.getScaledInstance(w, MAIN_IMAGE_HEIGHT * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST), 0, 0, this);
-				//}
+				/*g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);*/
+				g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+				
 				for (FullLand land : landsTmp) {
 					ColoredLand l = landFactory.getLand(land.getLandId(), land.getFlag());
 					if (l != null) {
@@ -376,24 +372,18 @@ public final class WorldJPanel extends JPanel {
 					this.arrowDoubleBufferOffsetY = miny - 25;
 					
 					Graphics2D g2d = (Graphics2D) arrowBufferedImage.getGraphics();
-					g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					/*g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 							RenderingHints.VALUE_ANTIALIAS_ON);
 					g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 							RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 					g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-							RenderingHints.VALUE_RENDER_QUALITY);
+							RenderingHints.VALUE_RENDER_QUALITY);*/
 					arrow.paint(g2d);
 					g2d.dispose();
 					
 					int w = WindowManager.getInstance().getScreenWidth() - 250;
 					
-					/*int speed = WindowManager.getInstance().getMainFrame().getSpeed();
-					if (speed < 0 || speed == 1){
-						arrowDoubleBuffer = arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_AREA_AVERAGING);
-					}else{*/
 					arrowDoubleBuffer = resize(arrowBufferedImage, arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH); 
-						//arrowBufferedImage.getScaledInstance(arrowBufferedImage.getWidth() * w/MAIN_IMAGE_WIDTH, arrowBufferedImage.getHeight() * w/MAIN_IMAGE_WIDTH, java.awt.Image.SCALE_FAST);
-					//}
 				}else{
 					this.arrowDoubleBuffer = EMPTY_ARROW_DOUBLE_BUFFERED_IMAGE;
 					this.arrowDoubleBufferOffsetX = 0;
