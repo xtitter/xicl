@@ -830,6 +830,15 @@ public class GamePlayThread extends Thread {
 											f, attack, immutableWorld, wasAttackWon);
 								}
 							}
+						}else{
+							for (int j = 0; j < playerCount; j++) {
+								Flag f = playerToFlagMap.get(players[j]);
+								if (!f.equals(playerFlag)
+										&& world.isExistsLandByFlag(f)) {
+									players[j] = fireOpponentAttack(players[j],
+											f, null, immutableWorld, false);
+								}
+							}
 						}
 					}
 					stepNumber++;
