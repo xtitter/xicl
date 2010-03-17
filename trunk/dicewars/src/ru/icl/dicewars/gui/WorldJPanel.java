@@ -41,8 +41,8 @@ public final class WorldJPanel extends JPanel {
 	public static final int DICE_X_OFFSET = -30;
 	public static final int DICE_Y_OFFSET = -70;
 
-	public static final int ARROW_X_OFFSET = 17;
-	public static final int ARROW_Y_OFFSET = 10;
+	public static final int ARROW_X_OFFSET = 22;
+	public static final int ARROW_Y_OFFSET = 15;
 
 	public static final int BACKGROUND_X_OFFSET = 29;
 	public static final int BACKGROUND_Y_OFFSET = 26;
