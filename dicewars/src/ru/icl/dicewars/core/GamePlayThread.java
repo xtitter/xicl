@@ -831,22 +831,23 @@ public class GamePlayThread extends Thread {
 								}
 							}
 						}else{
-							for (int j = 0; j < playerCount; j++) {
-								Flag f = playerToFlagMap.get(players[j]);
-								if (!f.equals(playerFlag)
-										&& world.isExistsLandByFlag(f)) {
-									players[j] = fireOpponentAttack(players[j],
-											f, null, immutableWorld, false);
-								}
-							}
+							canAttack = false;
 						}
 					}
 					stepNumber++;
 					canAttack = canAttack && (turnNumber >= stepNumber);
+					if (!canAttack){
+						for (int j = 0; j < playerCount; j++) {
+							Flag f = playerToFlagMap.get(players[j]);
+							if (!f.equals(playerFlag)
+									&& world.isExistsLandByFlag(f)) {
+								players[j] = fireOpponentAttack(players[j],
+										f, null, immutableWorld, false);
+							}
+						}
+					}
 				}
-
 				grantWorldByFlag(world, playerFlag);
-
 			}
 			turnNumber++;
 		}
