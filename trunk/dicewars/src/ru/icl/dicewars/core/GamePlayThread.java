@@ -744,7 +744,7 @@ public class GamePlayThread extends Thread {
 				int stepNumber = 1;
 				while (canAttack && t) {
 					world.setAvailableAttackCount(turnNumber - stepNumber + 1);
-					final World immutableWorld = new ImmutableWorldImpl(world);
+					World immutableWorld = new ImmutableWorldImpl(world);
 					FireAttackResult fireAttackResult = fireAttack(players[i],
 							immutableWorld);
 					Attack attack = fireAttackResult.getAttack();
@@ -837,6 +837,11 @@ public class GamePlayThread extends Thread {
 					stepNumber++;
 					canAttack = canAttack && (turnNumber >= stepNumber);
 					if (!canAttack){
+						if (turnNumber >= stepNumber){
+							world.setAvailableAttackCount(0);
+							immutableWorld = new ImmutableWorldImpl(world);
+						}
+						
 						for (int j = 0; j < playerCount; j++) {
 							Flag f = playerToFlagMap.get(players[j]);
 							if (!f.equals(playerFlag)
