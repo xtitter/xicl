@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 
 import javax.swing.JPanel;
 
@@ -18,11 +19,6 @@ public final class PlayerJPanel extends JPanel {
 
 	private final static long serialVersionUID = 8066379108638626622L;
 	
-	private final static Font DICE_PER_TURN_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 16);
-	private final static Font PLACE_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 20);
-	private final static Font DICE_IN_RESERVE_COUNT_FONT = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, 16);
-	private final static Font PLAYER_NAME_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
-
 	private final static int radius = 12; 
 	private final static int alpha = 90; 
 
@@ -37,7 +33,10 @@ public final class PlayerJPanel extends JPanel {
 	
 	private int place = 10;
 	private boolean isGameOver = false;
-		
+	
+	private static Font infoFont = null;
+	private static Font placeFont = null;
+	
 	public PlayerJPanel(String playerName) {
 		this.playerName = playerName;
 		setBorder(new RoundedBorder(Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.LIGHT_GRAY, radius, 0));
@@ -115,30 +114,78 @@ public final class PlayerJPanel extends JPanel {
 		}
 		
 		g2d.setColor(Color.black);
-		Font oldFont = g2d.getFont();
 		
-		g2d.setFont(PLAYER_NAME_FONT);
-		if (playerName != null){
-			g2d.drawString(playerName.substring(0, Math.min(playerName.length(), 15)), 67, 20);
-		}else{
-			g2d.drawString("No name", 67, 20);
+		int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+	    int fontSize = (int)Math.round(12.0 * screenRes / 96.0);
+	    Font font = new Font(Font.SANS_SERIF, Font.BOLD, fontSize);
+	    String outString = "No name";
+		if (playerName != null)
+			outString = playerName.substring(0, Math.min(playerName.length(), 13));
+		while (font.getStringBounds(outString, g2d.getFontRenderContext()).getWidth() > 80){
+			fontSize--;
+			font = new Font(Font.SANS_SERIF, Font.BOLD, fontSize);
 		}
+		g2d.setFont(font);
+		g2d.drawString(outString, 67, 20);
+		
 		if (flag != null && !isGameOver){
-			g2d.setFont(DICE_PER_TURN_COUNT_FONT);
+			font = getInfoFont(g2d);
+			g2d.setFont(font);
 			g2d.drawString("- " + String.valueOf(dicePerTurnCount), 75, 45);
-			
-			g2d.setFont(DICE_IN_RESERVE_COUNT_FONT);
 			g2d.drawString("- " + String.valueOf(diceCountInReserve), 125, 45);
 		}else{
 			if (flag != null && isGameOver){
 				g2d.setColor(Color.DARK_GRAY);
-				g2d.setFont(PLACE_FONT);
+				font = getPlaceFont(g2d);
+				g2d.setFont(font);
 				g2d.drawString("Place: " + String.valueOf(place), 65, 45);
 			}
 		}
-		g2d.setFont(oldFont);
 	}
 
+	private Font getPlaceFont(Graphics2D g2d) {
+		if (placeFont != null) return placeFont;
+		int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+		int fontSize = (int)Math.round(24.0 * screenRes / 96.0);
+	    Font font = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, fontSize);
+	    boolean f = true;
+	    while (f){
+		    int max = 0;
+		    for (int i = 1;i<9;i++){
+		    	if (max < font.getStringBounds("Place: " + String.valueOf(i), g2d.getFontRenderContext()).getWidth()){
+		    		max = (int)font.getStringBounds("Place: " + String.valueOf(i), g2d.getFontRenderContext()).getWidth() + 1;
+		    	}
+		    }
+		    if (max <= 80) f = false;
+			fontSize--;
+			System.out.println(max);
+			font = new Font(Font.SANS_SERIF, Font.ITALIC  , fontSize);
+		}
+	    placeFont = font;
+		return placeFont;
+	}
+
+	private Font getInfoFont(Graphics2D g2d) {
+		if (infoFont != null) return infoFont;
+		int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+		int fontSize = (int)Math.round(18.0 * screenRes / 96.0);
+	    Font font = new Font(Font.SANS_SERIF, Font.ITALIC | Font.BOLD, fontSize);
+	    boolean f = true;
+	    while (f){
+		    int max = 0;
+		    for (int i = 10;i<99;i++){
+		    	if (max < font.getStringBounds("- " + i, g2d.getFontRenderContext()).getWidth()){
+		    		max = (int)font.getStringBounds("- " + i, g2d.getFontRenderContext()).getWidth() + 1;
+		    	}
+		    }
+		    if (max <= 28) f = false;
+			fontSize--;
+			font = new Font(Font.SANS_SERIF, Font.BOLD, fontSize);
+		}
+	    infoFont = font;
+		return infoFont;
+	}
+	
 	public void setDicePerTurnCount(int areaCount) {
 		this.dicePerTurnCount = areaCount;
 	}
