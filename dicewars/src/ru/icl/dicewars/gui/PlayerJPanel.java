@@ -158,7 +158,6 @@ public final class PlayerJPanel extends JPanel {
 		    }
 		    if (max <= 80) f = false;
 			fontSize--;
-			System.out.println(max);
 			font = new Font(Font.SANS_SERIF, Font.ITALIC  , fontSize);
 		}
 	    placeFont = font;
