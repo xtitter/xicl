@@ -12,7 +12,7 @@ public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 	private Flag opponentFlag;
 	private Flag playerFlag;
 	
-	public SimplePlayerAttackActivityImpl(Attack attack, Flag playerFlag, Flag opponentFlag, List<Integer> playerDicesList,  List<Integer> opponentDicesList) {
+	public SimplePlayerAttackActivityImpl(final Attack attack, Flag playerFlag, Flag opponentFlag, List<Integer> playerDicesList,  List<Integer> opponentDicesList) {
 		if (attack == null || playerDicesList == null || opponentDicesList == null) throw new IllegalArgumentException();
 		
 		if (playerDicesList.size() < 1 || opponentDicesList.size() > 8 || opponentDicesList.size() < 1 || opponentDicesList.size() > 8)
@@ -26,7 +26,20 @@ public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 			if (i < 1 || i > 6) throw new IllegalArgumentException();
 		}
 		
-		this.attack = attack;
+		this.attack = new Attack() {
+			int toLandId = attack.getToLandId();
+			int fromLandId = attack.getFromLandId();
+			@Override
+			public int getToLandId() {
+				return toLandId;
+			}
+			
+			@Override
+			public int getFromLandId() {
+				return fromLandId;
+			}
+		};
+		
 		this.playerDicesList = playerDicesList;
 		this.opponentDicesList = opponentDicesList;
 		this.playerFlag = playerFlag;
