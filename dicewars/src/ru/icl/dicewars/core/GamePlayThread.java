@@ -625,7 +625,7 @@ public class GamePlayThread extends Thread {
 
 		Set<Flag> availableFlags = new HashSet<Flag>(world.getFlags());
 
-		for (int i = 0; i < playerCount; i++) {
+		for (int i = playerCount - 1; i >= 0; i--) {
 			Set<Flag> immutableAvailableFlags = Collections
 					.unmodifiableSet(new HashSet<Flag>(availableFlags));
 			try {
@@ -643,7 +643,7 @@ public class GamePlayThread extends Thread {
 			}
 		}
 
-		for (int i = 0; i < playerCount; i++) {
+		for (int i = playerCount - 1; i >= 0; i--) {
 			if (!flagToPlayerMap.values().contains(players[i])) {
 				Flag flag = availableFlags.iterator().next();
 				playerToFlagMap.put(players[i], flag);
