@@ -485,10 +485,10 @@ public class RealFullWorldGeneratorImpl implements FullWorldGenerator {
     }
 
     private Hex getRandomHex(Boolean center) {
-        if (!center && isEmpty(Hex.getHex(0, 0))) { return Hex.getHex(0, 0); }
-        if (!center && isEmpty(Hex.getHex(WORLD_X_SIZE-1, 0))) { return Hex.getHex(WORLD_X_SIZE-1, 0); }
-        if (!center && isEmpty(Hex.getHex(0, WORLD_Y_SIZE-1))) { return Hex.getHex(0, WORLD_Y_SIZE-1); }
-        if (!center && isEmpty(Hex.getHex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1))) { return Hex.getHex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1); }
+        //if (!center && isEmpty(Hex.getHex(0, 0))) { return Hex.getHex(0, 0); }
+        //if (!center && isEmpty(Hex.getHex(WORLD_X_SIZE-1, 0))) { return Hex.getHex(WORLD_X_SIZE-1, 0); }
+        //if (!center && isEmpty(Hex.getHex(0, WORLD_Y_SIZE-1))) { return Hex.getHex(0, WORLD_Y_SIZE-1); }
+        //if (!center && isEmpty(Hex.getHex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1))) { return Hex.getHex(WORLD_X_SIZE-1, WORLD_Y_SIZE-1); }
 
         int offsetX = center ? WORLD_X_SIZE/6 : 0;
         int offsetY = center ? WORLD_Y_SIZE/6 : 0;
