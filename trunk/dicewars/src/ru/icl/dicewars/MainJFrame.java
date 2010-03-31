@@ -9,8 +9,10 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JMenuBar;
@@ -23,6 +25,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.MatteBorder;
 
+import ru.icl.dicewars.core.ActivityQueueStorage;
 import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.ConfigurationLoader;
 import ru.icl.dicewars.core.FullWorld;
@@ -54,19 +57,56 @@ public final class MainJFrame extends JFrame {
     private final HoverButton fastForwardSpeed;
     private final HoverButton forwardSpeed;
     
+    public void pauseSelect(){
+    	pauseSpeed.setSelected(true);
+    	pauseSpeed.repaint();
+    	playSpeed.setSelected(false);
+    	playSpeed.repaint();
+    	forwardSpeed.setSelected(false);
+    	forwardSpeed.repaint();
+    	fastForwardSpeed.setSelected(false);
+    	fastForwardSpeed.repaint();
+    }
+
+    public void playSelect(){
+    	pauseSpeed.setSelected(false);
+    	pauseSpeed.repaint();
+    	playSpeed.setSelected(true);
+    	playSpeed.repaint();
+    	forwardSpeed.setSelected(false);
+    	forwardSpeed.repaint();
+    	fastForwardSpeed.setSelected(false);
+    	fastForwardSpeed.repaint();
+    }
+    
+    public void forwardSelect(){
+    	pauseSpeed.setSelected(false);
+    	pauseSpeed.repaint();
+    	playSpeed.setSelected(false);
+    	playSpeed.repaint();
+    	forwardSpeed.setSelected(true);
+    	forwardSpeed.repaint();
+    	fastForwardSpeed.setSelected(false);
+    	fastForwardSpeed.repaint();
+    }
+    
+    private void fastForwardSelect(){
+    	pauseSpeed.setSelected(false);
+    	pauseSpeed.repaint();
+    	fastForwardSpeed.setSelected(true);
+    	fastForwardSpeed.repaint();
+    	playSpeed.setSelected(false);
+    	playSpeed.repaint();
+    	forwardSpeed.setSelected(false);
+    	forwardSpeed.repaint();
+    }
+    
     private final Command pauseSpeedCommand = new Command() {
         @Override
         public void execute() {
-        	pauseSpeed.setSelected(true);
-        	pauseSpeed.repaint();
-        	playSpeed.setSelected(false);
-        	playSpeed.repaint();
-        	forwardSpeed.setSelected(false);
-        	forwardSpeed.repaint();
-        	fastForwardSpeed.setSelected(false);
-        	fastForwardSpeed.repaint();
+        	pauseSelect();
         	if (uiGameThread != null){
-        		uiGameThread.setSpeed(-1);
+        		uiGameThread.setSpeed(UIGameThread.PAUSE_SPEED);
         	}
         }
         private static final long serialVersionUID = 1L;
@@ -75,16 +115,9 @@ public final class MainJFrame extends JFrame {
     private final Command playSpeedCommand = new Command() {
         @Override
         public void execute() {
-        	pauseSpeed.setSelected(false);
-        	pauseSpeed.repaint();
-        	playSpeed.setSelected(true);
-        	playSpeed.repaint();
-        	forwardSpeed.setSelected(false);
-        	forwardSpeed.repaint();
-        	fastForwardSpeed.setSelected(false);
-        	fastForwardSpeed.repaint();
+        	playSelect();
         	if (uiGameThread != null){
-        		uiGameThread.setSpeed(1);
+        		uiGameThread.setSpeed(UIGameThread.NORMAL_SPEED);
         	}
         }
         private static final long serialVersionUID = 1L;
@@ -93,16 +126,9 @@ public final class MainJFrame extends JFrame {
     private final Command forwardSpeedCommand = new Command() {
         @Override
         public void execute() {
-        	pauseSpeed.setSelected(false);
-        	pauseSpeed.repaint();
-        	playSpeed.setSelected(false);
-        	playSpeed.repaint();
-        	forwardSpeed.setSelected(true);
-        	forwardSpeed.repaint();
-        	fastForwardSpeed.setSelected(false);
-        	fastForwardSpeed.repaint();
+        	forwardSelect();
         	if (uiGameThread != null){
-        		uiGameThread.setSpeed(2);
+        		uiGameThread.setSpeed(UIGameThread.FORWARD_SPEED);
         	}
         }
         private static final long serialVersionUID = 1L;
@@ -111,16 +137,9 @@ public final class MainJFrame extends JFrame {
     private final Command fastForwardSpeedCommand = new Command() {
         @Override
         public void execute() {
-        	pauseSpeed.setSelected(false);
-        	pauseSpeed.repaint();
-        	fastForwardSpeed.setSelected(true);
-        	fastForwardSpeed.repaint();
-        	playSpeed.setSelected(false);
-        	playSpeed.repaint();
-        	forwardSpeed.setSelected(false);
-        	forwardSpeed.repaint();
+        	fastForwardSelect();
         	if (uiGameThread != null){
-        		uiGameThread.setSpeed(0);
+        		uiGameThread.setSpeed(UIGameThread.FAST_FORWARD_SPEED);
         	}
         }
         private static final long serialVersionUID = 1L;
@@ -218,15 +237,17 @@ public final class MainJFrame extends JFrame {
 	private void startGame(Configuration configuration){
 		uiGameThread = new UIGameThread(configuration); 
 		uiGameThread.start();
-		pauseSpeed.setSelected(false);
-    	pauseSpeed.repaint();
-    	playSpeed.setSelected(true);
-    	playSpeed.repaint();
-    	forwardSpeed.setSelected(false);
-    	forwardSpeed.repaint();
-    	fastForwardSpeed.setSelected(false);
-    	fastForwardSpeed.repaint();
+		playSelect();
     	speedButtonSetVisible(true);
+    	uiGameThread.setSpeed(UIGameThread.NORMAL_SPEED);
+	}
+	
+	private void startReplay(ActivityQueueStorage activityQueueStorage){
+		uiGameThread = new UIGameThread(activityQueueStorage); 
+		uiGameThread.start();
+		pauseSelect();
+    	speedButtonSetVisible(true);
+    	uiGameThread.setSpeed(UIGameThread.PAUSE_SPEED);
 	}
 	
 	public void startNewGame(){
@@ -249,12 +270,22 @@ public final class MainJFrame extends JFrame {
 				realFullWorldGeneratorImpl.setPlayersCount(playersCount);
 				FullWorld fullWorld = realFullWorldGeneratorImpl.generate();
 				Configuration configuration = new SimpleConfigurationImpl(fullWorld, configurationLoader.getPlayerClasses(),
-						configurationLoader.getMaxDiceCountInReserve(), configurationLoader.getClassLoader());
+						configurationLoader.getMaxDiceCountInReserve(), configurationLoader.getClassLoader(), configurationLoader.isSaveReplay());
 				startGame(configuration);
 			}
 		}
 	}
-    
+
+	public void startNewReplay(){
+		JFileChooser jFileChooser = new JFileChooser();
+		if (jFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
+			stopGame();
+			File replayFile = jFileChooser.getSelectedFile();
+			ActivityQueueStorage activityQueueStorage = new ActivityQueueStorage(replayFile);
+			startReplay(activityQueueStorage);
+		}
+	}
+
 	public MainJFrame() {
 		setExtendedState(MAXIMIZED_BOTH);
 		
@@ -397,7 +428,7 @@ public final class MainJFrame extends JFrame {
             }
         });
     }
-    
+
     /*Work around*/
     /*public int getSpeed() {
     	if (uiGameThread != null){

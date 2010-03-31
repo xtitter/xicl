@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core.activity;
 
+import java.util.Collections;
 import java.util.List;
 
 import ru.icl.dicewars.client.Attack;
@@ -40,8 +41,8 @@ public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 			}
 		};
 		
-		this.playerDicesList = playerDicesList;
-		this.opponentDicesList = opponentDicesList;
+		this.playerDicesList = Collections.unmodifiableList(playerDicesList);
+		this.opponentDicesList = Collections.unmodifiableList(opponentDicesList);
 		this.playerFlag = playerFlag;
 		this.opponentFlag = opponentFlag;
 	}

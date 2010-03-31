@@ -31,6 +31,8 @@ public class ConfigurationLoader {
 	private final static String[] CONFIG_FILE_LOCATIONS = new String[] { "configuration.properties" };
 
 	private final static String DEFAULT_PLAYERS_PROPERTY_NAME = "default_players";
+	
+	private final static String SAVE_REPLAY_PROPERTY_NAME = "save_replay";
 
 	private final static String PLAYERS_SCAN_DIR_PROPERTY_NAME = "players_scan_dir";
 	
@@ -43,6 +45,8 @@ public class ConfigurationLoader {
 	private final static String DEFAULT_PLAYERS_CONF_FILENAME = "players.conf";
 
 	private static final int DEFAULT_MAX_DICE_COUNT_IN_RESERVE = 100;
+	
+	private static final boolean DEFAULT_SAVE_REPLAY = false;
 
 	private static ConfigurationLoader configurationLoader = null;
 
@@ -50,6 +54,8 @@ public class ConfigurationLoader {
 	private static final Object sync2 = new Object();
 
 	private int maxDiceCountInReserve = DEFAULT_MAX_DICE_COUNT_IN_RESERVE;
+	
+	private boolean saveReplay = DEFAULT_SAVE_REPLAY;
 	
 	private String playersConfFileName = DEFAULT_PLAYERS_CONF_FILENAME;
 
@@ -236,6 +242,8 @@ public class ConfigurationLoader {
 			}
 		} catch (NumberFormatException e) {
 		}
+
+		this.saveReplay = Boolean.valueOf(properties.getProperty(SAVE_REPLAY_PROPERTY_NAME));
 	}
 	
 	public ClassLoader getClassLoader(){
@@ -276,5 +284,9 @@ public class ConfigurationLoader {
 	
 	public int getMaxDiceCountInReserve() {
 		return maxDiceCountInReserve;
+	}
+	
+	public boolean isSaveReplay() {
+		return saveReplay;
 	}
 }

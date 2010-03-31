@@ -1,5 +1,6 @@
 package ru.icl.dicewars.gui.thread;
 
+import ru.icl.dicewars.core.ActivityQueueStorage;
 import ru.icl.dicewars.core.Configuration;
 import ru.icl.dicewars.core.FullWorld;
 import ru.icl.dicewars.core.GamePlayThread;
@@ -17,6 +18,10 @@ import ru.icl.dicewars.core.activity.WorldInfoUpdatedActivity;
 import ru.icl.dicewars.gui.manager.WindowManager;
 
 public class UIGameThread extends Thread {
+	public static final int NORMAL_SPEED = 1;
+	public static final int FORWARD_SPEED = 2;
+	public static final int FAST_FORWARD_SPEED = 0;
+	public static final int PAUSE_SPEED = -1;
 	
 	volatile boolean t = true;
 	
@@ -24,14 +29,21 @@ public class UIGameThread extends Thread {
 	//volatile boolean freeze = false;
 	//final Object freezeFlag = new Object();
 	
-	Configuration configuration;
+	Configuration configuration = null;
+	ActivityQueueStorage activityQueueStorage = null;
 
 	public UIGameThread(Configuration configuration) {
+		if (configuration == null) throw new IllegalArgumentException();
 		this.configuration = configuration;
 	}
 	
+	public UIGameThread(ActivityQueueStorage activityQueueStorage) {
+		if (activityQueueStorage == null) throw new IllegalArgumentException();
+		this.activityQueueStorage = activityQueueStorage;
+	}
+	
 	public void setSpeed(int speed) {
-		if (speed >= 0){
+		if (speed != PAUSE_SPEED){
 			synchronized (this) {
 				this.notifyAll();
 			}
@@ -44,7 +56,7 @@ public class UIGameThread extends Thread {
 	}
 	
 	private void checkPause() throws InterruptedException{
-		if (speed < 0){
+		if (speed == PAUSE_SPEED){
 			synchronized (this) {
 				this.wait();	
 			}
@@ -53,12 +65,20 @@ public class UIGameThread extends Thread {
 	
 	@Override
 	public void run() {
-		GamePlayThread gamePlayThread = new GamePlayThread(configuration);
-		//gamePlayThread.setPriority(Thread.MIN_PRIORITY);
-		gamePlayThread.start();
+		GamePlayThread gamePlayThread = null;
+		if (activityQueueStorage != null){
+			activityQueueStorage.load();
+		}else{
+			gamePlayThread = new GamePlayThread(configuration);
+			gamePlayThread.start();
+		}
 		try{
 			while (t) {
-				DiceWarsActivity activity = gamePlayThread.pollFromActivityQueue();
+				DiceWarsActivity activity = null;
+				if (activityQueueStorage != null)
+					activity = activityQueueStorage.pollFromActivityQueue();
+				if (gamePlayThread != null)
+					activity = gamePlayThread.pollFromActivityQueue();
 				if (activity instanceof WorldCreatedActivity) {
 					FullWorld world = ((WorldCreatedActivity) activity).getFullWorld();
 					WindowManager.getInstance().getWorldJPanel().updateWorld(world);
@@ -75,7 +95,7 @@ public class UIGameThread extends Thread {
 					WindowManager.getInstance().getWorldJPanel().updateLand(landUpdatedActivity.getFullLand());
 				} else if (activity instanceof SimplePlayerAttackActivityImpl) {
 					SimplePlayerAttackActivityImpl simplePlayerActivity = ((SimplePlayerAttackActivityImpl) activity);
-					if (speed == 1 || speed == 2){
+					if (speed == NORMAL_SPEED || speed == FORWARD_SPEED){
 						WindowManager.getInstance().getBottomInfoJPanel().updateDices(simplePlayerActivity.getPlayerFlag(), simplePlayerActivity.getOpponentFlag(), simplePlayerActivity.getPlayerDices(), simplePlayerActivity.getOpponentDices());
 					}
 					WindowManager.getInstance().getWorldJPanel().updateAttackingPlayer(simplePlayerActivity.getFromLandId());
@@ -106,14 +126,25 @@ public class UIGameThread extends Thread {
 					int turnNumber = turnNumberChangedActivity.getTurnNumber();
 					WindowManager.getInstance().getBottomInfoJPanel().updateTurnNumber(turnNumber);
 				} else if (activity instanceof GameEndedActivity){
-					WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
-					break;
-				}
-				
-				if (speed == 1)
+					if (gamePlayThread != null){
+						WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
+						break;
+					}else{
+						if (activityQueueStorage != null){
+							if (activityQueueStorage.hasNext()){
+								speed = PAUSE_SPEED;
+								WindowManager.getInstance().getMainFrame().pauseSelect();
+							}else{
+								WindowManager.getInstance().getMainFrame().notifyThatGameIsEnded();
+								break;
+							}
+						}
+					}
+				} 				
+				if (speed == NORMAL_SPEED)
 					_sleep(100);
 	
-				if (speed == 2)
+				if (speed == FORWARD_SPEED)
 					_sleep(10);
 	
 				checkPause();
@@ -121,7 +152,7 @@ public class UIGameThread extends Thread {
 		}catch (InterruptedException e) {
 		}
 		
-		while (gamePlayThread.isAlive()){
+		while (gamePlayThread != null && gamePlayThread.isAlive()){
 			gamePlayThread.kill();
 			try{
 				_sleep(10);
@@ -147,9 +178,9 @@ public class UIGameThread extends Thread {
 				freezeFlag.wait(1000);
 			}
 		}*/
-		if (speed == 1)
+		if (speed == NORMAL_SPEED)
 			Thread.sleep(time);
-		if (speed == 2)
+		if (speed == FORWARD_SPEED)
 			Thread.sleep(time / 10);
 	}
 

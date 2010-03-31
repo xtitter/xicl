@@ -1,8 +1,10 @@
 package ru.icl.dicewars.core;
 
+import java.io.Serializable;
+
 import ru.icl.dicewars.core.activity.DiceWarsActivity;
 
-public interface ActivityQueue {
+public interface ActivityQueue extends Serializable{
 	public void add(DiceWarsActivity e);
 	
 	public DiceWarsActivity poll();
@@ -10,4 +12,6 @@ public interface ActivityQueue {
 	public void clear();
 	
 	public int size();
+
+	public boolean hasNext();
 }
