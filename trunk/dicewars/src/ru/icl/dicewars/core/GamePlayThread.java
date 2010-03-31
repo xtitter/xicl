@@ -760,8 +760,15 @@ public class GamePlayThread extends Thread {
 					if (attack == null) {
 						canAttack = false;
 					} else {
-						int fromLandId = attack.getFromLandId();
-						int toLandId = attack.getToLandId();
+						int fromLandId = 0;
+						int toLandId = 0;
+						try{
+							fromLandId = attack.getFromLandId();
+							toLandId = attack.getToLandId();
+						}catch (Exception e) {
+							fromLandId = 0;
+							toLandId = 0;
+						}
 						boolean successAttacked = false;
 						boolean wasAttackWon = false;
 						for (FullLand land : world.getFullLands()) {
