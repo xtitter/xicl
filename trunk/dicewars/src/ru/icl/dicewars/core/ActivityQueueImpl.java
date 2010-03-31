@@ -17,7 +17,6 @@ public class ActivityQueueImpl implements ActivityQueue {
 	boolean isPlayerLoaded = false;
 	boolean isWorldCreated = false;
 	boolean isFlagDistributed = false;
-	boolean isGameEnded = false;
 	int playerCount = 0;
 
 	@Override
@@ -27,8 +26,6 @@ public class ActivityQueueImpl implements ActivityQueue {
 
 	@Override
 	public synchronized void add(DiceWarsActivity e) {
-		if (isGameEnded) throw new IllegalStateException();
-		
 		if (e instanceof PlayersLoadedActivity
 				&& isPlayerLoaded) {
 			throw new IllegalStateException();
@@ -75,9 +72,12 @@ public class ActivityQueueImpl implements ActivityQueue {
 			playerCount--;
 			if (playerCount == 0) isFlagDistributed = true;
 		}
-
+		
 		if (e instanceof GameEndedActivity){
-			isGameEnded = true;
+			isPlayerLoaded = false;
+			isWorldCreated = false;
+			isFlagDistributed = false;
+			playerCount = 0;
 		}
 	}
 
@@ -87,7 +87,6 @@ public class ActivityQueueImpl implements ActivityQueue {
 		isPlayerLoaded = false;
 		isWorldCreated = false;
 		isFlagDistributed = false;
-		isGameEnded = false;
 		playerCount = 0;
 	}
 
@@ -98,6 +97,6 @@ public class ActivityQueueImpl implements ActivityQueue {
 	
 	@Override
 	public synchronized boolean hasNext() {
-		return size() == 0;
+		return size() > 0;
 	}
 }
