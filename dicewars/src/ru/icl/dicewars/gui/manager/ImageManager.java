@@ -217,6 +217,16 @@ public class ImageManager {
 		return playersIcon;
 	}
 
+    public static Icon getLoadReplayIcon() {
+		if (loadReplayIcon == null) {
+			String path = "/resources/icon/loadreplay.png";
+			Image image = getImageFromResource(path);
+			if (image != null)
+				loadReplayIcon = new ImageIcon(image);
+		}
+		return loadReplayIcon;
+	}
+    
     public static Icon getStopGameIcon() {
 		if (stopGameIcon == null) {
 			String path = "/resources/icon/stop.png";
@@ -459,6 +469,7 @@ public class ImageManager {
     
     private static Icon startNewGameIcon;
     private static Icon exitIcon;
+    private static Icon loadReplayIcon;
     private static Icon playersIcon;
     private static Icon stopGameIcon;
     

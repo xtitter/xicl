@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core.activity;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SimplePlayersLoadedActivityImpl implements PlayersLoadedActivity{
@@ -7,7 +8,7 @@ public class SimplePlayersLoadedActivityImpl implements PlayersLoadedActivity{
 	
 	public SimplePlayersLoadedActivityImpl(List<String> playerNames) {
 		if (playerNames == null) throw new IllegalArgumentException();
-		this.playerNames = playerNames;
+		this.playerNames = Collections.unmodifiableList(playerNames);
 	}
 	
 	@Override

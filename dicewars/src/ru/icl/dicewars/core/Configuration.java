@@ -27,6 +27,8 @@ public interface Configuration {
 	
 	public Type getType();
 	
+	public boolean isSaveReplay();
+	
 	public static enum Type{
 		INTERRUPT_EXECUTION, NOTIFY, OFF
 	}

@@ -48,6 +48,13 @@ public final class TopMenuMenuBar extends JMenuBar {
    			playersJDialog.toFront();
 		}
 	};
+	
+	private final ActionListener loadReplayFileActionListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			WindowManager.getInstance().getMainFrame().startNewReplay();
+		}
+	};
 
 	public TopMenuMenuBar() {
 		JMenuItem startNewGameItem = new JMenuItem("Start new game...");
@@ -59,6 +66,11 @@ public final class TopMenuMenuBar extends JMenuBar {
 		stopGameItem.addActionListener(stopGameActionListener);
 		stopGameItem.setIcon(ImageManager.getStopGameIcon());
 		fileMenu.add(stopGameItem);
+		
+		JMenuItem loadReplayFileItem = new JMenuItem("Load replay file");
+		loadReplayFileItem.addActionListener(loadReplayFileActionListener);
+		loadReplayFileItem.setIcon(ImageManager.getLoadReplayIcon());
+		fileMenu.add(loadReplayFileItem);
 
 		fileMenu.addSeparator();
 

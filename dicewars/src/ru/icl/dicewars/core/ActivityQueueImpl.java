@@ -95,4 +95,9 @@ public class ActivityQueueImpl implements ActivityQueue {
 	public synchronized int size() {
 		return queue.size();
 	}
+	
+	@Override
+	public synchronized boolean hasNext() {
+		return size() == 0;
+	}
 }

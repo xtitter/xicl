@@ -12,14 +12,16 @@ public class SimpleConfigurationImpl implements Configuration {
 	
 	private ClassLoader classLoader;
 	
+	private boolean saveReplay;
+	
 	public SimpleConfigurationImpl(FullWorld fullWorld, Class<Player>[] playerClasses,
 			int maxDiceCountInReserve) {
-		this(fullWorld, playerClasses, maxDiceCountInReserve, null);
+		this(fullWorld, playerClasses, maxDiceCountInReserve, null, false);
 	}
 
 	@SuppressWarnings("unchecked")
 	public SimpleConfigurationImpl(FullWorld fullWorld, Class<Player>[] playerClasses,
-			int maxDiceCountInReserve, ClassLoader classLoader) {
+			int maxDiceCountInReserve, ClassLoader classLoader, boolean saveReplay) {
 		if (fullWorld == null || playerClasses == null || playerClasses.length < 2
 				|| playerClasses.length > 8)
 			throw new IllegalArgumentException();
@@ -45,6 +47,13 @@ public class SimpleConfigurationImpl implements Configuration {
 		} else {
 			this.maxDiceCountInReserve = maxDiceCountInReserve;
 		}
+		
+		this.saveReplay = saveReplay;
+	}
+	
+	
+	public boolean isSaveReplay() {
+		return saveReplay;
 	}
 	
 	@Override

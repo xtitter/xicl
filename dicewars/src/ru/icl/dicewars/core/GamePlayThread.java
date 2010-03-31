@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import ru.icl.dicewars.client.Attack;
@@ -48,7 +50,9 @@ public class GamePlayThread extends Thread {
 	private final static int MAX_ACTIVITY_COUNT_IN_QUEUE = 500;
 	
 	Configuration configuration;
-
+	
+	ActivityQueueStorage activityQueueStorage = new ActivityQueueStorage(new File("dicewars" + (UUID.randomUUID().toString()) + ".rep"));
+	
 	private boolean started = false;
 
 	private Object startedFlag = new Object();
@@ -87,6 +91,9 @@ public class GamePlayThread extends Thread {
 			} catch (InterruptedException e) {
 				kill();
 			}
+		}
+		if (configuration.isSaveReplay()){
+			activityQueueStorage.add(activity);
 		}
 		activityQueue.add(activity);
 	}
@@ -862,6 +869,9 @@ public class GamePlayThread extends Thread {
 				addToActivityQueue(new SimplePlayerGameOverActivityImpl(flag, 1));
 			}
 			addToActivityQueue(new SimpleGameEndedActivityImpl());
+			if (configuration.isSaveReplay()){
+				activityQueueStorage.store();
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 package ru.icl.dicewars.core.activity;
 
-public interface DiceWarsActivity {
+import java.io.Serializable;
 
+public interface DiceWarsActivity extends Serializable{
 }
