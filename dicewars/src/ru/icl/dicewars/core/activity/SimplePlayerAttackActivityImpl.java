@@ -7,11 +7,12 @@ import ru.icl.dicewars.client.Attack;
 import ru.icl.dicewars.client.Flag;
 
 public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
-	private Attack attack;
 	private List<Integer> opponentDicesList;
 	private List<Integer> playerDicesList;
 	private Flag opponentFlag;
 	private Flag playerFlag;
+	private int toLandId;
+	private int fromLandId;
 	
 	public SimplePlayerAttackActivityImpl(final Attack attack, Flag playerFlag, Flag opponentFlag, List<Integer> playerDicesList,  List<Integer> opponentDicesList) {
 		if (attack == null || playerDicesList == null || opponentDicesList == null) throw new IllegalArgumentException();
@@ -27,19 +28,8 @@ public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 			if (i < 1 || i > 6) throw new IllegalArgumentException();
 		}
 		
-		this.attack = new Attack() {
-			int toLandId = attack.getToLandId();
-			int fromLandId = attack.getFromLandId();
-			@Override
-			public int getToLandId() {
-				return toLandId;
-			}
-			
-			@Override
-			public int getFromLandId() {
-				return fromLandId;
-			}
-		};
+		this.toLandId = attack.getToLandId();
+		this.fromLandId = attack.getFromLandId();
 		
 		this.playerDicesList = Collections.unmodifiableList(playerDicesList);
 		this.opponentDicesList = Collections.unmodifiableList(opponentDicesList);
@@ -49,12 +39,12 @@ public class SimplePlayerAttackActivityImpl implements PlayerAttackActivity{
 	
 	@Override
 	public int getFromLandId(){
-		return attack.getFromLandId();
+		return fromLandId;
 	}
 	
 	@Override
 	public int getToLandId(){
-		return attack.getToLandId();
+		return toLandId;
 	}
 	
 	@Override
