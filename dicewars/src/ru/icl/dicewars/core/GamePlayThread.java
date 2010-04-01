@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -48,6 +49,8 @@ public class GamePlayThread extends Thread {
 	private static final int AMOUNT_OF_THREADS_TO_START_GC = 200;
 
 	private final static int MAX_ACTIVITY_COUNT_IN_QUEUE = 500;
+	
+	private final static int MAX_TURNS = 200;
 	
 	Configuration configuration;
 	
@@ -737,7 +740,8 @@ public class GamePlayThread extends Thread {
 		/* Start the game */
 		int turnNumber = 1;
 		int place = playerCount;
-		while (!hasWinner(world) && t) {
+		boolean fw = true;
+		while (!hasWinner(world) && t && fw) {
 			addToActivityQueue(new SimpleTurnNumberChangedActivityImpl(turnNumber));
 			for (int i = 0; i < playerCount; i++) {
 				Flag playerFlag = playerToFlagMap.get(players[i]);
@@ -869,6 +873,27 @@ public class GamePlayThread extends Thread {
 				grantWorldByFlag(world, playerFlag);
 			}
 			turnNumber++;
+			if (turnNumber > MAX_TURNS){
+				Map<Flag, Integer> diceCountMap = new HashMap<Flag, Integer>();
+				for (Land land : world.getFullLands()){
+					Integer d = diceCountMap.get(land.getFlag());
+					if (d == null){
+						diceCountMap.put(land.getFlag(), land.getDiceCount());
+					}else{
+						diceCountMap.put(land.getFlag(), d + land.getDiceCount());
+					}
+				}
+				Map<Integer, Flag> diceCountMapInverted = new TreeMap<Integer, Flag>();
+				for (Flag flag : diceCountMap.keySet()){
+					Integer d = diceCountMap.get(flag);
+					diceCountMapInverted.put(d, flag);
+				}
+				for (Flag flag : diceCountMapInverted.values()){
+					addToActivityQueue(new SimplePlayerGameOverActivityImpl(flag, place));
+					place--;
+				}
+				fw = false;
+			}
 		}
 		if (t){
 			if (hasWinner(world)){
